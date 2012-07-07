@@ -47,8 +47,9 @@ def f2(num0):
 def smallest(num, start=3):
     '''Returns smallest (thus, prime) subfactor of "num" that is
     larger than "start".'''
+    import math
 
-    for i in range(start,int(num/2),2):
+    for i in range(start,int(math.sqrt(num)+1),2):
         if not num % i: # divisible
             return i
 
@@ -61,4 +62,4 @@ for i in range(1000):
     #factors = f1(600851475143)
     factors = f2(600851475143)
 
-print(factors[-1])
+print(factors)

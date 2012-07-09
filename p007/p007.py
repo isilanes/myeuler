@@ -6,6 +6,8 @@ def f1(nth):
     while len(primes) < nth:
         is_prime = True
         for prime in primes:
+            if prime * prime > i:
+                break
             if not i % prime:
                 is_prime = False
                 break

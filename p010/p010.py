@@ -25,7 +25,28 @@ def f1(max):
 
 #------------------------------------------------------------------------------#
 
+def f2(max):
+    '''Try sieve of Eratostenes (I think), not "brute force".'''
+
+    primes = [2]
+    mult = 3
+    composites = {}
+    while mult < max:
+        if not mult in composites:
+            primes.append(mult)
+            lim = int(max/mult) + 1
+            for i in range(mult, lim, 2):
+                num = mult * i
+                composites[num] = True
+
+        mult += 2
+
+    return sum(primes)
+
+#------------------------------------------------------------------------------#
+
 for i in range(1):
-    res = f1(2000000)
+    #res = f1(2000000)
+    res = f2(2000000)
 
 print(res)

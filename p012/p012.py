@@ -66,17 +66,10 @@ def f1(mindiv):
     nth = 7
     ndiv = 6
     triangle = 28
-    #while ndiv < 50:
-    for ndiv in [10]:
+    while ndiv < mindiv:
         nth += 1
-        facs_n = factors(nth)
-        facs_n1 = factors(nth+1)
-        facs = facs_n + facs_n1
-        print(facs)
-
         triangle = int(nth * (nth + 1) / 2)
         facs = factors(triangle)
-        print(facs)
         
         c = {}
         for lim in range(1, len(facs) + 1):
@@ -84,9 +77,34 @@ def f1(mindiv):
                 p = numpy.prod(e)
                 c[p] = True
 
-        #ndiv = len(c)
+        ndiv = len(c)
 
     return triangle
+
+#------------------------------------------------------------------------------#
+
+def f2(mindiv):
+    import itertools
+    import numpy
+
+    nth = 7
+    ndiv = 6
+    while ndiv < mindiv:
+        nth += 1
+        facs_n = factors(nth)
+        facs_n1 = factors(nth+1)
+        facs = facs_n + facs_n1
+        facs.remove(2) # take out an excess "2"
+
+        c = {}
+        for lim in range(1, len(facs) + 1):
+            for e in itertools.combinations(facs, lim):
+                p = numpy.prod(e)
+                c[p] = True
+
+        ndiv = len(c)
+
+    return numpy.prod(facs)
 
 #------------------------------------------------------------------------------#
 

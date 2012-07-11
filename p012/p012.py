@@ -22,8 +22,71 @@ What is the value of the first triangle number to have over five hundred divisor
 
 #------------------------------------------------------------------------------#
 
-def f1(ndiv):
-    pass
+def smallest(num, start=3):
+    '''Shamelessly taken from my own solution to p003.'''
+
+    import math
+
+    for i in range(start,int(math.sqrt(num)+1),2):
+        if not num % i: # divisible
+            return i
+
+    # If we reach thus far, num is prime:
+    return num
+
+#------------------------------------------------------------------------------#
+
+def factors(num0):
+    '''Shamelessly taken from my own solution to p003, f2().'''
+
+    factors = []
+
+    # First, take out twos:
+    num = num0
+    while not num % 2: # while even
+        factors.append(2)
+        num = num/2
+
+    # Then from 3 on:
+    num = int(num)
+
+    while num > 1:
+        fac = smallest(num)
+        num = int(num/fac)
+        factors.append(fac)
+
+    return factors
+
+#------------------------------------------------------------------------------#
+
+def f1(mindiv):
+    import itertools
+    import numpy
+
+    nth = 7
+    ndiv = 6
+    triangle = 28
+    #while ndiv < 50:
+    for ndiv in [10]:
+        nth += 1
+        facs_n = factors(nth)
+        facs_n1 = factors(nth+1)
+        facs = facs_n + facs_n1
+        print(facs)
+
+        triangle = int(nth * (nth + 1) / 2)
+        facs = factors(triangle)
+        print(facs)
+        
+        c = {}
+        for lim in range(1, len(facs) + 1):
+            for e in itertools.combinations(facs, lim):
+                p = numpy.prod(e)
+                c[p] = True
+
+        #ndiv = len(c)
+
+    return triangle
 
 #------------------------------------------------------------------------------#
 

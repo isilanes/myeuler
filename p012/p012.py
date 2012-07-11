@@ -74,8 +74,7 @@ def f1(mindiv):
         c = {}
         for lim in range(1, len(facs) + 1):
             for e in itertools.combinations(facs, lim):
-                p = numpy.prod(e)
-                c[p] = True
+                c[e] = True
 
         ndiv = len(c)
 
@@ -99,8 +98,7 @@ def f2(mindiv):
         c = {}
         for lim in range(1, len(facs) + 1):
             for e in itertools.combinations(facs, lim):
-                p = numpy.prod(e)
-                c[p] = True
+                c[e] = True
 
         ndiv = len(c)
 

@@ -14,13 +14,13 @@ Which starting number, under one million, produces the longest chain?
 NOTE: Once the chain starts the terms are allowed to go above one million.
 '''
 
-#------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------#
 
 def f1(nmax):
     max_i = 2 # number with max steps
     max_s = 1 # how many of them
     steps = {}
-    for i in range(2,nmax,2):
+    for i in range(3,nmax,2):
         num = i
         nsteps = 0
         while num > 1:
@@ -42,8 +42,39 @@ def f1(nmax):
 
     return [max_i, max_s]
 
-#------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------#
 
-res = f1(1000000)
+def f2(nmax):
+    max_i = 2 # number with max steps
+    max_s = 1 # how many of them
+    steps = {}
+    for i in range(3,nmax,2):
+        num = i
+        nsteps = 0
+        while num > 1:
+            if num % 2: # odd
+                # Any odd number produces an even number (3n+1 = even
+                # if n odd), so we do two steps at once:
+                num = (3 * num + 1)/2
+                nsteps += 2
+            else: # even
+                num = num / 2
+                nsteps += 1
+
+            if num in steps:
+                nsteps += steps[num]
+                break
+
+        steps[i] = nsteps
+
+        if nsteps > max_s:
+            max_i = i
+            max_s = nsteps
+
+    return [max_i, max_s]
+
+#-------------------------------------------------------------------------#
+
+res = f2(1000000)
 
 print(res)

@@ -41,8 +41,9 @@ def f2(num0):
     # Then from 3 on:
     num = int(num)
 
+    fac = 3
     while num > 1:
-        fac = smallest(num)
+        fac = smallest(num, fac)
         num = int(num/fac)
         factors.append(fac)
 
@@ -50,7 +51,7 @@ def f2(num0):
 
 #--------------------------------------------------------------------#
 
-def smallest(num, start=3):
+def smallest(num, start):
     '''Returns smallest (thus, prime) subfactor of "num" that is
     larger than "start".'''
     import math
@@ -59,12 +60,11 @@ def smallest(num, start=3):
         if not num % i: # divisible
             return i
 
-    # If we reach thus far, num is prime:
+    # If we reach thus far, there is no subfactor: number itself is prime:
     return num
 
 #--------------------------------------------------------------------#
 
-for i in range(1000):
-    factors = f2(600851475143)
+res = f2(600851475143)
 
-print(factors)
+print(res)

@@ -48,6 +48,20 @@ def f1():
 
 #-------------------------------------------------------------------------#
 
-res = f1()
+def f2():
+    '''From emandres (projecteuler.net).'''
+
+    import datetime
+    count = 0
+    for y in range(1901,2001):
+        for m in range(1,13):
+            if datetime.datetime(y,m,1).weekday() == 6:
+                count += 1
+
+    return count
+
+#-------------------------------------------------------------------------#
+
+res = f2()
 
 print(res)

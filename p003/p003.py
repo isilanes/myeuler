@@ -1,3 +1,9 @@
+'''
+The prime factors of 13195 are 5, 7, 13 and 29.
+
+What is the largest prime factor of the number 600851475143?
+'''
+
 #--------------------------------------------------------------------#
 
 def f1(num0):
@@ -59,7 +65,6 @@ def smallest(num, start=3):
 #--------------------------------------------------------------------#
 
 for i in range(1000):
-    #factors = f1(600851475143)
     factors = f2(600851475143)
 
 print(factors)

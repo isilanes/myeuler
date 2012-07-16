@@ -52,6 +52,29 @@ def f1(triangle):
 
 #-------------------------------------------------------------------------#
 
+def f2(triangle):
+
+    l = len(triangle)
+
+    max = triangle[:] # clone a triangle with equal shape
+
+    for i in range(len(triangle[-1])):
+        #max[-1][i] = [ triangle[-1][i], [triangle[-1][i]] ]
+        max[-1][i] = triangle[-1][i]
+    
+    for i in range(l-2,-1,-1):
+        for j in range(len(triangle[i])):
+            # "a" will end up with biggest number among two below current:
+            [ a, b ] = triangle[i+1][j:j+2]
+            if b > a:
+                a = b
+
+            max[i][j] = triangle[i][j] + a
+
+    return max[0][0]
+
+#-------------------------------------------------------------------------#
+
 def next(combo):
     l = len(combo)
 
@@ -91,6 +114,6 @@ for line in triangle_string.split('\n'):
     triangle[i] = [ int(x) for x in line.split() ]
     i += 1
 
-res = f1(triangle)
+res = f2(triangle)
 
 print(res)

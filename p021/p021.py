@@ -10,7 +10,7 @@ Evaluate the sum of all the amicable numbers under 10000.
 #-------------------------------------------------------------------------#
 
 def f1(max):
-
+    
     # Find proper divisors of all numbers requested, and log their sum:
     sumdivisors = {}
     for i in range(2,max):
@@ -34,6 +34,33 @@ def f1(max):
 
 #-------------------------------------------------------------------------#
 
-res = f1(10000)
+def f2(max):
+    import math
+    
+    # Find proper divisors of all numbers requested, and log their sum:
+    sumdivisors = {}
+    for i in range(2,max):
+        divisors = [1]
+        for j in range(2, int(math.sqrt(i))+1):
+            if not i % j:
+                divisors.append(j)
+                divisors.append(int(i/j))
+
+        sd = sum(divisors)
+        sumdivisors[i] = sd
+
+    # Find amicable pairs:
+    amicable_sum = 0
+    amicable = {}
+    for num, sd in sumdivisors.items():
+        if sd != num and sd in sumdivisors and sumdivisors[sd] == num and not sd in amicable:
+            amicable[num] = sd
+            amicable_sum += sd + num
+
+    return amicable_sum
+
+#-------------------------------------------------------------------------#
+
+res = f2(10000)
 
 print(res)

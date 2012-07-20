@@ -95,6 +95,47 @@ def f2(max=28123):
 
 #-------------------------------------------------------------------------#
 
-res = f2(28123)
+def f3(max=28123):
+    
+    abundants = []
+    abundant_sums = {}
+
+    # Sum of numbers that CAN'T be expressed as the sum of two 
+    # abundant numbers:
+    sum_cantbe = 1 # we will omit 1 below, which belongs here
+
+    # Modified from p021:
+    import math
+    for i in range(2,max+1):
+        divisors = {1:True}
+        sum_divisors = 1
+        for j in range(2,int(math.sqrt(i))+1):
+            if not i % j:
+                if not j in divisors:
+                    sum_divisors += j
+                    divisors[j] = True
+                ij = int(i/j)
+                if not ij in divisors:
+                    sum_divisors += ij
+                    divisors[ij] = True
+        
+        # See if i belongs to dictionary of sums of 2 abundant numbers
+        # so far:
+        if not i in abundant_sums:
+            sum_cantbe += i
+
+        # If abundant, add to dictionary, and log also its
+        # sum with every other abundant number:
+        if sum_divisors > i:
+            abundants.append(i)
+            for abundant in abundants:
+                absum = abundant + i
+                abundant_sums[absum] = True
+
+    return sum_cantbe
+
+#-------------------------------------------------------------------------#
+
+res = f3(28123)
 
 print(res)

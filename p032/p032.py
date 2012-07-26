@@ -6,7 +6,7 @@ def f1():
     lp = len(pandi)
 
     pandis = {}
-    for m in range(1,lp/2+1):
+    for m in range(1,lp/2:
         for e in itertools.permutations(pandi, m):
             M = ''.join(e)
             rem = [ x for x in pandi if not x in M ]

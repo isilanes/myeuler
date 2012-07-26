@@ -1,11 +1,3 @@
-'''
-The sum of the primes below 10 is 2 + 3 + 5 + 7 = 17.
-
-Find the sum of all the primes below two million.
-'''
-
-#------------------------------------------------------------------------------#
-
 def f1(max):
     primes = [2,3]
     i = primes[-1] + 2
@@ -28,24 +20,18 @@ def f1(max):
 def f2(max):
     '''Try sieve of Eratostenes (I think), not "brute force".'''
 
-    primes = [2]
-    mult = 3
     composites = {}
-    while mult < max:
+    sum = 2
+    for mult in range(3,max,2):
         if not mult in composites:
-            primes.append(mult)
-            lim = int(max/mult) + 1
-            for i in range(mult, lim, 2):
-                num = mult * i
-                composites[num] = True
+            sum += mult
+            for i in range(mult*mult, max, 2*mult):
+                composites[i] = True
 
-        mult += 2
-
-    return sum(primes)
+    return sum
 
 #------------------------------------------------------------------------------#
 
-for i in range(1):
-    res = f2(2000000)
+res = f2(2000000)
 
 print(res)

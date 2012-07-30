@@ -48,7 +48,7 @@ def f2(max):
     ncirculars = 0
     # Check all primes to see if they are circular:
     for prime in primes:
-        si = str(i)
+        si = str(prime)
         if not '2' in si and not '4' in si and not '5' in si and not '6' in si and not '8' in 'si' and not '0' in si:
             iscircular = True
             for j in range(len(si)-1):

@@ -45,7 +45,7 @@ def f2(max):
             for i in range(mult*mult, max, 2*mult):
                 composites[i] = True
 
-    ncirculars = 0
+    ncirculars = 2 # the 2 1-digit primes that will be rejected below (2 and 5)
     # Check all primes to see if they are circular:
     for prime in primes:
         si = str(prime)
@@ -54,7 +54,7 @@ def f2(max):
             for j in range(len(si)-1):
                 si = si[1:] + si[0]
                 ii = int(si)
-                if not isprime(ii):
+                if ii in composites or not ii % 2: # remeber we didn't bother about even composites above (all of 'em)
                     iscircular = False
                     break
             if iscircular:

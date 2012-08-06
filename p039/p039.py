@@ -5,7 +5,7 @@ def f1():
         num = 0
         for a in range(1, int(p/3)):
             a2 = a**2
-            for b in range(a+1, int(p/2)):
+            for b in range(a+1, int((p-a)/2)):
                 if a2 + b**2 == (p - a - b)**2:
                     num += 1
 

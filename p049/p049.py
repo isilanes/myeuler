@@ -16,14 +16,27 @@ def f1():
             for i in range(mult*mult, max, 2*mult):
                 composites[i] = True
 
-    # The withdigits contains the info we need:
+    # The withdigits dict contains the info we need:
+    solutions = []
     for k, v in withdigits.items():
-        if len(v) > 2:
-            print(v, v[2] - v[1])
-            #if v[2] - v[1] == v[1] - v[0]:
-            #    return [k, v]
+        lv = len(v)
+        if lv > 2:
+            diffs = {}
+            for i in range(lv):
+                for j in range(i+1,lv):
+                    diff12 = v[j] - v[i]
+                    for k in range(j+1,lv):
+                        diff23 = v[k] - v[j]
+                        if diff23 > diff12:
+                            break
+
+                        if diff23 == diff12:
+                            diffs[diff12] = [i, j, k]
+                            solutions.append([v[i], v[j], v[k]])
+
+    return solutions
 
 #--------------------------------------------------------------------#
 
-res = f1()
-print(res)
+for solution in f1():
+    print(solution)

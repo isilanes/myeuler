@@ -1,6 +1,9 @@
 #--------------------------------------------------------------------#
 
 def f1(max):
+    #
+    # WARNING: UNFINISHED!!
+    #
     print("f1")
 
     # dict is a dictionary of:
@@ -45,46 +48,39 @@ def f1(max):
 
 #--------------------------------------------------------------------#
 
-class Family(object):
+def f2(max):
+    print("f2")
 
-    def __init__(self):
-        self.members = []
+    # Sieve to find all primes up to max:
+    composites = {} # dict of composite -> True
+    primes = [2] # list of primes
+    # dict of prime -> True (for faster searching than in array)
+    dict = { 2 : True }
+    for mult in range(3,max,2):
+        if not mult in composites:
+            # Store prime:
+            primes.append(mult)
+            dict[mult] = True
 
-    def can_join(self, newmember):
-        '''
-        Returns True if newmember can be a member of Family.
-        '''
-
-        for member in self.members:
-            # Any 2 members of same family end in same digit:
-            if str(member)[-1] != str(newmember)[-1]:
-                return False
-
-            s = []
-            for a,b in zip(str(member), str(newmember)):
-                if a != b:
-                    s.append(b)
-            
-            for e in s[1:]:
-                if e != s[0]:
-                    return False
-
-        print(newmember, s)
-        return True
-
-    def join(self, newmember):
-        self.members.append(newmember)
-
-    def __str__(self):
-        return str(self.members)
+            # Sieve its multiples away:
+            for i in range(mult*mult, max, 2*mult):
+                composites[i] = True
+    
+    # Check:
+    for prime in primes[4:]: # ignore 1-digit primes
+        print(prime)
 
 #--------------------------------------------------------------------#
 
 import timeit
 
 # f1():
-t = timeit.Timer('f1(100)', "from __main__ import f1")
-t1 = t.timeit(number=1)
+#t = timeit.Timer('f1(100)', "from __main__ import f1")
+#t1 = t.timeit(number=1)
+
+# f2():
+t = timeit.Timer('f2(100)', "from __main__ import f2")
+t2 = t.timeit(number=1)
 
 print("\nTimes:\n")
-print(t1) # ~ s
+print("t2 = {0:7.2f} s".format(t2)) # ~ s

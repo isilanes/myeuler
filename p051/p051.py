@@ -1,86 +1,126 @@
 #--------------------------------------------------------------------#
 
 def f1(max):
-    #
-    # WARNING: UNFINISHED!!
-    #
-    print("f1")
-
-    # dict is a dictionary of:
-    #
-    # dict[length][last_digit] = some_list
-    #
-    # where some_list is the list of primes whose last digit is last_digit
-    # and have length amount of digits. Only within each some_list
-    # will we be able to form families. If two primes have different
-    # amount of digits, obviously won't belong to the same family.
-    # Also the last digit of any two members of a family must coincide.
-    # Otherwise, it should be the digit that changes within the family,
-    # and as it must be any 8 from [0..9], some of the "primes" would
-    # not be prime, i.e. some would have to end in either 5 or an even
-    # digit,
-    # and as it must be any 8 from [0..9], some of the "primes" would
-    # not be prime, i.e. some would have to end in either 5 or an even
-    # digit..
-    dict = {}
+    print("--- f1 ---")
 
     # Sieve to find all primes up to max:
     composites = {}
+    primes = [2]
+    pdict = {}
     for mult in range(3,max,2):
         if not mult in composites:
-            lp = len(str(mult))
-            last_digit = str(mult)[-1]
-            if not lp in dict:
-                dict[lp] = {}
-
-            if not last_digit in dict[lp]:
-                dict[lp][last_digit] = []
-
-            dict[lp][last_digit].append(mult)
-
-            for i in range(mult*mult, max, 2*mult):
-                composites[i] = True
-    
-    for length in sorted(dict.keys())[1:]: # ignore first one (length-1)
-        print(length)
-        for k,v in dict[length].items():
-            print(k,dict[length][k])
-
-#--------------------------------------------------------------------#
-
-def f2(max):
-    print("f2")
-
-    # Sieve to find all primes up to max:
-    composites = {} # dict of composite -> True
-    primes = [2] # list of primes
-    # dict of prime -> True (for faster searching than in array)
-    dict = { 2 : True }
-    for mult in range(3,max,2):
-        if not mult in composites:
-            # Store prime:
+            # Log mult as prime:
             primes.append(mult)
-            dict[mult] = True
+            pdict[mult] = True
 
             # Sieve its multiples away:
             for i in range(mult*mult, max, 2*mult):
                 composites[i] = True
     
-    # Check:
-    for prime in primes[4:]: # ignore 1-digit primes
-        print(prime)
+    # Check primes, one by one:
+    longest = 0
+    best = []
+    for prime in primes[4:]: # ignore 1-digit ones
+        for combo in f1_2(prime):
+            a = f1_1(prime, combo, pdict)
+            if len(a) > longest:
+                longest = len(a)
+                best = a
+                print longest, best
+                if longest > 7:
+                    return
+
+#--------------------------------------------------------------------#
+
+def f1_1(prime, pos, pdict):
+    '''
+    Take a prime, and a position array pos, and return the family of 
+    primes corresponding to it. Examples:
+
+    prime = 113
+    pos = [0,1]
+    Check prime[0] and prime[1] coincide
+    Check all xx3, for x in range(10) (that is 113, 223, 333, 443,
+    553, 663, 773, 883 and 993) for primality (003 does not count).
+    Return [113, 223, 443, 773, 883]
+
+    prime = 1889
+    pos = [0,2]
+    As prime[0] (one) and prime[2] (eight) are not equal, return []
+
+    '''
+
+    family = []
+
+    digits = [ int(x) for x in str(prime) ]
+
+    for p in pos[1:]:
+        if digits[p] != digits[pos[0]]: # not a valid position combo
+            return []
+
+    if pos[0] == 0:
+        reps = range(1,10) # can't replace first digit with a zero
+    else:
+        reps = range(10)
+
+    for rep in reps:
+        d = digits[:]
+        for i in pos:
+            d[i] = rep
+        res = int(''.join([str(x) for x in d]))
+        if res in pdict:
+            family.append(res)
+
+    return family
+
+#--------------------------------------------------------------------#
+
+def f1_2(prime):
+    '''
+    Take a prime number, and return all valid digit-switch combos.
+    A combo is an array of integers i, denoting ith digit in prime.
+    For a combo to be valid, all ith digits must be equal among them,
+    and the last digit can not be involved. Examples:
+
+    prime = 11
+    return [0] -> only combo
+
+    prime = 113
+    [0] is valid
+    [1] is valid
+    [0,1] is valid
+
+    prime = 1889
+    [0], [1], [2] -> valid
+    [0,1] -> invalid
+    [0,2] -> invalid
+    [1,2] -> valid
+    '''
+
+    combos = []
+
+    digits = [ int(x) for x in str(prime) ]
+    n = len(digits)
+    for subn in range(1,n):
+        for combo in itertools.combinations(range(n-1), subn):
+            ok = True
+            for c in combo[1:]:
+                if digits[c] != digits[combo[0]]: # combo not valid
+                    ok = False
+                    break
+            if ok:
+                combos.append(combo)
+
+    return combos
 
 #--------------------------------------------------------------------#
 
 import timeit
+import itertools
 
 # f1():
-#t = timeit.Timer('f1(100)', "from __main__ import f1")
-#t1 = t.timeit(number=1)
-
-# f2():
-t = timeit.Timer('f2(100)', "from __main__ import f2")
-t2 = t.timeit(number=1)
+t = timeit.Timer('f1(1000000)', "from __main__ import f1")
+t1 = t.timeit(number=1)
 
 print("\nTimes:\n")
-print("t2 = {0:7.2f} s".format(t2)) # ~ s
+print(t1) # ~ s

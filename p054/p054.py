@@ -10,12 +10,9 @@ def f1():
             h1 = aline[:5]
             h2 = aline[5:]
             if hand_quality(h1) > hand_quality(h2):
-                win1 += 1
+               win1 += 1
 
     print win1
-
-    print hand_quality(['5H', '5C', '6S', '7S', 'KD'])
-    print hand_quality(['2C', '3S', '8S', '8D', 'TD'])
 
 #--------------------------------------------------------------------#
 
@@ -25,15 +22,15 @@ def hand_quality(hand):
     string, according to following scheme (in all cases Nx is 02 to 14,
     for 2 to ace):
 
-    High card: 01.N1.N2.N3.N4.N5
-               N1 being highest card, N5 lowest
-    One pair:  02.N1.N2.N3.N4
-               N1 being the pair card, 
-               N2-N4 other three, highest to lowest
-    Two pairs: 03.N1.N2.N3
-               N1 being the highest pair card,
-               N2 the lowest pair card,
-               N3 the last card
+    High card:       01.N1.N2.N3.N4.N5
+                     N1 being highest card, N5 lowest
+    One pair:        02.N1.N2.N3.N4
+                     N1 being the pair card, 
+                     N2-N4 other three, highest to lowest
+    Two pairs:       03.N1.N2.N3
+                     N1 being the highest pair card,
+                     N2 the lowest pair card,
+                     N3 the last card
     Three of a kind: 04.N1.N2.N3
                      N1 being the trio card,
                      N2 and N3 remaining highest and lowest
@@ -47,7 +44,7 @@ def hand_quality(hand):
                      N1 being the poker card, N2 the remaining one
     Straight flush:  09.N1
                      N1 being the highest card
-    Royal flush:     sub-case of straight flush (09.13)
+    Royal flush:     sub-case of straight flush (09.14)
     '''
 
     val2val = {
@@ -82,7 +79,7 @@ def hand_quality(hand):
     # Straight?:
     vs = [ x[0] for x in h ]
     vs.sort()
-    if vs[0] == vs[-1] - 4:
+    if vs[0] == vs[1] - 1 == vs[2] - 2 == vs[3] - 3 == vs[4] - 4:
         straight = True
     elif vs[0] == 2 and vs[-2] == 5 and vs[-1] == 14:
         # Special case where ace is played as a "1",
@@ -91,7 +88,15 @@ def hand_quality(hand):
 
     if flush:
         if straight:
-            code = '09.{0:02d}'.format(vs[-1])
+            # If highest valued card is Ace, not necessarily
+            # is it royal flush, because (see above) we also
+            # consider A,2,3,4,5 to be straight flush:
+            if vs[0] == 2 and vs[-1] == 14:
+                # Then A2345 straight, ordered as 2345A, which
+                # is a straight to the 5, not Ace.
+                code = '09.{0:02d}'.format(vs[-2])
+            else:
+                code = '09.{0:02d}'.format(vs[-1])
             return code
         else: # it's a non-straight flush, can't be a full house
             code = [ '{0:02d}'.format(x) for x in vs ]
@@ -99,6 +104,12 @@ def hand_quality(hand):
             code.reverse()
             code = '06.' + '.'.join(code)
             return code
+    elif straight: # a non-flush straight
+        # See straight flush above:
+        if vs[0] == 2 and vs[-1] == 14:
+            return '05.05'
+        else:
+            return '05.{0:02d}'.format(vs[-1])
     else:
         abundance = {}
         for v in vs:

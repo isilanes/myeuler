@@ -34,7 +34,8 @@ def f1(nlayers):
 
 #--------------------------------------------------------------------#
 
-def f2(nlayers):
+def f2():
+    print("--- f2 ---")
 
     def isprime(num):
         '''
@@ -49,22 +50,19 @@ def f2(nlayers):
 
         return True
 
-    print isprime(3)
-    print isprime(7)
-    print isprime(27)
-    '''
-    # Then proceed with the spiral:
+    # Proceed with the spiral:
     p = []
-    for i in range(2,nlayers+1):
+    i = 2
+    while True:
         n = 2*i - 1
         for num in [ n**2-n+1, n**2-2*n+2, n**2-3*n+3 ]:
-            if num in primes:
+            if isprime(num):
                 p.append(num)
         perc = 100.0 * len(p) / (2.0 * n - 1.0)
-        print("{0:3d} {1:7.4f}".format(n, perc))
-        if perc < 0.1:
+        if perc < 10.0:
+            print("{0:3d} {1:7.4f}".format(n, perc))
             break
-    '''
+        i += 1
 
 #--------------------------------------------------------------------#
 
@@ -72,13 +70,13 @@ import math
 import timeit
 
 # f1():
-t = timeit.Timer('f1(100)', "from __main__ import f1")
-t1 = t.timeit(number=1)
+#t = timeit.Timer('f1(2000)', "from __main__ import f1")
+#t1 = t.timeit(number=1)
 
 # f2():
-t = timeit.Timer('f2(100)', "from __main__ import f2")
+t = timeit.Timer('f2()', "from __main__ import f2")
 t2 = t.timeit(number=1)
 
 print("\nTimes:\n")
-print('t1 = {0:.1f} ms'.format(t1*1000)) # a lot!
-print('t2 = {0:.1f} ms'.format(t2*1000)) #
+#print('t1 = {0:.1f} ms'.format(t1*1000)) # a lot!
+print('t2 = {0:.1f} ms'.format(t2*1000)) # ~ 750 ms

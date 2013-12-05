@@ -38,6 +38,7 @@ def f1(max):
             for i in range(mult*mult, max, 2*mult):
                 composites[i] = True
 
+    print primes[-1]
     # Explore combos:
     mx = len(str(max))
     K = Kosher(pd)
@@ -48,21 +49,26 @@ def f1(max):
             p2 = primes[i2]
             lp2 = len(str(p2))
             if lp1 + lp2 >= mx:
+                print lp1+lp2
+                print p1,p2
                 break
             if K.are(p1,p2): # only go on if these are a-OK
                 for i3 in range(i2+1,len(primes)):
                     p3 = primes[i3]
                     lp3 = len(str(p3))
                     if lp2 + lp3 >= mx:
+                        print lp2+lp3
                         break
                     if K.are(p1,p3) and K.are(p2,p3):
                         for i4 in range(i3+1,len(primes)):
                             p4 = primes[i4]
                             lp4 = len(str(p4))
-                            if lp3 + lp4 > mx:
+                            if lp3 + lp4 >= mx:
+                                print lp3+lp4
                                 break
                             if K.are(p1,p4) and K.are(p2,p4) and K.are(p3,p4):
                                 print p1,p2,p3,p4
+                                return
                                 for i5 in range(i4+1,len(primes)):
                                     p5 = primes[i5]
                                     lp5 = len(str(p5))
@@ -80,7 +86,7 @@ def f1(max):
 import timeit
 
 # f1():
-t = timeit.Timer('f1(10000000)', "from __main__ import f1")
+t = timeit.Timer('f1(1000000)', "from __main__ import f1")
 t1 = t.timeit(number=1)
 
 print("\nTimes:\n")

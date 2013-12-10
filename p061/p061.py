@@ -3,89 +3,81 @@
 def f1(nmax):
     print("--- f1 ---")
 
-    # All 4-digit triangulars:
-    p3s = []
-    i = 0
-    while True:
-        p = i*(i+1)/2
-        if p > 9999:
-            break
-        elif p > 999:
-            p3s.append(str(p))
-        i += 1
+    def get_figurate(sides,n):
+        '''
+        Return nth sides-sided figurate number (Psides,n).
+        '''
 
-    # All 4-digit squares:
-    p4s = []
-    i = 0
-    while True:
-        p = i*i
-        if p > 9999:
-            break
-        elif p > 999:
-            p4s.append(str(p))
-        i += 1
+        if sides == 3:
+            return n*(n+1)/2
 
-    # All 4-digit pentagonals:
-    p5s = []
-    i = 0
-    while True:
-        p = i*(3*i-1)/2
-        if p > 9999:
-            break
-        elif p > 999:
-            p5s.append(str(p))
-        i += 1
+        if sides == 4:
+            return n*n
 
-    # All 4-digit hexagonals:
-    p6s = []
-    i = 0
-    while True:
-        p = i*(2*i-1)
-        if p > 9999:
-            break
-        elif p > 999:
-            p6s.append(p)
-        i += 1
+        if sides == 5:
+            return n*(3*n-1)/2
 
-    # All 4-digit heptagonal:
-    p7s = []
-    i = 0
-    while True:
-        p = i*(5*i-4)/2
-        if p > 9999:
-            break
-        elif p > 999:
-            p7s.append(p)
-        i += 1
+        if sides == 6:
+            return n*(2*n-1)
 
-    # All 4-digit octagonal:
-    p8s = []
-    i = 0
-    while True:
-        p = i*(3*i-2)
-        if p > 9999:
-            break
-        elif p > 999:
-            p8s.append(p)
-        i += 1
+        if sides == 7:
+            return n*(5*n-3)/2
+
+        if sides == 8:
+            return n*(3*n-2)
+
+    # Generate all figurate numbers:
+    figurates = {}
+    for sides in range(3,9):
+        figurates[sides] = []
+        i = 0
+        while True:
+            p = get_figurate(sides,i)       
+            if p > 9999:
+                break
+            elif p > 999:
+                figurates[sides].append(str(p))
+            i += 1
 
     # Find cycle:
-    for p5 in p5s:
-        A5, B5 = p5[:2], p5[3:]
-        for p4 in p4s:
-            A4, B4 = p4[:2], p4[3:]
-            if A4 == B5:
-                for p3 in p3s:
-                    A3, B3 = p3[:2], p3[3:]
-                    if A3 == B4 and B3 == A5:
-                        print p5, p4, p3
-                        return
-            elif B4 == A5:
-                for p3 in p3s:
-                    A3, B3 = p3[:2], p3[3:]
-                    if A3 == B4 and B3 == A5:
-                        print p5, p4, p3
-                        return
+    for piece1 in figurates[8]:
+        rem = [ 3, 4, 5, 6, 7 ]
+        for i in rem:
+            for piece2 in figurates[i]:
+                if piece2[:2] == piece1[2:]:
+                    print piece1, piece2
+                    rem.remove(i)
+                    for j in rem:
+                        for piece3 in figurates[j]:
+                            if piece3[:2] == piece2[2:]:
+                                print piece1, piece2, piece3
+                                rem.remove(j)
+                                for k in rem:
+                                    for piece4 in figurates[k]:
+                                        if piece4[:2] == piece3[2:]:
+                                            print piece1, piece2, piece3, piece4
+                                            rem.remove(k)
+                                            print rem
+                                            for l in rem:
+                                                print l
+                                                for piece5 in figurates[l]:
+                                                    if piece5[:2] == piece4[2:]:
+                                                        print i,j,k,l
+                                                        rem.remove(l)
+                                                        m = rem[0] # last remaining
+                                                        piece6 = piece5[2:] + piece1[:2]
+                                                        print piece1, piece2, piece3, piece4, piece5,'>',piece6
+                                                        if piece6 in figurates[m]:
+                                                            print piece1, piece2, piece3, piece4, piece5, piece6
+                                                            print 8, i, j, k, l, m
+                                                            #total  = int(p8) + int(pi) + int(pj)
+                                                            #total += int(pk) + int(pl) + int(pm)
+                                                            #print total
+                                                            return
+                                                        rem.append(l)
+                                            rem.append(k)
+                                rem.append(j)
+                    rem.append(i)
 
 #--------------------------------------------------------------------#
 

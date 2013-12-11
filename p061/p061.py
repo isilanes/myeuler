@@ -43,41 +43,33 @@ def f1(nmax):
     for piece1 in figurates[8]:
         rem = [ 3, 4, 5, 6, 7 ]
         for i in rem:
+            rem.remove(i)
             for piece2 in figurates[i]:
                 if piece2[:2] == piece1[2:]:
-                    print piece1, piece2
-                    rem.remove(i)
                     for j in rem:
+                        rem.remove(j)
                         for piece3 in figurates[j]:
                             if piece3[:2] == piece2[2:]:
-                                print piece1, piece2, piece3
-                                rem.remove(j)
                                 for k in rem:
+                                    rem.remove(k)
                                     for piece4 in figurates[k]:
                                         if piece4[:2] == piece3[2:]:
-                                            print piece1, piece2, piece3, piece4
-                                            rem.remove(k)
-                                            print rem
                                             for l in rem:
-                                                print l
+                                                rem.remove(l)
                                                 for piece5 in figurates[l]:
                                                     if piece5[:2] == piece4[2:]:
-                                                        print i,j,k,l
-                                                        rem.remove(l)
                                                         m = rem[0] # last remaining
                                                         piece6 = piece5[2:] + piece1[:2]
-                                                        print piece1, piece2, piece3, piece4, piece5,'>',piece6
                                                         if piece6 in figurates[m]:
                                                             print piece1, piece2, piece3, piece4, piece5, piece6
-                                                            print 8, i, j, k, l, m
-                                                            #total  = int(p8) + int(pi) + int(pj)
-                                                            #total += int(pk) + int(pl) + int(pm)
-                                                            #print total
+                                                            total  = int(piece1) + int(piece2) + int(piece3)
+                                                            total += int(piece4) + int(piece5) + int(piece6)
+                                                            print total
                                                             return
-                                                        rem.append(l)
-                                            rem.append(k)
-                                rem.append(j)
-                    rem.append(i)
+                                                rem.append(l)
+                                    rem.append(k)
+                        rem.append(j)
+            rem.append(i)
 
 #--------------------------------------------------------------------#
 
@@ -88,4 +80,4 @@ t = timeit.Timer('f1(1000)', "from __main__ import f1")
 t1 = t.timeit(number=1)
 
 print("\nTimes:\n")
-print('t1 = {0:.1f} ms'.format(t1*1000)) # doesn't work
+print('t1 = {0:.1f} ms'.format(t1*1000)) # 14 ms

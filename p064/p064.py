@@ -9,12 +9,17 @@ def f0():
     sN = math.sqrt(N)
     a0 = int(sN)
 
-    print a0
-    old = a0
+    A = 1
+    B = 4
+
+    aa = []
     for i in range(10):
-        r = (sN + old) / (N - old**2)
-        a = int(r)
-        print(a)
+        newA = (N - B**2)/A
+        newB = (N - B**2) - (A*B) % (N - B**2)
+        ai = A*B / (N - B**2) + 1
+        aa.append(ai)
+        A, B = newA, newB
+        print ai, newA, newB
 
 #--------------------------------------------------------------------#
 

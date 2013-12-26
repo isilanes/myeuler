@@ -33,7 +33,7 @@ def f1():
     Lmax = 2000
 
     tris = {}
-    for A in range(3,Lmax/3+1):
+    for A in range(3,int(Lmax/3.41)+1):
         for B in range(A,Lmax/2+1):
             for C in range(B+1,A+B):
                 L = A + B + C
@@ -55,15 +55,50 @@ def f1():
 
 #--------------------------------------------------------------------#
 
+def f2():
+    print("--- f2 ---")
+
+    import math
+
+    Lmax = 1500*1000
+
+    D = 2 + math.sqrt(2)
+
+    tris = {}
+    for A in range(3,int(Lmax/D)+1):
+        A2 = A**2
+        for B in range(A+1,Lmax/2+1):
+            AB2 = A2 + B**2
+            C = int(math.sqrt(AB2))
+            L = A + B + C
+            if L > Lmax:
+                break
+            if AB2 == C**2:
+                try:
+                    tris[L] += 1
+                except:
+                    tris[L] = 1
+
+    n1 = 0
+    for v in tris.values():
+        if v == 1:
+            n1 += 1
+
+    print(n1)
+
+#--------------------------------------------------------------------#
+
 import timeit
 
 times = []
-for i in range(2):
+for i in range(3):
     t = timeit.Timer('f{0}()'.format(i), "from __main__ import f{0}".format(i))
     times.append(t.timeit(number=1))
 
 #
 # f0(): too slow. Struggles for even L=10k
+# f1(): too slow. Struggles for even L=10k
+# f2(): barely acceptable 
 #
 print("\nTimes:\n")
 for i in range(len(times)):

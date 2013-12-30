@@ -10,13 +10,21 @@ def f0():
             self.dest = dest
             self.weight = weight
 
+    class DijkstraNode(object):
+
+        def __init__(self):
+            self.node = None
+            self.tpath = [] # tentative path
+            self.tval = None # tentative value
+
+        def __cmp__(self, other):
+            return cmp(self.tval, other.tval)
+
     class Digraph(object):
 
         def __init__(self):
             self.nodes = []
             self.edges = {}
-            self.final = None
-            self.cache = {} # for memoized DFS
             self.min_p = None # minimal path
             self.min_v = 10**6 # value of minimal path
 
@@ -28,73 +36,65 @@ def f0():
             src = edge.src
             self.edges[src].append(edge)
 
-        def DFS(self, path, value):
+        def Dijkstra(self, initial, final):
             '''
-            Return cheapest path from node to self.final.
-            "path" is the path so far (the node list). We use
-            the whole path, and not just the last node (as in
-            p081), because we need to avoid loops in the paths.
-            "value" is the value of path so far.
+            Use: https://en.wikipedia.org/wiki/Dijkstra's_algorithm
+            to travel from initial node to final one.
             '''
 
-            # Last node in path:
-            node = path[-1]
+            # Initial population of "unvisited" nodes:
+            unvisited = {}
+            for node,edges in self.edges.items():
+                for edge in edges:
+                    DN = DijkstraNode()
+                    DN.node = edge.dest
+                    DN.tval = 1000*1000
+                    unvisited[edge.dest] = DN
 
-            # If we arrived to the destination:
-            if node[1] == self.final:
-                if value < self.min_v:
-                    self.min_v = value
-                    self.min_p = path
-                    print path, self.min_v
-                return [], 0
+            # Initial node:
+            DN = DijkstraNode()
+            DN.node = initial
+            DN.tval = 0
+            unvisited[initial] = DN
 
-            # If cached:
-            #if node in self.cache:
-            #    print node, self.cache[node]
-            #    return self.cache[node]
+            # Loop over all unvisited, until solution:
+            while True:
+                # Take "current" node as "cheapest" to reach so far:
+                curr = sorted(unvisited.values())[0]
 
-            # Minimum values so far:
-            min_value = 1000000
-            min_path = None
+                # If we reached destination, quit:
+                if curr.node == final:
+                    return curr.tval, curr.tpath
 
-            for e in self.edges[node]:
-                if not e.dest in path: # avoid loops
-                    np = path + [e.dest]
-                    nv = value + e.weight
-                    p, v = self.DFS(np, nv)
-                    v += e.weight
-                    if v < min_value:
-                        min_value = v
-                        min_path = [e.dest] + p
+                # Check all neighbours to current:
+                for e in self.edges[curr.node]:
+                    if e.dest in unvisited:
+                        tv = curr.tval + e.weight
+                        if tv < unvisited[e.dest].tval:
+                            unvisited[e.dest].tval = tv
+                            unvisited[e.dest].tpath = curr.tpath + [e.dest]
 
-            self.cache[node] = min_path, min_value
-            return min_path, min_value
+                # Once all neighbours checked, mark current as visited:
+                del unvisited[curr.node]
 
     # Read vertex values from file:
     vertices = []
-    with open("minimatrix.txt") as f:
+    with open("matrix.txt") as f:
         for line in f:
             a = [ int(x) for x in line.split(',') ]
             vertices.append(a)
-
-    # For debugging:
-    #vertices = [ line[:9] for line in vertices[:9] ]
 
     # Create digraph and populate nodes and edges:
     G = Digraph()
     N = len(vertices)
 
-    # Fictional "initial" node that leads to all nodes in
-    # first column:
+    # Fictional "initial" node that leads to all nodes in first column:
     G.add_node("initial")
     for i in range(N):
         e = WeightedEdge("initial", (i,0), vertices[i][0])
         G.add_edge(e)
 
-    # Final destination column:
-    G.final = N-1
-
-    # Populate rest of nodes:
+    # Populate rest of nodes/edges:
     for i in range(N):
         for j in range(N):
             # Add node:
@@ -109,7 +109,7 @@ def f0():
                 G.add_edge(e)
             except:
                 pass
-            
+
             # Add downwards edge:
             if i + 1 < N:
                 dest = (i+1,j)
@@ -124,12 +124,15 @@ def f0():
                 e = WeightedEdge(src, dest, w)
                 G.add_edge(e)
 
-    # For debugging:
-    #for e in G.edges[(1,2)]: print e.dest
+    # Fictional "final" node lead to from all nodes in last column:
+    G.add_node("final")
+    for i in range(N):
+        e = WeightedEdge((i,N-1), "final", 0)
+        G.add_edge(e)
 
-    # Do a DFS:
-    G.DFS(["initial"], 0)
-    print G.min_v, G.min_p
+    # Perform search:
+    v, p = G.Dijkstra("initial", "final")
+    print(v)
 
 #--------------------------------------------------------------------#
 
@@ -141,7 +144,7 @@ for i in range(1):
     times.append(t.timeit(number=1))
 
 #
-# f0: ~ 74 ms
+# f0: ~ 21 s
 #
 print("\nTimes:\n")
 for i in range(len(times)):

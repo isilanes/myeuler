@@ -25,17 +25,32 @@ def f0():
     sq = []
     for i in range(1,10):
         s = '{0:02d}'.format(i*i)
-        #s = s.replace('9','6')
         s = (int(s[0]), int(s[1]))
         sq.append(s)
 
-    # Combos:
-    combosA = [ x for x in it.combinations(range(10), 6) ]
-    combosB = [ x for x in it.combinations(range(10), 6) ]
-    for comboA in combosA:
-        for comboB in combosB:
-            if are_valid(comboA, comboB, sq):
-                print comboA, comboB
+    # Generate all possible combos.
+    combos = {}
+    
+    for combo in it.combinations(range(10), 6):
+        if 6 in combo and not 9 in combo:
+            combo += (9,)
+        elif 9 in combo and not 6 in combo:
+            combo += (6,)
+        combos[combo] = True
+
+    combos = combos.keys()
+
+    # Loop over and count:
+    res = 0
+    n = len(combos)
+    for i in range(n):
+        comboi = combos[i]
+        for j in range(i):
+            comboj = combos[j]
+            if are_valid(comboi, comboj, sq):
+                res += 1
+
+    print(res)
     
 #--------------------------------------------------------------------#
 
@@ -47,8 +62,7 @@ for i in range(1):
     times.append(t.timeit(number=1))
 
 #
-# f0: 8 ms (python2)
-# f1: 0.8 ms (python2)
+# f0: 24 ms (python2)
 #
 print("\nTimes:\n")
 for i in range(len(times)):

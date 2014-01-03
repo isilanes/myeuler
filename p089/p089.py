@@ -135,15 +135,28 @@ def f0():
 
 #--------------------------------------------------------------------#
 
+def f1():
+    '''
+    by pseudog on https://projecteuler.net/thread=89&page=8#142860
+    '''
+    print("--- f1 ---")
+
+    lrom=[x for x in open('roman.txt')]
+    found=lambda x:len( [roman for roman in lrom if x in roman]) 
+    print(sum([found(x)+2*found(x[1:])for x in ['DCCCC','LXXXX','VIIII']]))
+
+#--------------------------------------------------------------------#
+
 import timeit
 
 times = []
-for i in range(1):
+for i in range(2):
     t = timeit.Timer('f{0}()'.format(i), "from __main__ import f{0}".format(i))
     times.append(t.timeit(number=1))
 
 #
 # f0: 8 ms (python2)
+# f1: 0.8 ms (python2)
 #
 print("\nTimes:\n")
 for i in range(len(times)):

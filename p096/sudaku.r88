@@ -1,0 +1,480 @@
+#!/usr/bin/perl -w
+
+#
+# PROGRAM
+#
+# Sudaku
+# (c) 2006-2007, Iñaki Silanes Cristóbal
+#
+# LICENSE
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License (version 2), as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+# for more detailsi (http://www.gnu.org/licenses/gpl.txt).
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA or read:
+# http://www.gnu.org/licenses/gpl.html
+#
+# DESCRIPTION
+#
+# Solves a Sudoku, taking it as input in the form of a file containing
+# nine lines with nine numbers (from 1 to 9) each. Lines beginning with
+# a hash-sign (#) and empty lines will be ignored. 
+#
+# USAGE
+#
+# sudaku [opts] file
+#
+# where opts can be one or more of the following:
+#
+# -v	Verbose mode (debug)
+# -c	Compact output
+#
+
+use strict;
+use Time::HiRes qw /time/;
+
+#-------------#
+#  Variables  #
+#-------------#
+my $svn_revision = "r88 2007-06-24 13:40:40";
+my $t0           = Time::HiRes::time();       # absolute starting time
+my $now          = $t0;                       # present time
+my $debug        = 0;                         # verbose/debug output
+my $compact      = 0;                         # compact output (just time, no actual result)
+my $iholes       = 81;                        # number of initial holes
+my $f            = 'default.sud';             # input sudaku file
+my @cell         = ();                        # array with values of all cells (from 0 to 80)
+my @input        = ();                        # array with INITIAL values of all cells (from 0 to 80)
+my @fixed        = ();                        # array with cell values that are fixed from the start (from @input, and derived from it)
+my @poss         = ();                        # array with possible numbers for each cell $i
+my @affects      = ();                        # array with lists of what cells each cell affects
+my @ival         = ();                        # array with index of the current $val in each cell, within
+                                              # the list of possible values for that cell.
+my @row          = ();                        # array with $i => line it belongs to
+my @col          = ();                        # array with $i => column it belongs to
+my @qua          = ();                        # array with $i => quadrant it belongs to
+my @sorted       = ();                        # list of cell indices, sorted by number of different possible values in the cell
+
+#------------------#
+#  Initialization  #
+#------------------#
+foreach my $i (0..80) { $cell[$i] = 0 };      # assign value 0 to all cells
+
+# Assign cells to @row and @col:
+foreach my $i (0..8)
+{
+  foreach my $j (0..8)
+  {
+    my $ii    = $i*9+$j;
+    $row[$ii] = $i;
+    $col[$ii] = $j;
+  };
+};
+
+# Assign cells to @qua:
+foreach my $i (0..2)
+{
+  foreach my $j (0..2)
+  {
+    foreach my $ii (0..2)
+    {
+      foreach my $jj (0..2)
+      {
+        my $ij     = $i*3 + $j;
+	my $iii    = $i*27 + $j*3 + $jj + 9*$ii;
+	$qua[$iii] = $ij;
+      };
+    };
+  };
+};
+
+# Assign possible numbers (all, by now) to columns, rows and quads:
+my (@prow,@pcol,@pqua);
+foreach my $i (0..8)
+{
+  $prow[$i] = '1 2 3 4 5 6 7 8 9';
+  $pcol[$i] = '1 2 3 4 5 6 7 8 9';
+  $pqua[$i] = '1 2 3 4 5 6 7 8 9';
+};
+
+# What cells each cell affects:
+my @qi = qw /0 3 6 27 30 33 54 57 60/;
+foreach my $i (0..80)
+{
+  my @tmp;
+
+  # Add cells in same row:
+  my $ri9 = 9*$row[$i];
+  foreach (0..8) { push(@tmp,$ri9 + $_) };
+
+  # Add cells in same column:
+  my $ci = $col[$i];
+  foreach (0..8) { push(@tmp,$ci + 9*$_) };
+
+  # Add cells in same quadrant:
+  my $qi = $qua[$i];
+  foreach my $ii (0..2)
+  {
+    foreach my $jj (0..2) { push(@tmp,$qi[$qi] + 9*$ii + $jj) };
+  };
+
+  # Get only unique values of @tmp (I know, I know. This should be done with
+  # better programming, never inserting redundant values in @tmp. Give me a 
+  # break... that would be tedious. Maybe I will eventually do it).
+  my %seen = ();
+  $affects[$i] = ' ' . join(' ',grep { !$seen{$_} and $seen{$_} = 1 } @tmp) . ' ';
+
+  # rm $i from $affects $i:
+  $affects[$i] =~ s/$i//;
+};
+
+foreach (0..80) { $poss[$_] = '1 2 3 4 5 6 7 8 9' }; # initialize @poss
+
+$now = &sdk_timing($now,'initialization'); # partial time
+
+#------------------#
+#  Read arguments  #
+#------------------#
+LOOP: while (@ARGV)
+{
+  if ($ARGV[0] =~ /^-/) # options begin with a dash
+  {
+    my $m = shift(@ARGV);
+    if    ($m eq '-v')  { $debug   = 1 }
+    elsif ($m eq '-c')  { $compact = 1 }
+    else                { die "Unknown modifier '$m'!\n" };
+  }
+  else # else it is the filename to process (read, then exit)
+  {
+    $f = shift(@ARGV);
+    last LOOP;
+  };
+};
+$now = &sdk_timing($now,'reading arguments');  # partial time
+
+&sdk_read($f,\@cell);                          # read input file(s):
+$now = &sdk_timing($now,'reading input file'); # partial time
+
+#-------------#
+#  Main Loop  #
+#-------------#
+my $i = 0; # cell index, from 0 to 80
+my $n = 0; # cell index, from 0 to 80, in the SORTED array
+
+MLOOP: while (1)
+{
+  last MLOOP if ($n > 80);                                      # end if beyond last element
+
+  $n++ while $fixed[$sorted[$n]];                               # advance until a cell is found that was not in the input
+
+  $i = $sorted[$n];                                             # $n -> $i
+  my ($v,$iv) = &sdk_check_list(\@cell,$i,0);                   # check numbers (from 1st available up) to fit in cell $i;
+
+  if ($v == 10)                                                 # then no value was possible (go back)
+  {
+    while ($v > 9)
+    {
+      $cell[$i] = 0;                                            # 'reset' value in cell $i
+      $ival[$i] = 0;                                            # 'reset' index value in cell $i
+      $n--;                                                     # go back one cell, regardless
+      $n-- while $fixed[$sorted[$n]];                           # go back until a cell is found that was not in the input
+      die "Cell index 'i' shouldn't go below 0!\n" if ($n < 0); # check that the sudoku is not impossible
+      $i = $sorted[$n];                                         # $n -> $i
+      &sdk_deass_cell(\@cell,$i,$cell[$i]);                     # de-assign the current value of cell $i
+      ($v,$iv) = &sdk_check_list(\@cell,$i,$ival[$i]);          # check numbers (from current index up) to fit in cell $i
+    };
+
+    &sdk_assign_cell(\@cell,$i,$v,$iv);                         # assign newly found out value to cell...
+    $n++;                                                       # ... and go forward once, regardless
+  }
+  else                                                          # then value $v is assigned to cell $i
+  {
+    &sdk_assign_cell(\@cell,$i,$v,$iv);                         # assign value to cell
+    $n++;                                                       # go to next cell
+  };
+  $i = $sorted[$n];                                             # $n -> $i
+};
+
+$now = &sdk_timing($now,'main loop');                           # partial time
+
+#-----------------#
+#  Print summary  #
+#-----------------#
+unless ($compact)
+{
+  my $de = (Time::HiRes::time()-$t0);
+  print "\033[33mInitial Sudoku:\033[0m\n\n"; print &sdk_print(\@input);
+
+  print "\n\033[32mFinal Sudoku:\033[0m\n\n"; print &sdk_print(\@cell);
+
+  print "\n\033[34mStatistics:\033[0m\n\n";
+  printf "%-15s %2i\n",'Initial holes:',$iholes;
+
+  # Elapsed time:
+  printf "%-15s %.2f miliseconds\n",'Elapsed:',$de*1000;
+};
+
+$now = &sdk_timing($now,'summary');                                          # partial time
+printf "\n%30s: %9.3f miliseconds\n","Total time",($now-$t0)*1000 if $debug; # print elapsed time
+
+# ----- Subroutines -------------------------------------------------------------------------------
+
+#################################
+#                               #
+#  Read input sudoku from file  #
+#                               #
+#################################
+sub sdk_read
+{
+  my $f  = $_[0];                                         # file to read from
+  my $po = $_[1];                                         # pointer to array to read into
+
+  die "File '$f' does not exist!\n" unless (-f $f);       # check if file exists
+  open(SUD,"<$f") or die "Could not open file '$f'!\n";   # open, if possible
+
+  my $i = 0;                                              # values go from i=0 (cell 1,1) to i=80 (cell 9,9)
+  while (<SUD>)                                           # read line by line
+  {
+    if ($_ !~ /^#/ and $_ =~ /./)                         # ignore comments (lines beginning with #) and blank lines
+    {
+      my @line = split(' ',$_);
+      foreach my $val (@line)
+      {
+	if ($val)                                         # do not bother with unasigned cells
+	{
+	  $iholes--;                                      # reduce number of initial holes
+          &sdk_assign_cell($po,$i,$val,0);                # assign that value to that cell
+	  $poss[$i] = $val;                               # make this value the only possible there
+	  $input[$i] = $val;                              # say that this cell was fixed in input
+	  foreach my $cell ( split(' ',$affects[$i]) )
+	  {
+	    $poss[$cell]    =~ s/$val *//;                # delete $val from possible values at $cell
+	    $affects[$cell] =~ s/ $i / /;                 # delete this cell from the $affects of ITS $affects:
+	  };  
+	} 
+	else { $input[$i] = 0 };                          # say that this cell was not fixed in input
+        $i++;                                             # go to next cell
+      };
+    };
+  };
+  close(SUD);                                             # close file
+
+  @fixed = @input;                                        # initially fixed
+
+  # Test if some cell has only one remaining possible value, and assign
+  # that value to that cell:
+  my $last = 1;
+  while ($last) { $last = &sdk_check_only_one($po) };
+
+  &sdk_reorder_cells();                                   # reorder cells to be checked beginning with the ones with less options
+};
+
+#######################################################
+#                                                     #
+#  Print the contents of an array. Outputs a regular  #
+#  OR verbose version of the array.                   #
+#                                                     #
+#######################################################
+sub sdk_print
+{
+  my $po = $_[0];      # pointer to array to print
+  my $str;             # string to print
+
+  # Horizontal line
+  $str .= '-' foreach (1..31); $str .= "\n";
+
+  my $i = 0;
+
+  foreach (0..2)
+  {
+    foreach (0..2)
+    {
+      foreach (0..2)
+      {
+        $str .= "|";
+        foreach (0..2)
+        {
+          $str .= ' '.($po->[$i] || '.').' '; # print value of cell, or a dot (.) if empty
+          $i++;
+        };
+      };
+      $str .= "|\n";
+    };
+    $str .= '-' foreach (1..31); $str .= "\n";
+  };
+
+  return $str; # return string to print
+};
+
+##################################
+#                                #
+#  Assign value $v to a cell $i  #
+#                                #
+##################################
+sub sdk_assign_cell
+{
+  my $po = $_[0];            # pointer to array to assign to
+  my $i  = $_[1];            # index in array (from i=0 to i=80)
+  my $v  = $_[2];            # value to assign to cell $i
+  my $iv = $_[3];            # index of value to assign to cell $i in its @poss array
+  $po->[$i] = $v;            # set cell value
+  $ival[$i] = $iv;           # set index value
+  $pcol[$col[$i]] =~ s/$v//; # rm $v from permitted values in column
+  $prow[$row[$i]] =~ s/$v//; # rm $v from permitted values in row
+  $pqua[$qua[$i]] =~ s/$v//; # rm $v from permitted values in quadrant
+};
+
+############################################################
+#                                                          #
+#  Returns '1' if $v is possible for cell $i, '0' if not.  #
+#                                                          #
+############################################################
+sub sdk_check_cell 
+{
+  my $po     = $_[0];                 # pointer to array to check
+  my $i      = $_[1];                 # row of cell to check
+  my $v      = $_[2];                 # index of value to check if possible
+  my $isposs = 1;                     # whether value $v is possible for cell $i (by default, yes)
+
+  my $pi  = $pcol[$col[$i]];          # possible values at $i's col
+  $isposs = 0 unless ($pi =~ /$v/);   # whether $v is in $pi
+
+  if ($isposs)                        # check on $i's row, saving the hassle is the above failed already
+  {
+    my $ri = $prow[$row[$i]];         # possible values at $i's col
+    $isposs = 0 unless ($ri =~ /$v/); # whether $v is in $pi
+  };
+
+  if ($isposs)                        # check on $i's quadrant, saving the hassle if the above failed already
+  {
+    my $qi  = $pqua[$qua[$i]];        # possible values at $i's col
+    $isposs = 0 unless ($qi =~ /$v/); # whether $v is in $pi
+  };
+
+  return $isposs;                     # return 0 if possible, 1 if impossible
+};
+
+################################################################################
+#                                                                              #
+# Incrementally check values from $v0 to 10 in cell $i of matrix @$po. Returns #
+# first possible value $v. If $v = 10, it means no value is possible.          #
+#                                                                              #
+################################################################################
+sub sdk_check_list
+{
+  my $po = $_[0];                   # pointer to array to check
+  my $i  = $_[1];                   # cell index
+  my $i0 = $_[2];                   # index of value to start checking from
+
+  my @pv = split(' ',$poss[$i]);    # list of numbers that are possible in cell $i 
+                                    # (all but the ones ruled out by the input)
+
+  @pv = @pv[$i0..$#pv];             # take into account only from $i0 on
+
+  my $n = 10;                       # value to output (10 if none is possible)
+
+  my $idx = $ival[$i];              # index of possible value in list of possible values for cell
+  FPV: foreach (@pv)                # loop over all values, to find lowest possible
+  {
+    if (&sdk_check_cell($po,$i,$_)) # end if current value is possible
+    {
+      $n = $_;                      # assign currently check value to output
+      last FPV;                     # end when a possible value is found
+    };
+    $idx++;                         # notice that we pass to next value in @poss array for $i
+  };
+
+  return $n,$idx;                   # return first possible value:
+};
+
+###############
+#             #
+#  Benchmark  #
+#             #
+###############
+sub sdk_timing
+{
+  my $tin  = $_[0] || 0;                                             # reference time
+  my $mess = $_[1] || 0;                                             # message to print
+
+  my $now = Time::HiRes::time();                                     # present time
+  my $dt  = ($now-$tin)*1000;                                        # elapsed time
+  printf "%30s: %9.3f miliseconds\n","Time for $mess",$dt if $debug; # print, only if in debug mode
+
+ return $now;                                                        # return both values
+};
+
+###################################
+#                                 #
+#  De-assign a value from a cell  #
+#                                 #
+###################################
+sub sdk_deass_cell
+{
+  my $po = $_[0];           # pointer to array to treat
+  my $i  = $_[1];           # cell index
+  my $cv = $po->[$i];       # current value (the one deassigned)
+  $pcol[$col[$i]] .= $cv;   # make it permitted again in column
+  $prow[$row[$i]] .= $cv;   # make it permitted again in row
+  $pqua[$qua[$i]] .= $cv;   # make it permitted again in quadrant
+  $ival[$i]++;              # go to next index of @poss array of $i
+};
+
+###############################################################################
+#                                                                             #
+#  Check all cells to see if one or more of them has only one possible value  #
+#                                                                             #
+###############################################################################
+sub sdk_check_only_one
+{
+  my $po = $_[0] or die "sdk_check_only_one needs arg!\n";   # pointer to array to check
+  my $j  = 0;                                                # number of single-valued cells found
+
+  foreach my $i (0..80)                                      # for all cells
+  {
+    unless ($fixed[$i])                                      # don't bother with the ones originally in the input, or already fixed
+    {
+      my $pi = $poss[$i] || '';                              # string with possible values in cell $i
+      $pi =~ s/^ *//;                                        # rm leading blanks
+      $pi =~ s/ *$//;                                        # rm trailing blanks
+
+      if ($pi =~ /^.$/)                                      #  if single value in $i
+      { 
+        $j++;                                                # increase count
+        &sdk_assign_cell($po,$i,$pi,0);                      # assign that value to that cell
+	$fixed[$i] = $pi;                                    # make $pi only possible value at $i
+        foreach my $c ( split(' ',$affects[$i]) )            # for all cell affected by $i, remove $cell[$i] from their @poss
+        {
+	  $poss[$c] =~ s/$pi *//;                            # delete $pi from possible values at cell $c
+        };
+      };
+    };
+  };
+
+  return 0;                                                  # return how many cells were found to have only one value
+};
+
+###########################################################################
+#                                                                         #
+#  Reorder cells to be checked beginning with the ones with less options  #
+#                                                                         #
+###########################################################################
+sub sdk_reorder_cells
+{
+  my %npi;
+
+  foreach my $i (0..80)
+  {
+    my @npi = split(' ',$poss[$i]);                   # possible values for cell $i
+    $npi{$i} = $#npi;                                 # hash of $i -> number of possibles at $i
+  };
+  @sorted = sort { $npi{$a} cmp $npi{$b} } keys %npi; # list of cell indices, sorted by number of diff poss vals
+};

@@ -60,7 +60,7 @@ class Sudoku(object):
                         # Remember: this array is mutable. However it won't change
                         # for those particular i-s:
                         self.cells[i] = e
-
+                        
                     i += 1
 
         # Initialize self.affects dictionary:
@@ -82,6 +82,8 @@ class Sudoku(object):
 
             # Avoid duplicity:
             self.affects[i] = set(self.affects[i])
+            if i in self.affects[i]:
+                self.affects[i].remove(i)
 
         # Initialize cells removing options forbidden by input values:
         for i in self.originals:
@@ -95,10 +97,36 @@ class Sudoku(object):
         self.icells = self.cells[:]
     
     def loop(self):
+        # The i-th value on this array holds the value asigned so far (guessed)
+        # for i-th vacant cell:
+        guessed = []
+
+        # The i-th value on this array holds an index j for i-th vacant cell, where
+        # j stands for the j-th possible (among the ones still possible) value for
+        # cell i, which is the current guess for i-th cell:
+        jth = [ 0 for x in self.vacants ]
+
         i = 0 # index of vacant cell we are on
-        for kk in range(10):
-            j = self.vacants[i] # index of current cell whithin cells
-            # Choose first of possible values:
+        for kk in range(1):
+            iv = self.vacants[i] # index of current cell whithin cells
+            print iv
+
+            # Choose first "valid" value among still possible ones on i-th vacant cell:
+            j = jth[i]
+            val = self.cells[iv][j]
+            self.assign(iv, val)
+
+    def write(self):
+        '''
+        Print out the current state of the grid.
+        '''
+
+        print("---")
+        for i in range(9):
+            string = ''
+            for e in self.cells[i*9:(i+1)*9]:
+                string += '{0:10s}'.format(e)
+            print(string)
 
     def assign(self, i, val):
         '''
@@ -114,9 +142,7 @@ class Sudoku(object):
 
 S = Sudoku()
 S.read("example.sud")
+S.write()
 S.loop()
+S.write()
 
-for i in range(9):
-    for e in S.cells[i*9:(i+1)*9]:
-        print '{0:10s}'.format(e),
-    print

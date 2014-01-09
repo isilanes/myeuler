@@ -97,7 +97,7 @@ class Sudoku(object):
         self.icells = self.cells[:]
     
     def loop(self):
-        # The i-th value on this array holds the value asigned so far (guessed)
+        # The i-th value on this array holds the value assigned so far (guessed)
         # for i-th vacant cell:
         guessed = []
 
@@ -107,14 +107,48 @@ class Sudoku(object):
         jth = [ 0 for x in self.vacants ]
 
         i = 0 # index of vacant cell we are on
-        for kk in range(1):
+        #for kk in range(10):
+        while True:
             iv = self.vacants[i] # index of current cell whithin cells
-            print iv
 
             # Choose first "valid" value among still possible ones on i-th vacant cell:
             j = jth[i]
-            val = self.cells[iv][j]
-            self.assign(iv, val)
+            #print iv, self.cells[iv], j
+            if j < len(self.cells[iv]):
+                val = self.cells[iv][j]
+                #print iv, "->", val
+                succ = self.assign(iv, val)
+            else:
+                #print "J-ERROR"
+                succ = False
+            if succ:
+                guessed.append(val)
+                jth[i] += 1
+                i += 1
+            else:
+                #print "ERROR"
+                # Go back to previous cell:
+                i -= 1
+
+                # Return grid to pristine state...
+                self.cells = self.icells[:]
+
+                # ... and reaply all guesses, up to one previous to error:
+                guessed = guessed[:-1]
+                for k1 in range(len(guessed)):
+                    k2 = self.vacants[k1]
+                    val = guessed[k1]
+                    self.assign(k2, val)
+
+                # And clean "jth" array, from i on:
+                for k1 in range(i+1,len(jth)):
+                    jth[k1] = 0
+
+            #self.write()
+            print guessed, "      --->      ", self.cells[:9],
+            resp = raw_input(" : ")
+            if resp == "q":
+                exit()
 
     def write(self):
         '''
@@ -139,10 +173,13 @@ class Sudoku(object):
 
         for j in self.affects[i]:
             self.cells[j] = self.cells[j].replace(val,'')
+            if not self.cells[j]: # we removed last possible value for a given cell
+                return False
+
+        return True
 
 S = Sudoku()
 S.read("example.sud")
 S.write()
 S.loop()
-S.write()
 

@@ -39,6 +39,28 @@ class Sudoku(object):
         # n self.originals are not included in L, as they will be immutable.
         self.affects = {}
     
+        # Initialize self.affects dictionary:
+
+        # Same quadrant:
+        for q in self.quadrants:
+            for i in q:
+                self.affects[i] = [ x for x in q if x != i ]
+
+        for i in range(81):
+            r = i // 9
+            c = i % 9
+
+            # Same row:
+            self.affects[i].extend([ x for x in range(r*9, (r+1)*9) ])
+
+            # Same column:
+            self.affects[i].extend([ x for x in range(c,81,9) ])
+
+            # Avoid duplicity:
+            self.affects[i] = set(self.affects[i])
+            if i in self.affects[i]:
+                self.affects[i].remove(i)
+
     def read(self, fn):
         '''
         Read data from file, and initialize accordingly.
@@ -60,30 +82,17 @@ class Sudoku(object):
                         # Remember: this array is mutable. However it won't change
                         # for those particular i-s:
                         self.cells[i] = e
-                        
+                                           
                     i += 1
 
-        # Initialize self.affects dictionary:
-
-        # Same quadrant:
-        for q in self.quadrants:
-            for i in q:
-                self.affects[i] = [ x for x in q if x != i and x in self.vacants ]
-
-        for i in range(81):
-            r = i // 9
-            c = i % 9
-
-            # Same row:
-            self.affects[i].extend([ x for x in range(r*9, (r+1)*9) if x in self.vacants ])
-
-            # Same column:
-            self.affects[i].extend([ x for x in range(c,81,9) if x in self.vacants ])
-
-            # Avoid duplicity:
-            self.affects[i] = set(self.affects[i])
-            if i in self.affects[i]:
-                self.affects[i].remove(i)
+        # Take out from self.affects values (not keys!) the self.original cells,
+        # because we do not need to check if a change in a given cell affects
+        # ANY other cell in row/column/sector, just any other cell in r/c/s that
+        # WAS NOT in the input.
+        for ic in range(81):
+            for io in self.originals:
+                if io in self.affects[ic]:
+                    self.affects[ic].remove(io)
 
         # Initialize cells removing options forbidden by input values:
         for i in self.originals:
@@ -91,6 +100,20 @@ class Sudoku(object):
             # Leaves self.cells[i] as it was, but its side effects
             # do what we need them to:
             self.assign(i, v)
+
+        # In some cases, the initial values constrain one or more cells to a single
+        # possible value. To all effects, that cell is equivalent to a cell whose
+        # value is given in the input.
+        some_changed = True
+        while some_changed:
+            some_changed = False
+            for ic in range(81):
+                if len(self.cells[ic]) == 1:
+                    if not ic in self.originals:
+                        some_changed = True
+                        self.originals.append(ic)
+                        self.vacants.remove(ic)
+                        self.assign(ic, self.cells[ic])
 
         # Populate self.icells with a copy of the initial self.cell,
         # containing initial, immutable, values defined by input:
@@ -102,18 +125,40 @@ class Sudoku(object):
         guessed = []
 
         # The i-th value on this array holds an index j for i-th vacant cell, where
-        # j stands for the j-th possible (among the ones still possible) value for
-        # cell i, which is the current guess for i-th cell:
+        # j stands for the j-th possible value for cell i, which will be the next
+        # guess for i-th cell:
         jth = [ 0 for x in self.vacants ]
 
-        i = 0 # index of vacant cell we are on
-        #for kk in range(10):
+        iv = 0 # index of current cell within self.vacants
         while True:
-            iv = self.vacants[i] # index of current cell whithin cells
+            ic = self.vacants[iv] # index of current cell within self.cells
 
-            # Choose first "valid" value among still possible ones on i-th vacant cell:
-            j = jth[i]
-            #print iv, self.cells[iv], j
+            # Choose first "valid" value among still possible ones on iv-th vacant cell:
+            valid_found = False # whether a valid value was found among possible ones
+            for j in range(jth[iv], len(self.icells[ic])):
+                val = self.icells[ic][j]
+                if self.isvalid(ic, val):
+                    # Then assign and move on to next cell:
+                    guessed.append(val)
+                    self.cells[ic] = val
+                    jth[iv] = j + 1 # next time, start guessing from next value up
+                    iv += 1
+                    valid_found = True
+                    break
+                
+            if not valid_found:
+                jth[iv] = 0 # reset "starting" guess index for current cell
+                iv -= 1  # move a step back:
+                guessed = guessed[:-1]
+
+            print '{0:20s} -> {1}'.format('-'.join(guessed), '-'.join([ str(x) for x in jth[:9] ])),
+
+            resp = raw_input(" : ")
+            if resp == "q": exit()
+
+            continue
+
+        '''
             if j < len(self.cells[iv]):
                 val = self.cells[iv][j]
                 #print iv, "->", val
@@ -147,8 +192,8 @@ class Sudoku(object):
             #self.write()
             print guessed, "      --->      ", self.cells[:9],
             resp = raw_input(" : ")
-            if resp == "q":
-                exit()
+            if resp == "q": exit()
+        '''
 
     def write(self):
         '''
@@ -176,6 +221,19 @@ class Sudoku(object):
             if not self.cells[j]: # we removed last possible value for a given cell
                 return False
 
+        return True
+
+    def isvalid(self, ic, val):
+        '''
+        Returns true if value "val" is valid for cell "ic".
+        '''
+
+        # Check all other cells ic affects, because ic is affected by them.
+        # If any other cell j contains a single value (a prior guess) and
+        # it's equal to val, then ic won't be able to hold value val.
+        for j in self.affects[ic]:
+            if self.cells[j] == val:
+                return False
         return True
 
 S = Sudoku()

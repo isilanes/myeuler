@@ -209,7 +209,7 @@ class Sudoku(object):
         return True
 
 S = Sudoku()
-S.read("example.sud")
+S.read("grid17.sud")
 S.write(verbose=True)
 S.loop()
 S.write()

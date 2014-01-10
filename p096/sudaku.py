@@ -130,7 +130,8 @@ class Sudoku(object):
         jth = [ 0 for x in self.vacants ]
 
         iv = 0 # index of current cell within self.vacants
-        while True:
+        while iv < len(self.vacants):
+            #print '{0:20s} -> {1} < {2}'.format('-'.join(guessed), '-'.join([ str(x) for x in jth[:8] ]), iv)
             ic = self.vacants[iv] # index of current cell within self.cells
 
             # Choose first "valid" value among still possible ones on iv-th vacant cell:
@@ -145,67 +146,38 @@ class Sudoku(object):
                     iv += 1
                     valid_found = True
                     break
-                
+                           
             if not valid_found:
                 jth[iv] = 0 # reset "starting" guess index for current cell
+                self.cells[ic] = self.icells[ic] # reset current cell options
                 iv -= 1  # move a step back:
                 guessed = guessed[:-1]
 
-            print '{0:20s} -> {1}'.format('-'.join(guessed), '-'.join([ str(x) for x in jth[:9] ])),
+            #resp = raw_input(" : ")
+            #if resp == "q": exit()
 
-            resp = raw_input(" : ")
-            if resp == "q": exit()
-
-            continue
-
-        '''
-            if j < len(self.cells[iv]):
-                val = self.cells[iv][j]
-                #print iv, "->", val
-                succ = self.assign(iv, val)
-            else:
-                #print "J-ERROR"
-                succ = False
-            if succ:
-                guessed.append(val)
-                jth[i] += 1
-                i += 1
-            else:
-                #print "ERROR"
-                # Go back to previous cell:
-                i -= 1
-
-                # Return grid to pristine state...
-                self.cells = self.icells[:]
-
-                # ... and reaply all guesses, up to one previous to error:
-                guessed = guessed[:-1]
-                for k1 in range(len(guessed)):
-                    k2 = self.vacants[k1]
-                    val = guessed[k1]
-                    self.assign(k2, val)
-
-                # And clean "jth" array, from i on:
-                for k1 in range(i+1,len(jth)):
-                    jth[k1] = 0
-
-            #self.write()
-            print guessed, "      --->      ", self.cells[:9],
-            resp = raw_input(" : ")
-            if resp == "q": exit()
-        '''
-
-    def write(self):
+    def write(self, verbose=False):
         '''
         Print out the current state of the grid.
         '''
 
-        print("---")
-        for i in range(9):
-            string = ''
-            for e in self.cells[i*9:(i+1)*9]:
-                string += '{0:10s}'.format(e)
-            print(string)
+        if verbose:
+            for i in range(9):
+                string = ''
+                for e in self.cells[i*9:(i+1)*9]:
+                    string += '{0:10s}'.format(e)
+                print(string)
+        else:
+            print("-"*31)
+            for i1 in range(3):
+                for i2 in range(3):
+                    i = i1*3+i2
+                    string = ''
+                    for j in range(3):
+                        string += '| ' + '  '.join(self.cells[i*9+3*j:i*9+3+3*j]) + ' '
+                    string += '|'
+                    print string
+                print('-'*31)
 
     def assign(self, i, val):
         '''
@@ -238,6 +210,7 @@ class Sudoku(object):
 
 S = Sudoku()
 S.read("example.sud")
-S.write()
+S.write(verbose=True)
 S.loop()
+S.write()
 

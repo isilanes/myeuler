@@ -111,11 +111,37 @@ def f2(Nmin=10):
 
 #--------------------------------------------------------------------#
 
+def f3(Nmin=10):
+    print("--- f3 ---")
+
+    import math
+
+    k = 1 + 2*Nmin*(Nmin -1)
+    k = math.sqrt(k)
+    k = int(k)
+    if not k % 2:
+        k += 1
+
+    X = []
+    Y = []
+    for N in range(1000):
+        B = (1 + math.sqrt(1+2*N*(N-1)))/2
+        X.append(N)
+        y = B - int(B)
+        Y.append(y)
+
+    import pylab
+    pylab.figure()
+    pylab.plot(X,Y,"-")
+    pylab.show()
+
+#--------------------------------------------------------------------#
+
 import timeit
 
 times = []
-for i in range(3):
-    t = timeit.Timer('f{0}(10**6)'.format(i), "from __main__ import f{0}".format(i))
+for i in range(3,4):
+    t = timeit.Timer('f{0}(10**0)'.format(i), "from __main__ import f{0}".format(i))
     times.append(t.timeit(number=1))
 
 #

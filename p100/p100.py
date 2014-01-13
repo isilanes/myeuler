@@ -116,38 +116,49 @@ def f3(Nmin=10):
 
     import math
 
-    k = 1 + 2*Nmin*(Nmin -1)
-    k = math.sqrt(k)
-    k = int(k)
-    if not k % 2:
-        k += 1
+    def issq(N):
+        r = math.sqrt(N)
+        r = int(r)
+        return r*r == N
 
-    X = []
-    Y = []
-    for N in range(1000):
-        B = (1 + math.sqrt(1+2*N*(N-1)))/2
-        X.append(N)
-        y = B - int(B)
-        Y.append(y)
+    i = 0
+    M = 1
+    N = 0
 
-    import pylab
-    pylab.figure()
-    pylab.plot(X,Y,"-")
-    pylab.show()
+    while N < Nmin:
+        i += 1
+        k0 = 2**(i % 2)
+        while True:
+            k = k0 * M**2
+            A = 2*k+1
+            A = A**2 - 1
+            A = A/8
+            if issq(A):
+                A = int(math.sqrt(A))
+                B = 8*A**2 + 1
+                B = int(math.sqrt(B))
+                B = A + (1 + B)/2
+                N = A + B
+                #print k, B, N
+                break
+            M += 1
 
+    print(B)
+    
 #--------------------------------------------------------------------#
 
 import timeit
 
 times = []
 for i in range(3,4):
-    t = timeit.Timer('f{0}(10**0)'.format(i), "from __main__ import f{0}".format(i))
+    t = timeit.Timer('f{0}(10**12)'.format(i), "from __main__ import f{0}".format(i))
     times.append(t.timeit(number=1))
 
 #
 # f0: too slow (~ 1400 s for 10**9 with pypy)
 # f1: too slow (~ 5400 s for 10**9 with pypy)
 # f2: too slow (~  895 s for 10**9 with pypy)
+# f3: ~ 1.3 s (pypy)
 #
 print("\nTimes:\n")
 for i in range(len(times)):

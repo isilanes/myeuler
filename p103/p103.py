@@ -45,7 +45,7 @@ def f0(N):
             if sum(guess) < max_sum and is_special(guess):
                 best = guess
                 max_sum = sum(best)
-        print n, best, ''.join([ str(x) for x  in guess ])
+        print n, best, ''.join([ str(x) for x  in best ])
         special = best
 
 #--------------------------------------------------------------------#
@@ -58,7 +58,7 @@ for i in range(1):
     times.append(t.timeit(number=1))
 
 #
-# f0:
+# f0: too slow (~ 850 s)
 #
 print("\nTimes:\n")
 for i in range(len(times)):

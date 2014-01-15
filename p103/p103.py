@@ -62,25 +62,19 @@ def f1(N):
         S.sort()
         n = len(S) // 2
         for i in range(1,n):
-            if sum(S[-i:]) <= sum(S[:i+1]):
+            if sum(S[-i:]) >= sum(S[:i+1]):
                 return False
 
-        # All subset pairs:
-        for size in range(n,0,-1):
-            for combo in it.combinations(S, size):
-                rem = list(S)
-                for e in combo:
-                    rem.remove(e)
-                for i in range(size,len(rem)+1):
-                    for other in it.combinations(rem, i):
-                        if sum(combo) > sum(other):
-                            if len(combo) < len(other):
-                                #return False
-                                pass
-                        if sum(combo) == sum(other):
-                            return False
-                        elif len(combo) > len(other):
-                            return False
+        # It only remains to check that no two equal-length subsets
+        # add up to the same amount:
+        for i in range(2,n+1):
+            dict = {}
+            for combo in it.combinations(S,i):
+                s = sum(combo)
+                if s in dict:
+                    return False
+                else:
+                    dict[s] = True
 
         return True
     
@@ -105,12 +99,13 @@ def f1(N):
 import timeit
 
 times = []
-for i in range(2):
-    t = timeit.Timer('f{0}(5)'.format(i), "from __main__ import f{0}".format(i))
+for i in range(1,2):
+    t = timeit.Timer('f{0}(7)'.format(i), "from __main__ import f{0}".format(i))
     times.append(t.timeit(number=1))
 
 #
-# f0: too slow (~ 850 s)
+# f0: too slow (~ 850 s, pypy)
+# f1: too slow (~ 645 s, pypy)
 #
 print("\nTimes:\n")
 for i in range(len(times)):

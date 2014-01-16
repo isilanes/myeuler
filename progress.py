@@ -11,9 +11,10 @@ with open("progress.log") as f:
     for line in f:
         tot += 1
         n, t = line.split()
-        t = datetime.strptime(t, '%Y-%m-%d')
+        t = datetime.strptime(t, '%Y-%m-%d.%H:%M')
         if t0:
-            dt = (t - t0).days
+            dt = (t - t0)
+            dt = dt.days + dt.seconds/86400.0
             ave = float(tot)/dt
             X.append(dt)
             A.append(ave)

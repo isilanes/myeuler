@@ -136,7 +136,8 @@ for i in range(2):
     times.append(t.timeit(number=1))
 
 #
-# f0: ~ 12 ms (python3)
+# f0: ~ 0.9 ms (python)
+# f1: ~ 0.8 ms (python)
 #
 print("\nTimes:\n")
 for i in range(len(times)):

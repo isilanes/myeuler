@@ -28,7 +28,7 @@ def f0():
         return len(combos)
     
     # Find proper divisors of all numbers up to max, using a sieve:
-    nmax = 2048000
+    nmax = 20480
     propers = {}
     for i in range(1,nmax+1):
         p = i*2
@@ -39,15 +39,18 @@ def f0():
                 propers[p] = [i]
             p += i
 
-    def ncombos(z, propers):
+    def ncombos(z, propsz):
         '''
         Return amount of valid (x,y) combos for a given z.
         '''
 
         combos = []
-        for k in propers[z]:
+        for k in propsz:
             mn = z / k
-            for m in propers[mn]:
+            propsmn = propsz[:]
+            if k != 1:
+                propsmn.remove(k)
+            for m in propsmn:
                 if m*m > mn:
                     break
                 n = mn/m
@@ -67,14 +70,35 @@ def f0():
             if n == 1:
                 return ps
 
+    def propers(pfactors):
+        '''
+        Given prime factors pfactors, return list of all
+        proper divisors.
+        '''
+
+        props = [1]
+        for n in range(1,len(pfactors)):
+            for combo in it.combinations(pfactors, n):
+                fac = 1
+                for e in combo:
+                    fac = fac*e
+                props.append(fac)
+
+        return list(set(props))
+
+    ps = [2,2,3,3,5,5,7,7,11,11,13,13,17,17]
+    ps = [2,3]
     max_nc = 0
-    ps = [2,3,5,7,11,13,17]
-    for combo in [ ps[:2], ps[:3], ps[:4], ps[:5], ps[:6], ps[:7] ]:
+    for N in range(2,3):
+        for combo in it.combinations(ps, N):
             n = 1
             for c in combo:
                 n = n*c
-            nc = ncombos(n, propers)
-            print n, nc, combo
+            props = propers(combo)
+            nc = ncombos(n, props)
+            if nc > max_nc:
+                max_nc = nc
+                print n, nc, combo
 
 #--------------------------------------------------------------------#
 

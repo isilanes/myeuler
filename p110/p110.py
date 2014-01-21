@@ -3,53 +3,74 @@
 def f0():
     print("--- f0 ---")
 
-    import itertools as it
+    def get_n(plist,some_elist):
+        n = 1
+        for i in range(len(some_elist)):
+            n = n * plist[i]**some_elist[i]
+        return n
 
-    def ncombos(pfactors):
-        '''
-        Return amount of valid (x,y) combos for a given z.
-        '''
+    plist = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,53]
+    nmin = 41856930490307832900
+    for e1 in range(4):
+      for e2 in range(4):
+        for e3 in range(4):
+          for e4 in range(4):
+            elist = [e1,e2,e3,e4]
+            if get_n(plist, elist) > nmin:
+                break
+            for e5 in range(4):
+              elist = [e1,e2,e3,e4,e5]
+              if get_n(plist, elist) > nmin:
+                  break
+              for e6 in range(4):
+                elist = [e1,e2,e3,e4,e5,e6]
+                if get_n(plist, elist) > nmin:
+                    break
+                for e7 in range(4):
+                  elist = [e1,e2,e3,e4,e5,e6,e7]
+                  if get_n(plist, elist) > nmin:
+                      break
+                  for e8 in range(4):
+                    elist = [e1,e2,e3,e4,e5,e6,e7,e8]
+                    if get_n(plist, elist) > nmin:
+                        break
+                    for e9 in range(4):
+                      elist = [e1,e2,e3,e4,e5,e6,e7,e8,e9]
+                      if get_n(plist, elist) > nmin:
+                          break
+                      for e10 in range(4):
+                        elist = [e1,e2,e3,e4,e5,e6,e7,e8,e9,e10]
+                        if get_n(plist, elist) > nmin:
+                            break
+                        for e11 in range(4):
+                          elist = [e1,e2,e3,e4,e5,e6,e7,e8,e9,e10,e11]
+                          if get_n(plist, elist) > nmin:
+                              break
+                          for e12 in range(4):
+                            elist = [e1,e2,e3,e4,e5,e6,e7,e8,e9,e10,e11,e12]
+                            if get_n(plist, elist) > nmin:
+                                break
+                            for e13 in range(4):
+                              elist = [e1,e2,e3,e4,e5,e6,e7,e8,e9,e10,e11,e12,e13]
+                              if get_n(plist, elist) > nmin:
+                                  break
+                              for e14 in range(4):
+                                elist = [e1,e2,e3,e4,e5,e6,e7,e8,e9,e10,e11,e12,e13,e14]
+                                if get_n(plist, elist) > nmin:
+                                    break
+                                for e15 in range(4):
+                                  elist = [e1,e2,e3,e4,e5,e6,e7,e8,e9,e10,e11,e12,e13,e14,e15]
+                                  d = 1
+                                  n = 1
+                                  for i in range(len(elist)):
+                                      d = d * (2*elist[i]+1)
+                                      n = n*plist[i]**elist[i]
 
-        pz = propers(pfactors+pfactors)
-        return len(pz) + 1
-
-    def primes(n):
-        ps = []
-        for i in range(2,n):
-            while not n % i:
-                ps.append(i)
-                n = n / i
-            if n == 1:
-                return ps
-
-    def propers(pfactors):
-        '''
-        Given prime factors pfactors, return list of all
-        proper divisors.
-        '''
-
-        props = { 1: (1,) }
-        for n in range(1,len(pfactors)):
-            for combo in it.combinations(pfactors, n):
-                fac = 1
-                for e in combo:
-                    fac = fac*e
-                props[fac] = True
-
-        return props.keys()
-
-    combo = [2,3,5,7,11,13,17,19,23]               #                  9842
-    combo = [2,2,3,5,7,11,13,17,19,23]             #                 16403
-    combo = [2,2,3,3,5,7,11,13,17,19,23]           #    1338557220,  27338
-    combo = [2,2,3,3,5,5,7,11,13,17,19,23]         #    6692786100,  45563
-    combo = [2,2,3,3,5,5,7,7,11,13,17,19,23]       #   46849502700,  75938
-    combo = [2,2,3,3,5,5,7,7,11,11,13,17,19,23]    #  515344529700, 126563
-    combo = [2,2,3,3,5,5,7,7,11,11,13,13,17,19,23] # 
-    d = (ncombos(combo) + 1)/2
-    n = 1
-    for e in combo:
-        n = n * e
-    print n, combo, d, d/4000*1000.0
+                                  d2 = (d+1)/2
+                                  if d2 > 4000*1000:
+                                      if n < nmin:
+                                          print '{0:8d} {1}'.format(d2, n)
+                                          nmin = n
 
 #--------------------------------------------------------------------#
 
@@ -61,7 +82,7 @@ for i in range(1):
     times.append(t.timeit(number=1))
 
 #
-# f0:
+# f0: slow, but works (~ 120 s, pypy)
 #
 print("\nTimes:\n")
 for i in range(len(times)):

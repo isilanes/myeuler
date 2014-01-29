@@ -5,21 +5,6 @@ def f0():
 
     import itertools as it
 
-    def find_prime(combo):
-        '''
-        Given string of digits "combo", find a prime by succesively
-        concatenating first N digits for N=1,2,3... Return the
-        first prime it finds, False if none found.
-        '''
-
-        num = ''
-        for c in combo:
-            num += str(c)
-            if isprime(int(num)):
-                return int(num)
-
-        return False
-
     def isprime(num):
         '''
         Returns True if num is prime, False otherwise.
@@ -42,27 +27,54 @@ def f0():
 
         return True
 
-    tot = 0
-    #for combo in it.permutations([2,5,4,7,8,9,6,3,1], 9):
-    for combo in it.permutations([1,2,3,4,5,6,7,8,9], 9):
-        if combo[-1] in [0,2,4,5,6,8]:
-            continue
-        last = 0 # 
-        while end < 9:
-            primes = []
-            while combo:
-                res = find_prime(combo)
-                if res:
-                    primes.append(res)
-                    i = len(str(res))
-                    combo = combo[i:]
-                    if not combo: # success! yay!
-                        #print primes
-                        tot += 1
-                else:
-                    break
+    # dictionary of digit -> list of primes not containing digit
+    exclu = {
+            '1': [2,3,5,7,],
+            '2': [3,5,7],
+            '3': [2,5,7],
+            '4': [2,3,5,7],
+            '5': [2,3,7],
+            '6': [2,3,5,7],
+            '7': [2,3,5],
+            '8': [2,3,5,7],
+            '9': [2,3,5,7]
+            }
 
-    print(tot)
+    # Harvest all primes that don't have repeated digits, 
+    # and classify them into exclu above:
+    for ndig in range(2,8):
+        for combo in it.combinations('123456789', ndig):
+            num = ''.join(combo)
+            num = int(num)
+            if isprime(num):
+                for si in '123456789':
+                    if not si in combo:
+                        exclu[si].append(num)
+    num = 631
+    s = str(num)
+    pos = exclu[s[0]]
+    for dig in s[1:]:
+        pos = [ x for x in pos if x in exclu[dig] ]
+    print num, pos
+    for num2 in pos:
+        s = str(num) + str(num2)
+        pos = exclu[s[0]]
+        for dig in s[1:]:
+            pos = [ x for x in pos if x in exclu[dig] ]
+        print num, num2, pos
+        if not pos:
+            if len(s) == 9:
+                eureka
+            else:
+                this num, num2 not in solution
+
+    return
+    for k,v in exclu.items():
+        for num in v:
+            pos = exclu[str(num)[0]]
+            for dig in str(num)[1:]:
+                pos = [ x for x in pos if x in exclu[dig] ]
+        return
 
 #--------------------------------------------------------------------#
 

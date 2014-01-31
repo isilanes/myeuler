@@ -23,7 +23,7 @@ def f0():
             return False
 
         i = 3
-        while i*i < num:
+        while i*i < num+1:
             if not num % i:
                 return False
             i += 2
@@ -137,7 +137,7 @@ def f1():
             return False
 
         i = 3
-        while i*i < num:
+        while i*i < num+1:
             if not num % i:
                 return False
             i += 2
@@ -146,26 +146,53 @@ def f1():
         
     valids = []
     for combo in it.permutations('123456789', 9):
-        # 2-number combos:
-        for corte in range(1,9):
-            num1 = ''.join(combo[:corte])
-            num1 = int(num1)
-            num2 = ''.join(combo[corte:])
-            num2 = int(num2)
-            if isprime(num1) and isprime(num2):
-                c = sorted([num1,num2])
-                valids.append(tuple(c))
-
-        # 3-number combos:
-        for c1 in range(1,8):
+        for c1 in range(1,9):
             num1 = int(''.join(combo[:c1]))
             if isprime(num1):
+                # 2+ numbers:
+                for c2 in range(c1+1,9):
+                    num2 = int(''.join(combo[c1:c2]))
+                    if isprime(num2):
+                        # 3+ numbers:
+                        for c3 in range(c2+1,9):
+                            num3 = int(''.join(combo[c2:c3]))
+                            if isprime(num3):
+                                # 4+ numbers:
+                                for c4 in range(c3+1,9):
+                                    num4 = int(''.join(combo[c3:c4]))
+                                    if isprime(num4):
+                                        # 5+ numbers
+                                        for c5 in range(c4+1,9):
+                                            num5 = int(''.join(combo[c4:c5]))
+                                            if isprime(num5):
+                                                # Just 6 numbers:
+                                                num6 = int(''.join(combo[c5:]))
+                                                if isprime(num6):
+                                                    c = sorted([num1,num2,num3,num4,num5,num6])
+                                                    valids.append(tuple(c))
+                                        # Just 5 numbers:
+                                        num5 = int(''.join(combo[c4:]))
+                                        if isprime(num5):
+                                            c = sorted([num1,num2,num3,num4,num5])
+                                            valids.append(tuple(c))
+                                # Just 4 numbers:
+                                num4 = int(''.join(combo[c3:]))
+                                if isprime(num4):
+                                    c = sorted([num1,num2,num3,num4])
+                                    valids.append(tuple(c))
+                        # Just 3 numbers:
+                        num3 = int(''.join(combo[c2:]))
+                        if isprime(num3):
+                            c = sorted([num1,num2,num3])
+                            valids.append(tuple(c))
+                # Just 2 numbers:
+                num2 = int(''.join(combo[c1:]))
+                if isprime(num2):
+                    c = sorted([num1,num2])
+                    valids.append(tuple(c))
 
-    print len(valids)
-    valids = set(valids)
-    print len(valids)
-
-    print list(valids)[:5]
+    res = len(set(valids))
+    print(res)
 
 #--------------------------------------------------------------------#
 
@@ -177,7 +204,7 @@ for i in range(1,2):
     times.append(t.timeit(number=1))
 
 #
-# f0:
+# f0: ~ 12.5 s (pypy)
 #
 print("\nTimes:\n")
 for i in range(len(times)):

@@ -3,6 +3,39 @@
 def f0():
     print("--- f0 ---")
 
+    def best_sum(N):
+        elements = [N]
+        for j in range(30):
+            if not N % 2:
+                elements.append(N/2)
+                N = N / 2
+            else:
+                i = N // 2
+                while True:
+                    if not (N-i) % i:
+                        break
+                    i -= 1
+                elements.append(N-i)
+                elements.append(i)
+                N = N - i
+            print elements, N
+            if N < 3:
+                break
+
+        elements = list(set(elements))
+        if 1 in elements:
+            elements.remove(1)
+        return sorted(elements)
+
+    print best_sum(65)
+    return
+    tot = 0
+    for k in range(2,201):
+        tot += len(best_sum(k))
+        print k, best_sum(k)
+
+    print(tot)
+
 #--------------------------------------------------------------------#
 
 import timeit

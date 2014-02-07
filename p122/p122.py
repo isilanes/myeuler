@@ -3,37 +3,37 @@
 def f0():
     print("--- f0 ---")
 
-    def best_sum(N):
-        elements = [N]
-        for j in range(30):
-            if not N % 2:
-                elements.append(N/2)
-                N = N / 2
-            else:
-                i = N // 2
-                while True:
-                    if not (N-i) % i:
-                        break
-                    i -= 1
-                elements.append(N-i)
-                elements.append(i)
-                N = N - i
-            print elements, N
-            if N < 3:
-                break
+    Nmax = 200
 
-        elements = list(set(elements))
-        if 1 in elements:
-            elements.remove(1)
-        return sorted(elements)
+    # dict k -> m(k)
+    paths = [[1,2]]
+    m = { 1: 0, 2: 1 }
+    remaining = range(1,Nmax+1)
+    remaining.remove(1)
+    remaining.remove(2)
 
-    print best_sum(65)
-    return
+    # Begin branching:
+    level = 2
+    while remaining:
+        newpaths = []
+        for path in paths:
+            for e in path:
+                k = e + path[-1]
+                if not k in m:
+                    m[k] = level
+                    if k in remaining:
+                        remaining.remove(k)
+                    newpath = path + [k]
+                    newpaths.append(newpath)
+                elif m[k] == level:
+                    newpath = path + [k]
+                    newpaths.append(newpath)
+        paths = newpaths[:]
+        level += 1
+
     tot = 0
-    for k in range(2,201):
-        tot += len(best_sum(k))
-        print k, best_sum(k)
-
+    for i in range(1,Nmax+1):
+        tot += m[i]
     print(tot)
 
 #--------------------------------------------------------------------#
@@ -46,7 +46,7 @@ for i in range(1):
     times.append(t.timeit(number=1))
 
 #
-# f0: ~ 10 ms (python3)
+# f0: ~ 140 ms (python2)
 #
 print("\nTimes:\n")
 for i in range(len(times)):

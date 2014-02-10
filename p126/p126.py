@@ -73,10 +73,10 @@ def f0():
         return res
 
     # Maximum cubes per single layer:
-    nmax = 1500
+    nmax = 4500
 
     # Max dimension for A:
-    Amax = 30
+    Amax = nmax / 4
 
     # Dict with n -> a, where a is amount of layers in various AxBxC
     # cuboids to have exactly n cubes.
@@ -84,10 +84,12 @@ def f0():
     
     for A in range(1,Amax+1):
         for B in range(1,A+1):
+            if 2*A*B + 2*(A+B) > nmax:
+                break
             for C in range(1,B+1):
+                if 2*A*B + 2*A*C + 2*B*C > nmax:
+                    break
                 nl = nlayer(A,B,C,nmax)
-                #if nl[0] > nmax:
-                #    break
                 for e in nl:
                     try:
                         cub[e] += 1

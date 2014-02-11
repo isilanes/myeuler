@@ -73,7 +73,7 @@ def f0():
         return res
 
     # Maximum cubes per single layer:
-    nmax = 4500
+    nmax = 500
 
     # Max dimension for A:
     Amax = nmax / 4
@@ -111,15 +111,80 @@ def f0():
 
 #--------------------------------------------------------------------#
 
+def f1():
+    print("--- f1 ---")
+
+    def nlayersAB(A,B,n):
+        '''
+        '''
+
+        res = [A*B]
+        prev = A*B
+        for layer in range(2,n+1):
+            v = prev + A + B + layer - 2
+            res.append(v)
+            prev = v
+
+        return res
+
+    def nlayers(A,B,C,n):
+        '''
+        '''
+
+        res = []
+        for i,j,k in zip(nlayersAB(A,B,n),nlayersAB(A,C,n),nlayersAB(B,C,n)):
+            res.append((i+j+k)*2)
+
+        return res
+
+    print nlayers(3,2,1,4)
+    print nlayers(5,1,1,1)
+    print nlayers(5,3,1,1)
+    print nlayers(7,2,1,1)
+    print nlayers(11,1,1,1)
+
+#--------------------------------------------------------------------#
+
+def f2():
+    print("--- f2 ---")
+
+    def nlayers(A,B,C,n):
+        '''
+        '''
+
+        # Face AB:
+        nAB = [A*B]
+        for ilayer in range(1,n):
+            ni = nAB[-1] + (A + B) + 4*(ilayer-1)
+            nAB.append(ni)
+
+        # Face AC:
+        nAC = [A*C,0,0]
+
+        # Face BC:
+        nBC = [B*C,0,0]
+
+        res = []
+        for i,j,k in zip(nAB,nAC,nBC):
+            v = 2*(i+j+k)
+            res.append(v)
+
+        return res
+
+    print nlayers(3,2,1,4)
+
+#--------------------------------------------------------------------#
+
 import timeit
 
 times = []
-for i in range(1):
+for i in range(2,3):
     t = timeit.Timer('f{0}()'.format(i), "from __main__ import f{0}".format(i))
     times.append(t.timeit(number=1))
 
 #
-# f0:
+# f0: too slow
+# f1:
 #
 print("\nTimes:\n")
 for i in range(len(times)):

@@ -289,16 +289,105 @@ def f3():
 
 #--------------------------------------------------------------------#
 
+def f4():
+    '''
+    Adapted from: http://glisicv.wordpress.com/2013/01/07/cuboid-layers-p126/
+    '''
+    print("--- f4 ---")
+
+    from collections import defaultdict
+
+    def calculate_layer(x,y,z,L):   
+        return 2*(2*(L-1)*(x+z)+2*(L-1)*(L+y-2)+x*y+x*z+y*z)
+
+    dict1 = defaultdict(int)
+
+    max_v = 20000
+
+    for L in range(1,100):
+        for x in range(1,5000):
+            if calculate_layer(x,x,x,L) > max_v:
+                break
+
+            for y in range(x,5000):
+                if calculate_layer(x,y,y,L) > max_v:
+                    break
+                for z in range(y,5000):
+                    if calculate_layer(x,y,z,L) > max_v:
+                        break
+
+                    dict1[calculate_layer(x,y,z,L)] += 1
+
+    for x,y in dict1.iteritems():
+        if y == 1000:
+            print(x)
+            break
+
+#--------------------------------------------------------------------#
+
+def f5():
+    '''
+    Adapted from: http://glisicv.wordpress.com/2013/01/07/cuboid-layers-p126/
+    '''
+    print("--- f5 ---")
+
+    def perlayer(A,B,C,nmax):
+        '''
+        Return list [n1,n2... nj], where ni is amount of cuboids in
+        i-th layer, and nj is first value over nmax.
+        '''
+        v0 = 2*(A*B + A*C + B*C)
+        res = [v0]
+        L = 2
+        while True:
+            v = 4*(L-1)*(A+C) + 4*(L-1)*(L+B-2) + v0
+            res.append(v)
+            if v > nmax:
+                return res
+            L += 1
+
+    # Tests:
+    #print perlayer(3,2,1,200)  # 22, 46, 78, 118
+    #print perlayer(5,1,1,100)  # 22
+    #print perlayer(5,3,1,100)  # 46
+    #print perlayer(7,2,1,100)  # 46
+    #print perlayer(11,1,1,100) # 46
+
+    nmax = 20000
+
+    cn = {}
+    for A in range(1,nmax/4):
+        for B in range(1,A+1):
+            if 2*A*B + 2*A + 2 > nmax:
+                break
+            for C in range(1,B+1):
+                if 2*(A*B+A*C+B*C) > nmax:
+                    break
+
+                for n in perlayer(A,B,C,nmax):
+                    try:
+                        cn[n] += 1
+                    except:
+                        cn[n] = 1
+
+    for n,v in cn.items():
+        if v == 1000:
+            print(n)
+            break
+
+#--------------------------------------------------------------------#
+
 import timeit
 
 times = []
-for i in [3]:
+for i in [4,5]:
     t = timeit.Timer('f{0}()'.format(i), "from __main__ import f{0}".format(i))
     times.append(t.timeit(number=1))
 
 #
-# f0: too slow
-# f1:
+# f0-f3: too slow or wrong
+# f4: ~ 0.35 s (pypy)
+# f5: ~ 0.54 s (pypy, but faster than f4 with python2)
 #
 print("\nTimes:\n")
 for i in range(len(times)):

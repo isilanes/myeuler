@@ -173,30 +173,18 @@ def f2(Nmax):
     rad = Memoize(rad)
 
     sumc = 0
-    for c in range(3,Nmax):
-        rad_c, facs_c = rad(c)
-        for fac in facs_c:
-            nc = c * fac
-            while nc < Nmax:
-                nc = nc * fac
-                rad.cache[nc] = (rad_c, facs_c)
-        rem_list = []
-        for i in range(1,c):
-            if not invalid(i, facs_c):
-                rem_list.append(i)
-            
-        for j in range(len(rem_list)):
-            a = rem_list[j]
-            if 2*a > c:
-                break
-            rad_a, facs_a = rad(a)
-            b = c - a
-            if b in rem_list:
-                if not invalid(b,facs_a):
-                    rad_b, facs_b = rad(b)
+    for a in range(1,Nmax):
+        rad_a, facs_a = rad(a)
+        for b in range(a+1,Nmax):
+            if not invalid(b, facs_a):
+                rad_b, facs_b = rad(b)
+                c = b + a
+                if c >= Nmax:
+                    break
+                if not invalid(c, facs_a):
+                    rad_c, facs_c = rad(c)
                     rad_abc = rad_a * rad_b * rad_c
                     if rad_abc < c:
-                        print(c)
                         sumc += c
 
     print(sumc)
@@ -206,8 +194,8 @@ def f2(Nmax):
 import timeit
 
 times = []
-for i in [2]:
-    t = timeit.Timer('f{0}(1000)'.format(i), "from __main__ import f{0}".format(i))
+for i in [1,2]:
+    t = timeit.Timer('f{0}(4000)'.format(i), "from __main__ import f{0}".format(i))
     times.append(t.timeit(number=1))
 
 #

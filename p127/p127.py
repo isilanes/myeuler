@@ -191,11 +191,90 @@ def f2(Nmax):
 
 #--------------------------------------------------------------------#
 
+def f3(Nmax):
+    print("--- f3 ---")
+
+    def get_primes(nmax):
+        # Sieve to find all primes up to nmax:
+        composites = {}
+        primes = [2]
+        for mult in range(3,nmax,2):
+            if not mult in composites:
+                # Log mult as prime:
+                primes.append(mult)
+
+                # Sieve its multiples away:
+                for i in range(mult*mult, nmax, 2*mult):
+                    composites[i] = True
+
+        return primes
+
+    def rad(N, p):
+        '''
+        Return rad(N), and the list of distinct primes that make up
+        rad(N). E.g.:
+        504 = 2**3 * 3**2 * 7 -> rad(504) = 2*3*7 = 42
+        return 42, [2,3,7]
+        '''
+
+        r = 1
+        facs = []
+        for prime in p:
+            if not N % prime:
+                r = r * prime
+                facs.append(prime)
+                N = N / prime
+            while not N % prime:
+                N = N / prime
+            if N == 1:
+                break
+        
+        return r, facs
+
+    class MemRad(object):
+
+        def __init__(self, primes):
+            self.primes = primes
+            self.cache = {}
+
+        def rad(self, N):
+            if not N in self.cache:
+                self.cache[N] = rad(N, self.primes)
+            return self.cache[N]
+
+    def invalid(i,facs):
+        for fac in facs:
+            if not i % fac:
+                return True
+        return False
+
+    primes = get_primes(Nmax)
+    MR = MemRad(primes)
+
+    sumc = 0
+    for a in range(1,Nmax):
+        rad_a, facs_a = MR.rad(a)
+        for b in range(a+1,Nmax):
+            if not invalid(b, facs_a):
+                rad_b, facs_b = MR.rad(b)
+                c = b + a
+                if c >= Nmax:
+                    break
+                if not invalid(c, facs_a):
+                    rad_c, facs_c = MR.rad(c)
+                    rad_abc = rad_a * rad_b * rad_c
+                    if rad_abc < c:
+                        sumc += c
+
+    print(sumc)
+
+#--------------------------------------------------------------------#
+
 import timeit
 
 times = []
-for i in [1,2]:
-    t = timeit.Timer('f{0}(4000)'.format(i), "from __main__ import f{0}".format(i))
+for i in [3]:
+    t = timeit.Timer('f{0}(120000)'.format(i), "from __main__ import f{0}".format(i))
     times.append(t.timeit(number=1))
 
 #

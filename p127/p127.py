@@ -237,7 +237,7 @@ def f3(Nmax):
             self.primes = primes
             self.cache = {}
 
-        def rad(self, N):
+        def Rad(self, N):
             if not N in self.cache:
                 self.cache[N] = rad(N, self.primes)
             return self.cache[N]
@@ -248,23 +248,26 @@ def f3(Nmax):
                 return True
         return False
 
+    def invalid2(facs1,facs2):
+        for fac1 in facs1:
+            if fac1 in facs2:
+                return True
+        return False
+
     primes = get_primes(Nmax)
     MR = MemRad(primes)
 
     sumc = 0
     for a in range(1,Nmax):
-        rad_a, facs_a = MR.rad(a)
-        for b in range(a+1,Nmax):
-            if not invalid(b, facs_a):
-                rad_b, facs_b = MR.rad(b)
+        rad_a, facs_a = MR.Rad(a)
+        for b in range(a+1,Nmax-a):
+            rad_b, facs_b = MR.Rad(b)
+            if not invalid2(facs_a, facs_b):
                 c = b + a
-                if c >= Nmax:
-                    break
-                if not invalid(c, facs_a):
-                    rad_c, facs_c = MR.rad(c)
-                    rad_abc = rad_a * rad_b * rad_c
-                    if rad_abc < c:
-                        sumc += c
+                rad_c, facs_c = MR.Rad(c)
+                rad_abc = rad_a * rad_b * rad_c
+                if rad_abc < c:
+                    sumc += c
 
     print(sumc)
 
@@ -274,7 +277,7 @@ import timeit
 
 times = []
 for i in [3]:
-    t = timeit.Timer('f{0}(120000)'.format(i), "from __main__ import f{0}".format(i))
+    t = timeit.Timer('f{0}(12000)'.format(i), "from __main__ import f{0}".format(i))
     times.append(t.timeit(number=1))
 
 #

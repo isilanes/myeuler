@@ -209,37 +209,39 @@ def f3(Nmax):
 
         return primes
 
-    def rad(N, p):
-        '''
-        Return rad(N), and the list of distinct primes that make up
-        rad(N). E.g.:
-        504 = 2**3 * 3**2 * 7 -> rad(504) = 2*3*7 = 42
-        return 42, [2,3,7]
-        '''
+    class MemoRad(object):
 
-        r = 1
-        facs = []
-        for prime in p:
-            if not N % prime:
-                r = r * prime
-                facs.append(prime)
-                N = N / prime
-            while not N % prime:
-                N = N / prime
-            if N == 1:
-                break
-        
-        return r, facs
+        def calc(self, N):
+            '''
+            Return rad(N), and the list of distinct primes that make up
+            rad(N). E.g.:
+            504 = 2**3 * 3**2 * 7 -> rad(504) = 2*3*7 = 42
+            return 42, [2,3,7]
+            '''
 
-    class MemRad(object):
+            N_initial = N
+
+            r = 1
+            facs = []
+            for prime in self.primes:
+                if not N % prime:
+                    r = r * prime
+                    facs.append(prime)
+                    N = N / prime
+                while not N % prime:
+                    N = N / prime
+                if N == 1:
+                    break
+            
+            self.cache[N_initial] = (r, facs)
 
         def __init__(self, primes):
             self.primes = primes
             self.cache = {}
 
-        def Rad(self, N):
+        def rad(self, N):
             if not N in self.cache:
-                self.cache[N] = rad(N, self.primes)
+                self.calc(N)
             return self.cache[N]
 
     def invalid(i,facs):
@@ -248,23 +250,101 @@ def f3(Nmax):
                 return True
         return False
 
-    def invalid2(facs1,facs2):
-        for fac1 in facs1:
-            if fac1 in facs2:
+    primes = get_primes(Nmax)
+    MR = MemoRad(primes)
+
+    sumc = 0
+    for a in range(1,Nmax):
+        rad_a, facs_a = MR.rad(a)
+        for b in range(a+1,Nmax-a):
+            if not invalid(b, facs_a):
+                c = a + b
+                rad_b, facs_b = MR.rad(b)
+                rad_c, facs_c = MR.rad(c)
+                rad_abc = rad_a * rad_b * rad_c
+                if rad_abc < c:
+                    sumc += c
+
+    print(sumc)
+
+#--------------------------------------------------------------------#
+
+def f4(Nmax):
+    print("--- f4 ---")
+
+    def get_primes(nmax):
+        # Sieve to find all primes up to nmax:
+        composites = {}
+        primes = [2]
+        for mult in range(3,nmax,2):
+            if not mult in composites:
+                # Log mult as prime:
+                primes.append(mult)
+
+                # Sieve its multiples away:
+                for i in range(mult*mult, nmax, 2*mult):
+                    composites[i] = True
+
+        return primes
+
+    class MemoRad(object):
+
+        def calc(self, N):
+            '''
+            Return rad(N), and the list of distinct primes that make up
+            rad(N). E.g.:
+            504 = 2**3 * 3**2 * 7 -> rad(504) = 2*3*7 = 42
+            return 42, [2,3,7]
+            '''
+
+            N_initial = N
+
+            r = 1
+            facs = []
+            for prime in self.primes:
+                if not N % prime:
+                    r = r * prime
+                    facs.append(prime)
+                    N = N / prime
+                while not N % prime:
+                    N = N / prime
+                if N == 1:
+                    break
+            
+            self.cache[N_initial] = (r, facs)
+
+        def __init__(self, primes):
+            self.primes = primes
+            self.cache = {}
+
+        def rad(self, N):
+            if not N in self.cache:
+                self.calc(N)
+            return self.cache[N]
+
+    def invalid(i,facs):
+        for fac in facs:
+            if not i % fac:
                 return True
         return False
 
     primes = get_primes(Nmax)
-    MR = MemRad(primes)
+    MR = MemoRad(primes)
 
     sumc = 0
     for a in range(1,Nmax):
-        rad_a, facs_a = MR.Rad(a)
+        rad_a, facs_a = MR.rad(a)
+        invalids = {}
+        for fac in facs_a:
+            not_b = a + fac
+            while not_b < Nmax:
+                invalids[not_b] = True
+                not_b += fac
         for b in range(a+1,Nmax-a):
-            rad_b, facs_b = MR.Rad(b)
-            if not invalid2(facs_a, facs_b):
-                c = b + a
-                rad_c, facs_c = MR.Rad(c)
+            if not b in invalids:
+                c = a + b
+                rad_b, facs_b = MR.rad(b)
+                rad_c, facs_c = MR.rad(c)
                 rad_abc = rad_a * rad_b * rad_c
                 if rad_abc < c:
                     sumc += c
@@ -275,9 +355,12 @@ def f3(Nmax):
 
 import timeit
 
+f4(12000)
+exit()
+
 times = []
-for i in [3]:
-    t = timeit.Timer('f{0}(12000)'.format(i), "from __main__ import f{0}".format(i))
+for i in [4]:
+    t = timeit.Timer('f{0}(120000)'.format(i), "from __main__ import f{0}".format(i))
     times.append(t.timeit(number=1))
 
 #

@@ -71,7 +71,7 @@ d4: Z2(i) de anillo n-1 -> D4 = 6*(n-1)
 d5: Z2(i-1) de anillo n-1 (o Z1 de n-1 si i=0) -> D5 = 6*(n-1)+1
 d6: Z2(i-1) de anillo n (o Z1 de n, si i=0) -> D6 = 1
 
-Sólo D2, D4 y D5 pueden ser primos. Los tres deben serlo para que Z1 tenga PD=3
+Sólo D2 y D5 pueden ser primos, luego NINGÚN Z2 tendrá PD=3.
 
 = Z3
 

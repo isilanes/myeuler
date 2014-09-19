@@ -1,17 +1,14 @@
 #--------------------------------------------------------------------#
 
 def f0():
-    '''
-    Slow and wrong?
-    '''
+    '''Slow and wrong?'''
+
     print("--- f0 ---")
 
     import itertools as it
 
     def isprime(num):
-        '''
-        Returns True if num is prime, False otherwise.
-        '''
+        '''Returns True if num is prime, False otherwise.'''
 
         if num == 1:
             return False
@@ -46,6 +43,7 @@ def f0():
             if d1 in s2:
                 return False
         return True
+
 
     # Harvest all primes that don't have repeated digits:
     primes = [2,3,5,7]
@@ -115,17 +113,13 @@ def f0():
     valids = set(valids)
     print len(valids)
 
-#--------------------------------------------------------------------#
-
 def f1():
     print("--- f1 ---")
 
     import itertools as it
 
     def isprime(num):
-        '''
-        Returns True if num is prime, False otherwise.
-        '''
+        '''Returns True if num is prime, False otherwise.'''
 
         if num == 1:
             return False
@@ -144,6 +138,7 @@ def f1():
 
         return True
         
+
     valids = []
     for combo in it.permutations('123456789', 9):
         for c1 in range(1,9):
@@ -193,6 +188,7 @@ def f1():
 
     res = len(set(valids))
     print(res)
+
 
 #--------------------------------------------------------------------#
 

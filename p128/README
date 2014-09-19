@@ -1,0 +1,195 @@
+A hexagonal tile with number 1 is surrounded by a ring of six hexagonal tiles, starting at "12 o'clock" and numbering the tiles 2 to 7 in an anti-clockwise direction.
+
+New rings are added in the same fashion, with the next rings being numbered 8 to 19, 20 to 37, 38 to 61, and so on. The diagram below shows the first three rings.
+
+By finding the difference between tile n and each its six neighbours we shall define PD(n) to be the number of those differences which are prime.
+
+For example, working clockwise around tile 8 the differences are 12, 29, 11, 6, 1, and 13. So PD(8) = 3.
+
+In the same way, the differences around tile 17 are 1, 17, 16, 1, 11, and 10, hence PD(17) = 2.
+
+It can be shown that the maximum value of PD(n) is 3.
+
+If all of the tiles for which PD(n) = 3 are listed in ascending order to form a sequence, the 10th tile would be 271.
+
+Find the 2000th tile in this sequence.
+
+=== Solución ===
+
+Separamos los hexágonos en anillos.
+
+El anillo 0 es el hexágono central. Tiene un hexágono, de índice 1.
+
+El anillo 1 son los hexágonos de índice 2 a 7.
+
+El anillo enésimo consiste en 6*n hexágonos, que empiezan en el índice 3*(n**2-n) + 2, y terminan en i = 3*(n**2+n)+1.
+
+== En el anillo enésimo diferenciaremos 12 zonas Z:
+
+Z1: el hexágono inicial
+Z2: los hexágonos del lado superior izquierdo (Z1+1 a Z1+n-1)
+Z3: el hexágono del vértice superior izquierdo (Z2+1)
+Z4: los hexágonos del lado izquierdo (Z3+1 a Z3+n-1)
+Z5: el vértice inferior izquierdo
+Z6: lado inferior derecho (Z5+1 a Z5+n-1)
+Z7: vértice inferior derecho (Z6+1)
+Z8: lado derecho (Z7+1 a Z7+n-1)
+Z9: vértice superior derecho (Z8+1)
+Z10: lado superior derecho (Z9+1 a Z9+n-1)
+Z11: vértice superior derecho (Z10+1)
+Z12: lado superior derecho (Z11+1 a Z11+n-1), excepto Z13
+Z13: la última casilla antes de volver a Z1
+
+== Cada hexágono tiene 6 direcciones
+
+d1 = encima
+d2 = arriba-izq
+d3 = abajo-izq
+d4 = debajo
+d5 = abajo-dcha
+d6 = arriba-dcha
+
+== Diferencias
+
+= Z1
+
+d1: Z1 de anillo n+1 -> D1 = 6*n
+d2: (Z1 de anillo n+1) + 1 -> D2 = 6*n + 1
+d3: Z1 + 1 -> D3 = 1
+d4: Z1 de anillo n-1 -> d4 = 6*(n-1)
+d5: último hex de anillo n -> d5 = 6*n - 1
+d6: (Z1 de anillo n+1) + 6*(n+1) + 1 -> D6 = 6*(2*n+1) - 1
+
+Vemos que sólo D2, D5 y D6 pueden ser primos. Los tres deben serlo para que un Z1 tenga PD=3.
+
+= Z2
+
+d1: Z2(i) de anillo n+1 -> D1 = 6*n
+d2: Z2(i+1) de anillo n+1 -> D2 = 6*n+1
+d3: Z2(i+1) de anillo n -> D3 = 1
+d4: Z2(i) de anillo n-1 -> D4 = 6*(n-1)
+d5: Z2(i-1) de anillo n-1 (o Z1 de n-1 si i=0) -> D5 = 6*(n-1)+1
+d6: Z2(i-1) de anillo n (o Z1 de n, si i=0) -> D6 = 1
+
+Sólo D2, D4 y D5 pueden ser primos. Los tres deben serlo para que Z1 tenga PD=3
+
+= Z3
+
+D1 = 6*n
+D2 = 6*n+1
+D3 = 6*n+2
+D4 = 1
+D5 = 6*(n-1)+1
+D6 = 1
+
+Sólo D2 y D5 pueden ser primos, luego NINGÚN Z3 tendrá PD=3
+
+= Z4
+
+D1 = 1
+D2 = 6*n+1
+D3 = 6*n+2
+D4 = 1
+D5 = 6*(n-1)+1
+D6 = 6*(n-1)+2
+
+Sólo D2 y D5 pueden ser primos, luego NINGÚN Z4 tendrá PD=3
+
+= Z5
+
+D1 = 1
+D2 = 6*n+1
+D3 = 6*n+2
+D4 = 6*n+3
+D5 = 1
+D6 = 6*(n-1)+2
+
+Sólo D2 puede ser primo, luego NINGÚN Z5 tendrá PD=3
+
+= Z6
+
+D1 = 6*(n-1)+3
+D2 = 1
+D3 = 6*n+2
+D4 = 6*n+3
+D5 = 1
+D6 = 6*(n-1)+2
+
+Ninguno puede ser primo, luego NINGÚN Z6 tendrá PD=3
+
+= Z7
+
+D1 = 6*(n-1)+3
+D2 = 1
+D3 = 6*n+2
+D4 = 6*n+3
+D5 = 6*n+4
+D6 = 1
+
+Ninguno puede ser primo, luego NINGÚN Z7 tendrá PD=3
+
+= Z8
+
+D1 = 6*(n-1)+3
+D2 = 6*(n-1)+4
+D3 = 1
+D4 = 6*n+3
+D5 = 6*n+4
+D6 = 1
+
+Ninguno puede ser primo, luego NINGÚN Z8 tendrá PD=3
+
+= Z9
+
+D1 = 1
+D2 = 6*(n-1)+4
+D3 = 1
+D4 = 6*n+3
+D5 = 6*n+4
+D6 = 6*n+5 = 6*(n+1)-1
+
+Sólo D6 puede ser primo, luego NINGÚN Z9 tendrá PD=3
+
+= Z10
+
+D1 = 1
+D2 = 6*(n-1)+4
+D3 = 6*(n-1)+5 = 6*n-1
+D4 = 1
+D5 = 6*n+4
+D6 = 6*(n+1)-1
+
+Sólo D3 y D6 pueden ser primos, luego NINGÚN Z10 tendrá PD=3
+
+= Z11
+
+D1 = 6*(n+1)
+D2 = 1
+D3 = 6*n-1
+D4 = 1
+D5 = 6*n+4
+D6 = 6*(n+1)-1
+
+Sólo D3 y D6 pueden ser primos, luego NINGÚN Z11 tendrá PD=3
+
+= Z12
+
+D1 = 6*(n+1)
+D2 = 1
+D3 = 6*n-1
+D4 = 6*n
+D5 = 1
+D6 = 6*(n+1)-1
+
+Sólo D3 y D6 pueden ser primos, luego NINGÚN Z12 tendrá PD=3
+
+= Z13
+
+D1 = 6*(n+1)
+D2 = 6*n-1
+D3 = 6*(2*n-1) - 1
+D4 = 6*n
+D5 = 1
+D6 = 6*(n+1)-1
+
+Sólo D2, D3 y D6 pueden ser primos, NINGÚN Z13 tendrá PD=3

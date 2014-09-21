@@ -53,7 +53,7 @@ def f1(thres):
                         success = True
                     break
             if success:
-                print n, '->', k
+                print "n=", n, 'A(n)=', k
                 return
         n += 2
 
@@ -64,7 +64,7 @@ import timeit
 
 times = []
 for i in [1]:
-    t = timeit.Timer('f{0}(5000)'.format(i), "from __main__ import f{0}".format(i))
+    t = timeit.Timer('f{0}(10)'.format(i), "from __main__ import f{0}".format(i))
     times.append(t.timeit(number=1))
 
 #

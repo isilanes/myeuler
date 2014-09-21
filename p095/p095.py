@@ -15,12 +15,11 @@ def f0(max):
             p += i
 
     def next_m(N, propers):
-        '''
-        Return sum of proper divisors of N, potentially the next
-        element in a amicable chain.
-        '''
+        '''Return sum of proper divisors of N, potentially the next
+        element in a amicable chain.'''
         
         return sum(propers[N])
+
 
     max_clen = 1
     max_chain = None

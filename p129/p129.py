@@ -1,3 +1,5 @@
+#------------------------------------------------------------------------------#
+
 def f0(thres):
     print("--- f0 ---")
 
@@ -61,22 +63,29 @@ def f2(thres):
     print("--- f2 ---")
 
     def find_propers(n):
-        propers = {}
-        for i in range(1,max+1):
-            p = i*2
-            while p < max+1:
-                try:
-                    propers[p].append(i)
-                except:
-                    propers[p] = [i]
-                p += i
+        propers = []
+        if not n % 2:
+            propers = [2]
+            n = n/2
+            while not n % 2:
+                n = n/2
+        i = 1
+        while True:
+            i += 2
+            if not n % i:
+                propers.append(i)
+                n = n / i
+                while not n % i:
+                    n = n / i
+            if n == 1:
+                break
+
         return propers
 
-    print find_propers(30)
 
-    for i in range(2,10):
-        A = int('1'*i)
-        print(A)
+    for n in [int('1'*15)]:
+        print n, find_propers(n)
+
 
 #------------------------------------------------------------------------------#
 

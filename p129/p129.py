@@ -57,13 +57,20 @@ def f1(thres):
                 return
         n += 2
 
+def f2(thres):
+    print("--- f2 ---")
+
+    for i in range(2,10):
+        A = int('1'*i)
+        print(A)
+
 
 #------------------------------------------------------------------------------#
 
 import timeit
 
 times = []
-for i in [1]:
+for i in [2]:
     t = timeit.Timer('f{0}(10)'.format(i), "from __main__ import f{0}".format(i))
     times.append(t.timeit(number=1))
 

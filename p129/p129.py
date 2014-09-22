@@ -1,4 +1,4 @@
-import math
+import timeit
 
 #------------------------------------------------------------------------------#
 
@@ -86,34 +86,83 @@ def f2(thres):
 def f3(thres):
     print("--- f3 ---")
 
-    def remainder(n, k):
-        '''Returns R(k) % n.'''
+    def A(n):
+        '''Returns A(n) for n.'''
 
+        k = 0
         rem = 0
-        for i in range(k):
-            rem = (rem + pow(10, i, n)) % n
-        return rem
+        while True:
+            rem = (rem + pow(10, k, n)) % n
+            if not rem:
+                return k + 1
+            k += 1
 
-    for k in range(2,5):
-        facs = []
-        for n in range(3,k):
+
+    n = 17
+    while True:
+        if n % 5:
+            a = A(n)
+            if a > thres:
+                print "n = {0} -> k = {1}".format(n, a)
+                break
+        n += 2
+
+def f4(thres):
+    print("--- f4 ---")
+
+    def A(n):
+        '''Returns A(n) for n.'''
+
+        k = 1
+        while True:
+            rem = pow(10, k, n)
+            if rem == 1:
+                return k
+            k += 1
+
+
+    n = 17
+    while True:
+        if n % 5:
+            a = A(n)
+            if a > thres:
+                print "n = {0} -> k = {1}".format(n, a)
+                break
+        n += 2
 
 
 #------------------------------------------------------------------------------#
 
-import timeit
+f4(5000)
+exit()
 
 times = []
-for i in [1,3]:
-    t = timeit.Timer('f{0}(1000)'.format(i), "from __main__ import f{0}".format(i))
+for i in [3,4]:
+    t = timeit.Timer('f{0}(1000*100)'.format(i), "from __main__ import f{0}".format(i))
     times.append(t.timeit(number=1))
 
-#
-# f0: 45000 ms for A(n) > 1000
-# f1:   260 ms for A(n) > 1000
-# f1: 48000 ms for A(n) > 5000
-# f2:  4750 ms for A(n) > 1000 :(
-#
+# pypy times
+
+# f0:    A(n)   t (ms)
+#        1000    45000
+
+# f1:    A(n)   t (ms)
+#        1000      260
+#        5000    48000
+
+# f2:    A(n)   t (ms)
+#        1000     4750 :(
+
+# f3:    A(n)   t (ms)
+#        1000       56
+#       10000     2890
+#      100000   351500
+
+# f4:    A(n)   t (ms)
+#        1000       32
+#       10000     2500
+#      100000   260000
+
 print("\nTimes:\n")
 for i in range(len(times)):
     print('t{0} = {1:.2f} ms'.format(i, times[i]*1000))

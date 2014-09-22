@@ -1,3 +1,5 @@
+import math
+
 #------------------------------------------------------------------------------#
 
 def f0(thres):
@@ -27,7 +29,7 @@ def f0(thres):
                         success = True
                     break
             if success:
-                print n, '->', k
+                print "n = {0} -> k = {1}".format(n, k)
                 return
         n += 2
 
@@ -55,36 +57,46 @@ def f1(thres):
                         success = True
                     break
             if success:
-                print "n=", n, 'A(n)=', k
+                print "n = {0} -> k = {1}".format(n, k)
                 return
         n += 2
 
 def f2(thres):
     print("--- f2 ---")
 
-    def find_propers(n):
-        propers = []
-        if not n % 2:
-            propers = [2]
-            n = n/2
-            while not n % 2:
-                n = n/2
-        i = 1
-        while True:
-            i += 2
-            if not n % i:
-                propers.append(i)
-                n = n / i
-                while not n % i:
-                    n = n / i
-            if n == 1:
+    def remainder(n, k):
+        '''Returns R(k) % n.'''
+
+        rem = 0
+        for i in range(k):
+            rem = (rem + pow(10, i, n)) % n
+        return rem
+
+
+    for n in range(3,100000,2):
+        if n % 5:
+            for k in range(1,2000000):
+                r = remainder(n, k)
+                if not r:
+                    break
+            if k > thres:
+                print "n = {0} -> k = {1}".format(n, k)
                 break
 
-        return propers
+def f3(thres):
+    print("--- f3 ---")
 
+    def remainder(n, k):
+        '''Returns R(k) % n.'''
 
-    for n in [int('1'*15)]:
-        print n, find_propers(n)
+        rem = 0
+        for i in range(k):
+            rem = (rem + pow(10, i, n)) % n
+        return rem
+
+    for k in range(2,5):
+        facs = []
+        for n in range(3,k):
 
 
 #------------------------------------------------------------------------------#
@@ -92,14 +104,15 @@ def f2(thres):
 import timeit
 
 times = []
-for i in [2]:
-    t = timeit.Timer('f{0}(10)'.format(i), "from __main__ import f{0}".format(i))
+for i in [1,3]:
+    t = timeit.Timer('f{0}(1000)'.format(i), "from __main__ import f{0}".format(i))
     times.append(t.timeit(number=1))
 
 #
-# f0:   45s for A(n) > 1000
-# f1: 260ms for A(n) > 1000
-# f1:   48s for A(n) > 5000
+# f0: 45000 ms for A(n) > 1000
+# f1:   260 ms for A(n) > 1000
+# f1: 48000 ms for A(n) > 5000
+# f2:  4750 ms for A(n) > 1000 :(
 #
 print("\nTimes:\n")
 for i in range(len(times)):

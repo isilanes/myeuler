@@ -108,20 +108,25 @@ def f3(thres):
         n += 2
 
 def f4(thres):
+    '''Same as f3, but realize for A(n) to be larger than N,
+    n must be larger than N. So we only start checking from 
+    n = 10**6.'''
+
     print("--- f4 ---")
 
     def A(n):
         '''Returns A(n) for n.'''
 
         k = 1
+        rem = 1
         while True:
-            rem = pow(10, k, n)
-            if rem == 1:
-                return k
+            rem = (rem + pow(10, k, n)) % n
+            if not rem:
+                return k + 1
             k += 1
 
 
-    n = 17
+    n = 10**6+1
     while True:
         if n % 5:
             a = A(n)
@@ -133,12 +138,9 @@ def f4(thres):
 
 #------------------------------------------------------------------------------#
 
-f4(5000)
-exit()
-
 times = []
-for i in [3,4]:
-    t = timeit.Timer('f{0}(1000*100)'.format(i), "from __main__ import f{0}".format(i))
+for i in [4]:
+    t = timeit.Timer('f{0}(1000*1000)'.format(i), "from __main__ import f{0}".format(i))
     times.append(t.timeit(number=1))
 
 # pypy times
@@ -158,10 +160,7 @@ for i in [3,4]:
 #       10000     2890
 #      100000   351500
 
-# f4:    A(n)   t (ms)
-#        1000       32
-#       10000     2500
-#      100000   260000
+# f4: 1500 ms
 
 print("\nTimes:\n")
 for i in range(len(times)):

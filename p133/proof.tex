@@ -1,0 +1,65 @@
+\documentclass[english]{article}
+\usepackage[a4paper,top=25mm,bottom=35mm,textwidth=160mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[dvips]{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage[usenames]{color}
+\usepackage[utf8]{inputenc}
+%\usepackage{graphics}
+\usepackage{babel}
+\input{epsf}
+
+\begin{document}
+\newcommand{\mc}{\multicolumn}
+\newcommand{\mr}{\multirow}
+\newcommand{\cw}{\columnwidth}
+\newcommand{\ig}[2]{\includegraphics[width=#1\cw]{#2}}
+
+\title{Method and proof for Problem 133}
+\author{I\~naki Silanes}
+\maketitle
+
+\section{Problem definition}
+
+A number consisting entirely of ones is called a repunit. We shall define $R(k)$ to be a repunit of length $k$; for example, $R(6) = 111111$.\\
+
+Let us consider repunits of the form $R(10^n)$.\\
+
+Although $R(10)$, $R(100)$, or $R(1000)$ are not divisible by 17, $R(10000)$ is divisible by 17. Yet there is no value of $n$ for which $R(10^n)$ will divide by 19. In fact, it is remarkable that 11, 17, 41, and 73 are the only four primes below one-hundred that can be a factor of $R(10^n)$.\\
+
+Find the sum of all the primes below one-hundred thousand that will never be a factor of $R(10^n)$.
+
+\section{Method and proof}
+
+Let's take prime $p$, and define $A(p) = k$ as the smallest $k$, such that $R(k) \propto p$, where $R(n)$ is the base-10 repunit of $n$ digits. Let's assume $R(q) \propto p$, where $q$ is the next smallest $n$ for which $R(n)$ is divisible by $p$. Then:
+
+\begin{eqnarray}
+      R(q) & = & R(k) + 10^k R(q-k) \propto p \\
+R(q) \bmod p & = & ( R(k) \bmod p + (10^k R(q-k)) \bmod p ) \bmod p = 0 \\
+R(q) \bmod p & = & (0 + (10^k R(q-k)) \bmod p ) \bmod p = 0 \\
+R(q) \bmod p & = & (10^k R(q-k)) \bmod p = 0 \label{eq:qfirst}
+\end{eqnarray}\\
+
+From Eq.~\ref{eq:qfirst} we conclude that either $10^k \bmod p = 0$ or $R(q-k) \bmod p = 0$. We will discard the former, as follows:
+
+\begin{eqnarray}
+ R(k) = \frac{10^k - 1}{9} & \propto & p \\
+10^k - 1 & = & n\cdot p \\
+10^k & = & n\cdot p + 1 \\
+10^k \bmod p & = & 1 \label{eq:tenkmodp}
+\end{eqnarray}\\
+
+So, from Eqs.~\ref{eq:qfirst} and \ref{eq:tenkmodp} we conclude that $R(q-k) \bmod p = 0$. Recall that $q$ is the second-smallest $n$ for $R(n) \bmod p = 0$, with $k$ being the smallest. Clearly $q-k$ is a valid $n$ for $R(n) \bmod = 0$, and is smaller than $q$. The only value smaller than $q$ with that property is $k$, so $q - k = k$, or $q = 2k$.\\
+
+Repeating the same argument for the third and following smallest $n$ for $R(n) \bmod p = 0$, we conclude that if $R(q) \bmod p = 0$, then $q \propto k = A(p)$.\\
+
+\begin{eqnarray}
+R(q) \bmod p = 0 \implies q \bmod A(p) = 0 \label{eq:base}
+\end{eqnarray}\\
+
+Going back to the definition of the problem, and applying Eq.~\ref{eq:base}, if we assume that $R(10^n) \bmod p = 0$ for some $n$, then it follows that $10^n \bmod A(p) = 0$. In other words, $A(p)$ must be of the form $2^i\cdot 5^j$. Any $p$ for which $A(p)$ is not of that form will never be a divisor of $R(10^n)$, for {\bf any} $n$.\\
+
+The {\bf method} for solving the problem, then, will consist on looping over all primes $p$ below $10^5$, finding $A(p)$, and finding out whether $A(p) = 2^i\cdot 5^j$ for integer $i$ and $j$.
+
+\end{document}

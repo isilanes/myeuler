@@ -1,0 +1,31 @@
+\documentclass[english]{article}
+\usepackage[a4paper,top=25mm,bottom=35mm,textwidth=160mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[dvips]{graphicx}
+\usepackage{amssymb}
+\usepackage[usenames]{color}
+\usepackage[utf8]{inputenc}
+%\usepackage{graphics}
+\usepackage{babel}
+\input{epsf}
+
+\begin{document}
+\newcommand{\mc}{\multicolumn}
+\newcommand{\mr}{\multirow}
+\newcommand{\cw}{\columnwidth}
+\newcommand{\ig}[2]{\includegraphics[width=#1\cw]{#2}}
+
+\title{Problem 134}
+\author{I\~naki Silanes}
+\maketitle
+
+\section{Definition}
+
+Consider the consecutive primes $p_1 = 19$ and $p_2 = 23$. It can be verified that 1219 is the smallest number such that the last digits are formed by $p_1$ whilst also being divisible by $p_2$.\\
+
+In fact, with the exception of $p_1 = 3$ and $p_2 = 5$, for every pair of consecutive primes, $p_2 > p_1$, there exist values of $n$ for which the last digits are formed by $p_1$ and $n$ is divisible by $p_2$. Let $S$ be the smallest of these values of $n$.\\
+
+Find $\sum S$ for every pair of consecutive primes with $5 \leq p_1 \leq 1000000$.
+
+
+\end{document}

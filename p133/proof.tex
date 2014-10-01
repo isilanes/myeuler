@@ -60,6 +60,16 @@ R(q) \bmod p = 0 \implies q \bmod A(p) = 0 \label{eq:base}
 
 Going back to the definition of the problem, and applying Eq.~\ref{eq:base}, if we assume that $R(10^n) \bmod p = 0$ for some $n$, then it follows that $10^n \bmod A(p) = 0$. In other words, $A(p)$ must be of the form $2^i\cdot 5^j$. Any $p$ for which $A(p)$ is not of that form will never be a divisor of $R(10^n)$, for {\bf any} $n$.\\
 
-The {\bf method} for solving the problem, then, will consist on looping over all primes $p$ below $10^5$, finding $A(p)$, and finding out whether $A(p) = 2^i\cdot 5^j$ for integer $i$ and $j$.
+\subsection{f0}
+
+The method for solving the problem, then, will consist on looping over all primes $p$ below $10^5$, finding $A(p)$, and finding out whether $A(p) = 2^i\cdot 5^j$ for integer $i$ and $j$.
+
+\subsection{f1}
+
+Same as {\bf f0}, but calculate $A(p)$ using $10^k \bmod p = 1$, instead of $R(k) \bmod p = 0$, which is slightly faster.
+
+\subsection{f2}
+
+Instead of finding $A(p)$ for each $p$, and {\it then} checking whether $A(p) \bmod 2^i\cdot 5^j = 0$, only check all $k = 2^i\cdot 5^j < p$, for $R(k) \bmod p = 0$ (that is $10^k \bmod p = 1$). If no such $k$ exists, then we don't know what $A(p)$ is for $p$, but we do know that its prime factors won't be just 2 and 5.
 
 \end{document}

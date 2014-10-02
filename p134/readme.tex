@@ -29,15 +29,16 @@ Find $\sum S$ for every pair of consecutive primes with $5 \leq p_1 \leq 1000000
 
 \section{Solution}
 
-The requested $n$ will always be of the form $n = n\cdot 10^d + p_1$, where $d$ is the amount of digits in $p_1$. The requested property for $n$ is
+The requested $n$ will always be of the form $n = m 10^d + p_1$, where $d$ is the amount of digits in $p_1$. The requested property for $n$ is
 
 \begin{eqnarray}
-n \bmod p_2 = 0\\
-(m 10^j + p_1) \bmod p_2 = 0\\
-(m 10^j \bmod p_2 + p_1 \bmod p_2) \bmod p_2 = 0\\
-(m 10^j \bmod p_2 + p_1) \bmod p_2 = 0\\
-m 10^j \bmod p_2 = p_2 - p_1
+n \bmod p_2 & = & 0\\
+(m 10^d + p_1) \bmod p_2 & = & 0\\
+(m 10^d \bmod p_2 + p_1 \bmod p_2) \bmod p_2 & = & 0\\
+(m 10^d \bmod p_2 + p_1) \bmod p_2 & = & 0\\
+m 10^d \bmod p_2 & = & p_2 - p_1 \label{eq:mod}
 \end{eqnarray}
 
+Following this reasoning, we proceed to check different $m$ values for each $p_1, p_2$ pair, until Eq.~\ref{eq:mod} holds. Then we calculate $n = m 10^d + p_1 = S$ and add it to the total.
 
 \end{document}

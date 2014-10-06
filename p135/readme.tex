@@ -37,16 +37,59 @@ If ${x,y,z}$ are members of an arithmetic progression, then we can define, witho
 
 \begin{eqnarray}
 x^2 - y^2 - z^2 & = & n \\
-(y+d)^2 - y*^2 - (y-d)^2 & = & n \\
-4 d y - y^2 & = & n
+(y+d)^2 - y^2 - (y-d)^2 & = & n \\
+4 d y - y^2 & = & n \label{eq:n}
 \end{eqnarray}
 
-Solving for $d$, we get:
+Solving for $y$, we get:
 
 \begin{equation}
-d = \frac{n+y^2}{4y} \label{eq:d}
+y = 2d \pm \sqrt{4d^2-n} \label{eq:y}
 \end{equation}
 
-From Eq.~\ref{eq:d} we can obtain the maximum $d$ possible.
+From Eq.~\ref{eq:y} we can obtain the maximum $d$ possible. We know that the content of the square root must be a perfect square, so, defining $D = 2d$:
+
+\begin{eqnarray}
+4d^2 - n & = & k^2 \\
+D^2 - n & = & k^2 \label{eq:D2}
+\end{eqnarray}
+
+For Eq.~\ref{eq:D2} to hold, $D^2 - n$ must be equal to or less than $(D-1)^2$, since $D-1$ is the largest value $k$ could take. Developing further:
+
+\begin{eqnarray}
+D^2 - n & \leq & (D-1)^2 \\
+D^2 - n & \leq & D^2 + 1 -2D \\
+n & \geq & 2D-1 = 4d-1 \\
+d & \leq & \frac{n+1}{4}
+\end{eqnarray}
+
+Now, for a given $d$, what would the limits for $y$ be? Since $z = y-d > 0$, then $y \geq d + 1$. Also, from Eq.~\ref{eq:n}:
+
+\begin{eqnarray}
+4 d y - y^2 & = & n > 0 \\
+y(4d-y) & > & 0 \\
+4d - y & > & 0 \\
+y & < & 4d
+\end{eqnarray}
+
+\subsection{Solution f3}
+
+The procedure to solve this problem would then be the following:
+
+\begin{enumerate}
+  \item Take all $d$ from 1 to $(n_{max}+1)/4$
+  \item Take all $y$ from $d+1$ to $4d$ (see above)
+  \item Calculate $n$ from Eq.~\ref{eq:n}
+  \item If $n$ is within 0 and $n_{max}$, add 1 to the amount of combinations that yield $n$
+  \item Once all $(d, y)$ taken, check all $n$ to see if its amount of combinations is 10, and print how many of them are
+\end{enumerate}
+
+\subsection{Solution f5}
+
+We must take into account that in the $y = d+1$ to $y = 4d$ region there can be a sizeable region where $n > n_{max}$ for sure. See that Eq.~\ref{eq:n} is a parabola, when plotting $n$ vs. $y$ for a given $d$. Its maximum will be at $y = 2d$, with a value of $n = 4d^2$. If this value is less than $n_{max}$ all $y$ values in interval will yield a valid $n$. However, if $n = 4d > n_{max}$, there will be a $y = 2d \pm \delta y$ region around the maximum where we do not need to check $y$, because we know it will yield too large an $n$.\\
+
+The width of that region, $\delta y$ can be obtained from Eq.~\ref{eq:y}, substituting $n$ with $n_{max}$, and turns out to be $\delta y = \sqrt{4d^2-n_{max}}$.\\
+
+Taking advantage of this fact, we can loop over $y$ only in the $(d+1, 2d - \delta y)$ and $(2d + \delta y, 4d)$ regions. For larger $d$ values this saves quite a bit of time.
 
 \end{document}

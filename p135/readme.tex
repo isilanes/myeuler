@@ -33,6 +33,20 @@ How many values of $n$ less than one million have exactly ten distinct solutions
 
 \section{Solution(s) and proof}
 
-aaa
+If ${x,y,z}$ are members of an arithmetic progression, then we can define, without losing generality, $x = y + d$ and $z = y - d$, for some integer $d < y$ (lest $z \leq 0$). So:
+
+\begin{eqnarray}
+x^2 - y^2 - z^2 & = & n \\
+(y+d)^2 - y*^2 - (y-d)^2 & = & n \\
+4 d y - y^2 & = & n
+\end{eqnarray}
+
+Solving for $d$, we get:
+
+\begin{equation}
+d = \frac{n+y^2}{4y} \label{eq:d}
+\end{equation}
+
+From Eq.~\ref{eq:d} we can obtain the maximum $d$ possible.
 
 \end{document}

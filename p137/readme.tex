@@ -1,0 +1,108 @@
+\documentclass[english]{article}
+\usepackage[a4paper,top=25mm,bottom=35mm,textwidth=160mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[dvips]{graphicx}
+\usepackage{amssymb}
+\usepackage[usenames]{color}
+\usepackage[utf8]{inputenc}
+%\usepackage{graphics}
+\usepackage{babel}
+\usepackage{charter}
+\input{epsf}
+
+\begin{document}
+\newcommand{\mc}{\multicolumn}
+\newcommand{\mr}{\multirow}
+\newcommand{\cw}{\columnwidth}
+\newcommand{\ig}[2]{\includegraphics[width=#1\cw]{#2}}
+
+\title{Problem 137\\Fibonacci golden nuggets}
+\author{I\~naki Silanes}
+\maketitle
+
+\section{Definition}
+
+Consider the infinite polynomial series $A_{F}(x) = x F_1 + x^2 F_2 + x^3 F_3 + ...$, where $F_k$ is the $k$th term in the Fibonacci sequence: 1, 1, 2, 3, 5, 8, ... ; that is, $F_k = F_{k-1}+ F_{k-2}, F_1 = 1$ and $F_2 = 1$.\\
+
+For this problem we shall be interested in values of x for which $A_F(x)$ is a positive integer.\\
+
+Surprisingly:
+
+\begin{eqnarray}
+A_F(1/2) & = & (1/2)\cdot 1 + (1/2^)2\cdot 1 + (1/2)^3\cdot 2 + (1/2)^4\cdot 3 + (1/2)^5\cdot 5 + ...\\
+  	 & = & 	1/2 + 1/4 + 2/8 + 3/16 + 5/32 + ...\\
+  	 & = & 	2
+\end{eqnarray}
+
+The corresponding values of x for the first five natural numbers are shown below.\\
+
+\begin{center}
+  \begin{tabular}{cc} \hline
+	$x$               & $A_F(x)$ \\ \hline
+	$\sqrt{2}-1$      & 1 \\
+	$1/2$             & 2 \\
+	$(\sqrt{13}-2)/3$ & 3 \\
+	$(\sqrt{89}-5)/8$ & 4 \\
+	$(\sqrt{34}-3)/5$ & 5 \\ \hline
+  \end{tabular}
+\end{center}
+\ \\
+
+We shall call $A_F(x)$ a golden nugget if $x$ is rational, because they become increasingly rarer; for example, the 10th golden nugget is 74049690.\\
+
+Find the 15th golden nugget.
+
+\section{Solution(s) and proof}
+
+If we check {\tt http://en.wikipedia.org/wiki/Fibonacci\_number}, it seems that the formula for $A_F(x)$ is actually $s(x)$, as given in the ``Power series'' section of the article, which is convergent and has a closed form for $|x| < 1/\varphi$:
+
+\begin{eqnarray}
+s(x) & = & \sum_{k=0}^{\infty} F_k x^k \\
+s(x) & = & \frac{x}{1-x-x^2} \label{eq:sx}
+\end{eqnarray}
+
+Our only task is to find values of $x$ such that $s(x)$ is integer. If we make $s(x) = n$ in Eq.~\ref{eq:sx}, and solve for $x$:
+
+\begin{eqnarray}
+n & = & \frac{x}{1-x-x^2} \\
+n (1-x-x^2) & = & x \\
+n x^2 + (n+1) x - n & = & 0 \\
+x & = & \frac{-(n+1)+\sqrt{5n^2+2n+1}}{2n} \label{eq:x}
+\end{eqnarray}
+
+In Eq.~\ref{eq:x} se remove the negative solution, as $x > 0$.
+
+\subsection{f0}
+
+Eq.~\ref{eq:x} already gives as a method for solving p137. We can try succesive integer values of $n$, and check whether the result of $5n^2+2n+1$ is a perfect square. If (and only if) it is, $x$ will be rational. This method is too slow to go beyond the 11th golden nugget.
+
+\subsection{f1}
+
+We can take Eq.~\ref{eq:x} and equate $5n^2+2n+1$ to some squared integer $k^2$, then solve for $n$:
+
+\begin{eqnarray}
+5n^2+2n+1 & = & k^2 \\
+n & = & \frac{-1+\sqrt{5k^2-4}}{5} \label{eq:n}
+\end{eqnarray}
+
+According to Eq.~\ref{eq:n}, we can take succesive $k$ values, square them, then check whether the equation returns an integer value for $n$. This method turns out to be slower than {\bf f0}.
+
+\subsection{f2}
+
+I have realized that the values of $k$ in Eq.~\ref{eq:n} that return an integer $n$ are members of the Fibonacci sequence, more precisely of the form $F_{5+4m}$ for $m = 0, 1, 2, 3...$ It is then trivial to iterate over every 4 Fibonacci numbers from the 5th on, use them as $k$ in Eq.~\ref{eq:n} to get $n$, and return the 15th such value. 
+
+\subsection{f3}
+
+Actually, $n$ only needs to be calculated for the 15th $k$. {\it Actually}, we do know that the $k$ value will be $k = F_{5+4\cdot 14} = F_{61}$, and thus the $n$ value we are looking for would be directly:
+
+\begin{eqnarray}
+n & = & \frac{-1+\sqrt{5F_{61}^2-4}}{5}
+\end{eqnarray}
+
+In general, $m$th golden nugget will be:
+
+\begin{eqnarray}
+n_{m} & = & \frac{-1+\sqrt{5F_{4m+1}^2-4}}{5}
+\end{eqnarray}
+
+\end{document}

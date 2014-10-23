@@ -63,12 +63,37 @@ def f1(max_perimeter):
 
     print(npythagorean)
 
+def f2(Pmax):
+    print("--- f2 ---")
+
+    def issquare(k2):
+        k = int(math.sqrt(k2))
+        if k**2 == k2:
+            return k
+        return False
+
+
+    npythagorean = 0
+    k0 = 1
+    while True:
+        k0 += 1
+        s = issquare(2*k0**2-1)
+        i0 = (s - 1)/2
+        if s:
+            P0 = 2*i0+k0+1
+            dmax = int(Pmax/P0)
+            if dmax < 1:
+                break
+            npythagorean += dmax
+
+    print(npythagorean)
+
 
 #------------------------------------------------------------------------------#
 
 times = []
-for i in [1]:
-    t = timeit.Timer('f{0}(10**4)'.format(i), "from __main__ import f{0}".format(i))
+for i in [2]:
+    t = timeit.Timer('f{0}(10**8)'.format(i), "from __main__ import f{0}".format(i))
     times.append(t.timeit(number=1))
 
 # pypy times:
@@ -78,13 +103,15 @@ for i in [1]:
 #              10**4     124
 #              10**5   10116
 
-# f0:  max_perimeter  t (ms)
+# f1:  max_perimeter  t (ms)
 #              10**3       4
 #              10**4       7
 #              10**5      11
 #              10**6      31
 #              10**7     103
 #              10**8    2411
+
+# f2: a bit faster than f1
 
 print("\nTimes:\n")
 for i in range(len(times)):

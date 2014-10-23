@@ -1,0 +1,76 @@
+\documentclass[english]{article}
+\usepackage[a4paper,top=25mm,bottom=35mm,textwidth=160mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[dvips]{graphicx}
+\usepackage{amssymb}
+\usepackage[usenames]{color}
+\usepackage[utf8]{inputenc}
+%\usepackage{graphics}
+\usepackage{babel}
+\usepackage{charter}
+\input{epsf}
+
+\begin{document}
+\newcommand{\mc}{\multicolumn}
+\newcommand{\mr}{\multirow}
+\newcommand{\cw}{\columnwidth}
+\newcommand{\ig}[2]{\includegraphics[width=#1\cw]{#2}}
+
+\title{Problem 139\\Pythagorean tiles}
+\author{I\~naki Silanes}
+\maketitle
+
+\section{Definition}
+
+Let $(a, b, c)$ represent the three sides of a right angle triangle with integral length sides. It is possible to place four such triangles together to form a square with length $c$.\\
+
+For example, $(3, 4, 5)$ triangles can be placed together to form a 5 by 5 square with a 1 by 1 hole in the middle and it can be seen that the 5 by 5 square can be tiled with twenty-five 1 by 1 squares.\\
+
+However, if (5, 12, 13) triangles were used then the hole would measure 7 by 7 and these could not be used to tile the 13 by 13 square.\\
+
+Given that the perimeter of the right triangle is less than one-hundred million, how many Pythagorean triangles would allow such a tiling to take place?
+
+\section{Solution(s) and proof}
+
+We will call $d$ the value of the side of the hole in the middle, and $(i, j, k)$ the values of the sides of the triangle, in increasing order. From that is evident that $j - i = d$, and $i^2 + j^2 = k^2$. Also, as $k$ must be divisible by $d$, we can define $k = d k_0$. From that:\\
+
+\begin{eqnarray}
+i^2 + j^2 & = & k^2 \\
+i^2 + (j+d)^2 & = & d^2 k_0^2 \\
+2 i^2 + 2id + d^2(1-k_0^2) & = & 0 \\
+\end{eqnarray}
+
+Solving for $i$, we get:
+
+\begin{eqnarray}
+i & = & \frac{d}{2}(-1 + \sqrt{2k_0^2 - 1}) = i_0 d \\
+i_0 & = & \frac{-1 + \sqrt{2k_0^2 - 1}}{2}
+\end{eqnarray}
+
+Since $j = i + d$, we can put it as a function of $i_0$ and $d$: $j = (i_0 + 1) d$. From that, we can solve for the perimeter:
+
+\begin{eqnarray}
+P & = & i + j + k \\
+P & = & i_0 d + (i_0+1)d + k_0 d \\
+P & = & d (2 i_0 + k_0 +1) \\
+P & = & P_0 d
+\end{eqnarray}
+
+As we know that $P < P_{max}$ must hold, we get:
+
+\begin{eqnarray}
+\end{eqnarray}
+
+\subsection{f0}
+
+Eq.~\ref{eq:L2} already gives as a method for solving p138. We can try succesive integer values of $B$, and check whether the result of $5B^2\pm 4B+1$ is a perfect square. If it is, calculate $L$ and add up. This method is too slow to go beyond the 7th triangle.
+
+\subsection{f1}
+
+According to Eq.~\ref{eq:B}, we can take succesive $L$ values, square them, then check whether the equation returns an integer value for $B$. This method turns out to be a bit slower than {\bf f0}.
+
+\subsection{f2}
+
+I have realized that the values of $L$ in Eq.~\ref{eq:B} that return an integer $B$ are exactly half the value of members of the Fibonacci sequence, more precisely of the form $F_{9+6m}/2$ for $m = 0, 1, 2, 3...$ It is then trivial to iterate over every 6th Fibonacci number from the 9th on, adding their halves up as needed.
+
+\end{document}

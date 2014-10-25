@@ -37,14 +37,14 @@ We will call $d$ the value of the side of the hole in the middle, and $(i, j, k)
 \begin{eqnarray}
 i^2 + j^2 & = & k^2 \\
 i^2 + (j+d)^2 & = & d^2 k_0^2 \\
-2 i^2 + 2id + d^2(1-k_0^2) & = & 0 \\
+2 i^2 + 2id + d^2(1-k_0^2) & = & 0 
 \end{eqnarray}
 
 Solving for $i$, we get:
 
 \begin{eqnarray}
 i & = & \frac{d}{2}(-1 + \sqrt{2k_0^2 - 1}) = i_0 d \\
-i_0 & = & \frac{-1 + \sqrt{2k_0^2 - 1}}{2}
+i_0 & = & \frac{-1 + \sqrt{2k_0^2 - 1}}{2} \label{eq:i0}
 \end{eqnarray}
 
 Since $j = i + d$, we can put it as a function of $i_0$ and $d$: $j = (i_0 + 1) d$. From that, we can solve for the perimeter:
@@ -56,21 +56,18 @@ P & = & d (2 i_0 + k_0 +1) \\
 P & = & P_0 d
 \end{eqnarray}
 
-As we know that $P < P_{max}$ must hold, we get:
-
-\begin{eqnarray}
-\end{eqnarray}
+As we know that $P < P_{max}$ must hold, then $d < P_{max}/P_0$.
 
 \subsection{f0}
 
-Eq.~\ref{eq:L2} already gives as a method for solving p138. We can try succesive integer values of $B$, and check whether the result of $5B^2\pm 4B+1$ is a perfect square. If it is, calculate $L$ and add up. This method is too slow to go beyond the 7th triangle.
+Take $i$ values from 1 on. Take $j$ values from $i+1$ on. Check if that $(i,j)$ pair corresponds to an integer $k$. If so, check whether $k \bmod d = 0$, where $d = j-i$.\\
+
+This method is too slow, and scales badly.
 
 \subsection{f1}
 
-According to Eq.~\ref{eq:B}, we can take succesive $L$ values, square them, then check whether the equation returns an integer value for $B$. This method turns out to be a bit slower than {\bf f0}.
+Check from $k_0 = 1$ upwards whether Eq.~\ref{eq:i0} yields an integer $i_0$. If it does, $(i_0 d, (i_0+1)d, k_0 d)$ triplets will be valid solutions for every $d$, up to $d_{max} < P_{max}/P_0$, as explained above. This means $d_{max}$ different solutions for each valid $k_0$.\\
 
-\subsection{f2}
-
-I have realized that the values of $L$ in Eq.~\ref{eq:B} that return an integer $B$ are exactly half the value of members of the Fibonacci sequence, more precisely of the form $F_{9+6m}/2$ for $m = 0, 1, 2, 3...$ It is then trivial to iterate over every 6th Fibonacci number from the 9th on, adding their halves up as needed.
+So, the solution will then consist on finding all valid $k_0$ values, and corresponding $d_{max}$ values, up to the given maximum perimeter ($P_{max}$). The requested result is the sum of all $d_{max}$ values.
 
 \end{document}

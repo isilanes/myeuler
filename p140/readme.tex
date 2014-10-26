@@ -1,0 +1,104 @@
+\documentclass[english]{article}
+\usepackage[a4paper,top=25mm,bottom=35mm,textwidth=160mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[dvips]{graphicx}
+\usepackage{amssymb}
+\usepackage[usenames]{color}
+\usepackage[utf8]{inputenc}
+%\usepackage{graphics}
+\usepackage{babel}
+\usepackage{charter}
+\input{epsf}
+
+\begin{document}
+\newcommand{\mc}{\multicolumn}
+\newcommand{\mr}{\multirow}
+\newcommand{\cw}{\columnwidth}
+\newcommand{\ig}[2]{\includegraphics[width=#1\cw]{#2}}
+
+\title{Problem 140\\Modified Fibonacci golden nuggets}
+\author{I\~naki Silanes}
+\maketitle
+
+\section{Definition}
+
+Consider the infinite polynomial series $A_{G}(x) = x G_1 + x^2 G_2 + x^3 G_3 + ...$, where $G_k$ is the $k$th term of the second order recurrence relation $G_k = G_{k-1}+ G_{k-2}, G_1 = 1$ and $G_2 = 4$.\\
+
+For this problem we shall be concerned with values of $x$ for which $A_G(x)$ is a positive integer.\\
+
+The corresponding values of x for the first five natural numbers are shown below.\\
+
+\begin{center}
+  \begin{tabular}{cc} \hline
+	$x$                 & $A_G(x)$ \\ \hline
+	$(\sqrt{5}-1)/4$    & 1 \\
+	$2/5$               & 2 \\
+	$(\sqrt{22}-2)/6$   & 3 \\
+	$(\sqrt{137}-5)/14$ & 4 \\
+	$1/2$               & 5 \\ \hline
+  \end{tabular}
+\end{center}
+\ \\
+
+We shall call $A_G(x)$ a golden nugget if $x$ is rational, because they become increasingly rarer; for example, the 20th golden nugget is 211345365.\\
+
+Find the sum of the first thirty golden nuggets.
+
+\section{Solution(s) and proof}
+
+It is evident that this is a modified version of problem 137. We will first derive a closed formula for $A_G(x)$, as the one we got from Wikipedia por $A_F(x)$.
+
+\begin{eqnarray}
+s(x) & = & \sum_{k=1}^{\infty} x^k G_k \\
+s(x) & = & x G_1 + x^2 G_2 + \sum_{k=3}^{\infty} x^k G_k \\
+s(x) & = & x + 4x^2 + \sum_{k=3}^{\infty} x^k (G_{k-1} + G_{k-2}) \\
+s(x) & = & x + 4x^2 + x \sum_{k=1}^{\infty} x^k G_k - x^2 G_1 + x^2 \sum_{k=1}^{\infty}) x^k G_k \\
+s(x) & = & x + 4x^2 + x s(x) - x^2 + x^2 s(x) \\
+s(x) & = & \frac{x+3x^2}{1-x-x^2} \label{eq:sx}
+\end{eqnarray}
+
+Our only task is to find values of $x$ such that $s(x)$ is integer. If we make $s(x) = n$ in Eq.~\ref{eq:sx}, and solve for $x$:
+
+\begin{eqnarray}
+n & = & \frac{x}{1-x-x^2} \\
+n (1-x-x^2) & = & x \\
+n x^2 + (n+1) x - n & = & 0 \\
+x & = & \frac{-(n+1)+\sqrt{5n^2+2n+1}}{2n} \label{eq:x}
+\end{eqnarray}
+
+In Eq.~\ref{eq:x} se remove the negative solution, as $x > 0$.
+
+\subsection{f0}
+
+Eq.~\ref{eq:x} already gives as a method for solving p137. We can try succesive integer values of $n$, and check whether the result of $5n^2+2n+1$ is a perfect square. If (and only if) it is, $x$ will be rational. This method is too slow to go beyond the 11th golden nugget.
+
+\subsection{f1}
+
+We can take Eq.~\ref{eq:x} and equate $5n^2+2n+1$ to some squared integer $k^2$, then solve for $n$:
+
+\begin{eqnarray}
+5n^2+2n+1 & = & k^2 \\
+n & = & \frac{-1+\sqrt{5k^2-4}}{5} \label{eq:n}
+\end{eqnarray}
+
+According to Eq.~\ref{eq:n}, we can take succesive $k$ values, square them, then check whether the equation returns an integer value for $n$. This method turns out to be slower than {\bf f0}.
+
+\subsection{f2}
+
+I have realized that the values of $k$ in Eq.~\ref{eq:n} that return an integer $n$ are members of the Fibonacci sequence, more precisely of the form $F_{5+4m}$ for $m = 0, 1, 2, 3...$ It is then trivial to iterate over every 4 Fibonacci numbers from the 5th on, use them as $k$ in Eq.~\ref{eq:n} to get $n$, and return the 15th such value. 
+
+\subsection{f3}
+
+Actually, $n$ only needs to be calculated for the 15th $k$. {\it Actually}, we do know that the $k$ value will be $k = F_{5+4\cdot 14} = F_{61}$, and thus the $n$ value we are looking for would be directly:
+
+\begin{eqnarray}
+n & = & \frac{-1+\sqrt{5F_{61}^2-4}}{5}
+\end{eqnarray}
+
+In general, $m$th golden nugget will be:
+
+\begin{eqnarray}
+n_{m} & = & \frac{-1+\sqrt{5F_{4m+1}^2-4}}{5}
+\end{eqnarray}
+
+\end{document}

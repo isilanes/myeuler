@@ -1,5 +1,5 @@
 \documentclass[english]{article}
-\usepackage[a4paper,top=25mm,bottom=35mm,textwidth=160mm]{geometry}
+\usepackage[a4paper,top=15mm,bottom=25mm,textwidth=160mm]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage[dvips]{graphicx}
 \usepackage{amssymb}
@@ -60,45 +60,51 @@ s(x) & = & \frac{x+3x^2}{1-x-x^2} \label{eq:sx}
 Our only task is to find values of $x$ such that $s(x)$ is integer. If we make $s(x) = n$ in Eq.~\ref{eq:sx}, and solve for $x$:
 
 \begin{eqnarray}
-n & = & \frac{x}{1-x-x^2} \\
-n (1-x-x^2) & = & x \\
-n x^2 + (n+1) x - n & = & 0 \\
-x & = & \frac{-(n+1)+\sqrt{5n^2+2n+1}}{2n} \label{eq:x}
+n & = & \frac{x + 3x^2}{1-x-x^2} \\
+n (1-x-x^2) & = & x + 3x^2\\
+(3+n)x^2 + (n+1) x - n & = & 0 \\
+x & = & \frac{-(n+1)+\sqrt{5n^2+14n+1}}{2(3+n)} \label{eq:x}
 \end{eqnarray}
 
 In Eq.~\ref{eq:x} se remove the negative solution, as $x > 0$.
 
 \subsection{f0}
 
-Eq.~\ref{eq:x} already gives as a method for solving p137. We can try succesive integer values of $n$, and check whether the result of $5n^2+2n+1$ is a perfect square. If (and only if) it is, $x$ will be rational. This method is too slow to go beyond the 11th golden nugget.
+Eq.~\ref{eq:x} already gives as a method for solving p140. We can try succesive integer values of $n$, and check whether the result of $5n^2+14n+1$ is a perfect square. If (and only if) it is, $x$ will be rational. This method is too slow to go beyond the 21st golden nugget.
 
 \subsection{f1}
 
-We can take Eq.~\ref{eq:x} and equate $5n^2+2n+1$ to some squared integer $k^2$, then solve for $n$:
+We can take Eq.~\ref{eq:x} and equate $5n^2+14n+1$ to some squared integer $k^2$, then solve for $n$:
 
 \begin{eqnarray}
-5n^2+2n+1 & = & k^2 \\
-n & = & \frac{-1+\sqrt{5k^2-4}}{5} \label{eq:n}
+5n^2+14n+1 & = & k^2 \\
+n & = & \frac{-7+\sqrt{5k^2+44}}{5} \label{eq:n}
 \end{eqnarray}
 
-According to Eq.~\ref{eq:n}, we can take succesive $k$ values, square them, then check whether the equation returns an integer value for $n$. This method turns out to be slower than {\bf f0}.
+According to Eq.~\ref{eq:n}, we can take succesive $k$ values, substitute them, then check whether the equation returns an integer value for $n$. This method turns out to be slower than {\bf f0}.
 
 \subsection{f2}
 
-I have realized that the values of $k$ in Eq.~\ref{eq:n} that return an integer $n$ are members of the Fibonacci sequence, more precisely of the form $F_{5+4m}$ for $m = 0, 1, 2, 3...$ It is then trivial to iterate over every 4 Fibonacci numbers from the 5th on, use them as $k$ in Eq.~\ref{eq:n} to get $n$, and return the 15th such value. 
+I wondered whether the valid $k$ values for an integer $n$ in Eq.~\ref{eq:n} belong to any series, as in Problem 137 they belonged to the Fibonacci series.\\
 
-\subsection{f3}
-
-Actually, $n$ only needs to be calculated for the 15th $k$. {\it Actually}, we do know that the $k$ value will be $k = F_{5+4\cdot 14} = F_{61}$, and thus the $n$ value we are looking for would be directly:
+The first 10 values of $k$ are: 7, 14, 50, 97, 343, 665, 2351, 4558, 16114, 31241. We can readily see that the even terms $(14, 97, 665, 4558, 31241)$, are members of the $G_i$, series, namely $G_i$ for $i~=~5, 9, 13, 17, 21$. In other words:\\
 
 \begin{eqnarray}
-n & = & \frac{-1+\sqrt{5F_{61}^2-4}}{5}
+k_i & = & G_{2i+1}
 \end{eqnarray}
 
-In general, $m$th golden nugget will be:
+for even $i$.\\
+
+However, the odd values are more puzzling: $(7,50,343,2351,16114, ...)$. Playing around, and searching a bit in internet, I found out they are members of another modified Fibonacci series, namely $H_i = H_{i-1} + H_{i-2}$, with $H_1 = 7$ and $H_2 = 12$. More precisely, they'd be elements $H_i$ for $i = 1, 5, 9, 13, 17, ...$. In other words:\\
 
 \begin{eqnarray}
-n_{m} & = & \frac{-1+\sqrt{5F_{4m+1}^2-4}}{5}
+k_i & = & H_{2i-1}
 \end{eqnarray}
+
+for odd $i$.\\
+
+We are requested to find the value of the first 30 golden nuggets, which amounts to finding $G_{2i+1}$ for $i = 2, 4, ..., 30$, then $H_{2i-1}$ for $i = 1, 3, ... 29$. These 30 values of $k$ will produce 30 values of $n$, via Eq.~\ref{eq:n}. Add up those 30 values of $n$, and be done with it.\\
+
+No need to say this method is amazingly fast.
 
 \end{document}

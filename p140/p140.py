@@ -44,15 +44,13 @@ def f1(nmax):
 
 
     tot = 0
-    d = 1
     k = 1
     nnug = 0
     while True:
-        k += d
+        k += 1
         disk2 = dis(k)
         disk = issquare(disk2)
         if disk:
-            #print k, disk2
             if not (disk - 7) % 5:
                 n = (disk - 7)/5
                 nnug += 1

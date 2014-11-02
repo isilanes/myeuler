@@ -1,0 +1,85 @@
+\documentclass[english]{article}
+\usepackage[a4paper,top=15mm,bottom=25mm,textwidth=160mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[dvips]{graphicx}
+\usepackage{amssymb}
+\usepackage[usenames]{color}
+\usepackage[utf8]{inputenc}
+%\usepackage{graphics}
+\usepackage{babel}
+\usepackage{charter}
+\input{epsf}
+
+\begin{document}
+\newcommand{\mc}{\multicolumn}
+\newcommand{\mr}{\multirow}
+\newcommand{\cw}{\columnwidth}
+\newcommand{\ig}[2]{\includegraphics[width=#1\cw]{#2}}
+
+\title{Problem 141\\Investigating progressive numbers, n, which are also square}
+\author{I\~naki Silanes}
+\maketitle
+
+\section{Definition}
+
+A positive integer, $n$, is divided by $d$ and the quotient and remainder are $q$ and $r$ respectively. In addition $d$, $q$, and $r$ are consecutive positive integer terms in a geometric sequence, but not necessarily in that order.\\
+
+For example, 58 divided by 6 has quotient 9 and remainder 4. It can also be seen that 4, 6, 9 are consecutive terms in a geometric sequence (common ratio 3/2).\\
+
+We will call such numbers, $n$, progressive.\\
+
+Some progressive numbers, such as 9 and $10404 = 102^2$, happen to also be perfect squares. The sum of all progressive perfect squares below one hundred thousand is 124657.\\
+
+Find the sum of all progressive perfect squares below one trillion ($10^12$).
+
+\section{Solution(s) and proof}
+
+\subsection{f0}
+
+We can take the most obvious route, and check all perfect squares below $10^{12}$, to see whether they are progressive or not. For each of those $10^6$ numbers $m$, we will check all potential divisors $d$, from $d=2$ to $d=\sqrt{m}$, obtaining $q$ and $r$ for each $d$. Then we will check whether they are members of a geometrical progression.\\
+
+The progression check is easy, since by construction our values will be in $q > d > r$ order. This means we will have to check $q/d = d/r$, or reordering for better computation suitability: $q r = d^2$.\\
+
+This method is usable, but too slow to be acceptable (around 5 hours on my PC).
+
+\subsection{f1}
+
+We can define $R$ as the coefficient of the geometric progression (not necessarily integer). By definition we have $r < d$, obviously, but theoretically $q$ could be either larger than $d$, between $d$ and $r$, or smaller than $r$. If the smallest of the three is $r$, then either $d = R r$ and $q = R d = R^2 r$ or $q = R r$ and $d = R q = R^2 r$. In both cases:
+
+\begin{eqnarray}
+n & = & d q + r\\
+n & = & R^3 r^2 + r \label{eq:n1}
+\end{eqnarray}
+
+However, if the smallest one is $q$, then $r = Rq$ ($r$ must be the second largest, as $r < d$ by definition), and $d = R^2$, so:
+
+\begin{eqnarray}
+n & = & d q + r\\
+n & = & R^2 q^2 + Rq \label{eq:n2}
+\end{eqnarray}
+
+We will argue that all the numbers we seek are of the form in Eq.~\ref{eq:n1}, and not Eq.~\ref{eq:n2}. Indeed, in the latter $Rq$ must be integer for $n$ to be integer. This means $n = c^2 + c$, with $n$ and $c$ integer. If $n$ is a square number, then $n = k^2$ for some integer $k$. So:
+
+\begin{eqnarray}
+k^2 & =  & c^2 + c \\
+k & >  & c \\
+k & \geq & c + 1 \\
+k^2 & \geq & c^2 + 2c + 1 > c^2 + c = k^2 \label{eq:k2}
+\end{eqnarray}
+
+From Eq.~\ref{eq:k2}, it is clearly impossible that $n = c^2 + c$ be square.\\
+
+So, without loss of generality, we can define $R = \alpha/\beta$, and use Eq.~\ref{eq:n1} to build up a method: 
+
+\begin{enumerate}
+  \item check all integer $r$ from 1 upwards
+  \item From $r$, obtain all possible $d$ and $q$ pairs, from $\alpha r/\beta$ and $\alpha^2 r/\beta^2$
+  \item If $d$ and $q$ are integer, use Eq.\ref{eq:n1} to get $n$
+  \item If $n$ is integer (and smaller than limit), add it up
+  \item If $n$ is larger than limit, skip to next $r$
+  \item If $r^2$ is larger than limit, break from main loop
+\end{enumerate}
+
+This method is a bit slow, but acceptable ($\sim 5$ minutes).
+
+\end{document}

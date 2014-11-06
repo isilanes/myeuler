@@ -1,0 +1,67 @@
+\documentclass[english]{article}
+\usepackage[a4paper,top=15mm,bottom=25mm,textwidth=160mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[dvips]{graphicx}
+\usepackage{amssymb}
+\usepackage[usenames]{color}
+\usepackage[utf8]{inputenc}
+%\usepackage{graphics}
+\usepackage{babel}
+\usepackage{charter}
+\input{epsf}
+
+\begin{document}
+\newcommand{\mc}{\multicolumn}
+\newcommand{\mr}{\multirow}
+\newcommand{\cw}{\columnwidth}
+\newcommand{\ig}[2]{\includegraphics[width=#1\cw]{#2}}
+
+\title{Problem 143\\Investigating the Torricelli point of a triangle}
+\author{I\~naki Silanes}
+\maketitle
+
+\section{Definition}
+
+Let ABC be a triangle with all interior angles being less than 120 degrees. Let X be any point inside the triangle and let XA = p, XC = q, and XB = r.\\
+
+Fermat challenged Torricelli to find the position of X such that p + q + r was minimised.\\
+
+Torricelli was able to prove that if equilateral triangles AOB, BNC and AMC are constructed on each side of triangle ABC, the circumscribed circles of AOB, BNC, and AMC will intersect at a single point, T, inside the triangle. Moreover he proved that T, called the Torricelli/Fermat point, minimises p + q + r. Even more remarkable, it can be shown that when the sum is minimised, $AN = BM = CO = p + q + r$ and that $AN$, $BM$ and $CO$ also intersect at $T$.\\
+
+If the sum is minimised and a, b, c, p, q and r are all positive integers we shall call triangle ABC a Torricelli triangle. For example, $a = 399$, $b = 455$, $c = 511$ is an example of a Torricelli triangle, with $p + q + r = 784$.\\
+
+Find the sum of all distinct values of $p + q + r \leq 120000$ for Torricelli triangles.
+
+\section{Solution(s) and proof}
+
+\subsection{f0}
+
+The most obvious method would be to set a maximum $x$ to consider, then check all $x$ from 3 to $x_{max}$, $y$ from 2 to $x-1$, and $z$ from 1 to $y-1$, to see if they fullfill the equations. This method is too slow.
+
+\subsection{f1}
+
+We can define $y = z + A$ and $x = z + B$, where $B > A > 0$ without loss of generality. From the equations given, we see that both $A$ and $B$ must be perfect squares themselves:
+
+\begin{eqnarray}
+x+y &=& 2z + A + B = k_1^2 \\
+x-y &=& B - A = k_2^2 \\
+x+z &=& 2z + B = k_3^2 \\
+x-z &=& B = k_4^2 \\
+y+z &=& 2z + A = k_5^2 \\
+y-z &=& A = k_6^2
+\end{eqnarray}
+
+Rearranging the equations we see that:
+
+\begin{eqnarray}
+k_2^2 &=& B - A \\
+k_3^2 &=& k_1^2 - A \\
+k_5^2 &=& k_1^2 - B \\
+z &=& \frac{k_1^2 - A - B}{2}
+\end{eqnarray}
+
+In other words, we must look for integers $k_1 > k_4 > k_6$, such that defining $A = k_6^2$ and $B = k_4^2$, the above four equations hold (i.e., $B-A$ is a perfect square, $k_1^2 - A - B$ is even, etc).\\
+
+This method solves the problem in about 6 seconds.
+
+\end{document}

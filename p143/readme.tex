@@ -22,7 +22,7 @@
 
 \section{Definition}
 
-Let ABC be a triangle with all interior angles being less than 120 degrees. Let X be any point inside the triangle and let XA = p, XC = q, and XB = r.\\
+Let ABC be a triangle with all interior angles being less than 120 degrees. Let X be any point inside the triangle and let $XA = p$, $XC = q$, and $XB = r$.\\
 
 Fermat challenged Torricelli to find the position of X such that p + q + r was minimised.\\
 
@@ -36,15 +36,20 @@ Find the sum of all distinct values of $p + q + r \leq 120000$ for Torricelli tr
 
 \subsection{f0}
 
-por:
-http://www.mathsisfun.com/geometry/circle-theorems.html
+Wrong
 
-sabemos que los ángulos alrededor de T son 120 grados:
+\subsection{f1}
 
-ATC = ATC = BTC = 120 grados
+We know that the 3 angles around $T$ (ATB, BTC, CTA) must be 120 degree angles. Check mathisfun.com\footnote{http://www.mathsisfun.com/geometry/circle-theorems.html}: either from the first inscribed angle theorem (inscribed angle is half of the central angle, 60 is half of 120), or from the first cyclic quadrilateral theorem (opposite angles add up to 180 degrees, $60 + 120 = 180$).\\
 
-usar ley cosenos para:
+Applying the law of cosines to $r$, $q$ and $a$:\\
 
-a**2 = r**2 + q**2 - 2*cos(120) = r**2 + q**2 + 1
+\begin{eqnarray}
+a^2 &=& r^2 + q^2 - 2 r q \cos{120} = r^2 + q^2 + r q \label{eq:a2}
+\end{eqnarray}
+
+And, of course, the same holds for $(q,p,b)$ and $(p,r,c)$.\\
+
+We can then solve the problem by taking integer $r$ values from 1 up and integer $q$ values from $r+1$ up. If they produce an integer $a$ value, according to Eq.~\ref{eq:a2}, proceed to check $p$ values from $q+1$ up. For each, check that $(q,p)$ produce an integer $b$, and $(p,r)$ an integer $c$. If so, add $p+q+r$ to the set of solutions.
 
 \end{document}

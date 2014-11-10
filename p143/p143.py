@@ -42,12 +42,42 @@ def f0(ocmax):
 
     print(sum(set_oc))
 
+def f1(ocmax):
+    print("--- f1 ---")
+
+    def issquare(k2):
+        k = int(math.sqrt(k2))
+        if k**2 == k2:
+            return k
+        return False
+
+
+    set_oc = set()
+    for r in range(1, ocmax):
+        r2 = r**2
+        for q in range(r+1, ocmax-r):
+            q2 = q**2
+            a = issquare(r2 + q2 + r*q)
+            if a:
+                for p in range(q+1, ocmax-r-q):
+                    p2 = p**2
+                    b = issquare(q2 + p2 + p*q)
+                    if b:
+                        c = issquare(p2 + r2 + r*p)
+                        if c:
+                            pqr = p + q + r
+                            if pqr < ocmax:
+                                set_oc.add(pqr)
+                                print r, (a, b, c)
+
+    print(sum(set_oc))
+
 
 #------------------------------------------------------------------------------#
 
 times = []
-for i in [0]:
-    t = timeit.Timer('f{0}(12000)'.format(i), "from __main__ import f{0}".format(i))
+for i in [1]:
+    t = timeit.Timer('f{0}(120000)'.format(i), "from __main__ import f{0}".format(i))
     times.append(t.timeit(number=1))
 
 # pypy times

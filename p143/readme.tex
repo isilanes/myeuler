@@ -36,32 +36,15 @@ Find the sum of all distinct values of $p + q + r \leq 120000$ for Torricelli tr
 
 \subsection{f0}
 
-The most obvious method would be to set a maximum $x$ to consider, then check all $x$ from 3 to $x_{max}$, $y$ from 2 to $x-1$, and $z$ from 1 to $y-1$, to see if they fullfill the equations. This method is too slow.
+por:
+http://www.mathsisfun.com/geometry/circle-theorems.html
 
-\subsection{f1}
+sabemos que los ángulos alrededor de T son 120 grados:
 
-We can define $y = z + A$ and $x = z + B$, where $B > A > 0$ without loss of generality. From the equations given, we see that both $A$ and $B$ must be perfect squares themselves:
+ATC = ATC = BTC = 120 grados
 
-\begin{eqnarray}
-x+y &=& 2z + A + B = k_1^2 \\
-x-y &=& B - A = k_2^2 \\
-x+z &=& 2z + B = k_3^2 \\
-x-z &=& B = k_4^2 \\
-y+z &=& 2z + A = k_5^2 \\
-y-z &=& A = k_6^2
-\end{eqnarray}
+usar ley cosenos para:
 
-Rearranging the equations we see that:
-
-\begin{eqnarray}
-k_2^2 &=& B - A \\
-k_3^2 &=& k_1^2 - A \\
-k_5^2 &=& k_1^2 - B \\
-z &=& \frac{k_1^2 - A - B}{2}
-\end{eqnarray}
-
-In other words, we must look for integers $k_1 > k_4 > k_6$, such that defining $A = k_6^2$ and $B = k_4^2$, the above four equations hold (i.e., $B-A$ is a perfect square, $k_1^2 - A - B$ is even, etc).\\
-
-This method solves the problem in about 6 seconds.
+a**2 = r**2 + q**2 - 2*cos(120) = r**2 + q**2 + 1
 
 \end{document}

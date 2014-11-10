@@ -3,7 +3,7 @@ import timeit
 
 #------------------------------------------------------------------------------#
 
-def f0():
+def f0(ocmax):
     print("--- f0 ---")
 
     def issquare(k2):
@@ -13,21 +13,41 @@ def f0():
         return False
 
 
-    c = 511
-    for xc in range(500):
-        for yc in range(500):
-            b = issquare(xc**2 + yc**2)
-            if b:
-                a = issquare(b**2+c**2-2*c*xc)
-                if a:
-                    print a, b, c
+    set_oc = set()
+    c = 3
+    while True:
+        c += 1
+        for b in range(c/2,c):
+            for a in range(c-b,b):
+                if 3*a**2 > 2*ocmax**2:
+                    break
+
+                k2 = 3*((2*b*c)**2 - (b**2+c**2-a**2)**2)
+
+                if k2 < 0:
+                    continue
+
+                k = issquare(k2)
+                if k:
+                    oc2 = (c**2 + b**2 + a**2 + k)/2
+                    if oc2 > ocmax**2:
+                        break
+                    oc = issquare(oc2)
+                    if oc and oc < ocmax:
+                        set_oc.add(oc)
+            if 2*b**2 > 2*ocmax**2:
+                break
+        if c**2 > 2*ocmax**2:
+            break
+
+    print(sum(set_oc))
 
 
 #------------------------------------------------------------------------------#
 
 times = []
 for i in [0]:
-    t = timeit.Timer('f{0}()'.format(i), "from __main__ import f{0}".format(i))
+    t = timeit.Timer('f{0}(12000)'.format(i), "from __main__ import f{0}".format(i))
     times.append(t.timeit(number=1))
 
 # pypy times

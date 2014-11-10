@@ -82,7 +82,8 @@ for i in [1]:
 
 # pypy times
 
-# f0: too naive, too slow
+# f0: wrong
+# f1: ~ 142 s
 
 print("\nTimes:\n")
 for i in range(len(times)):

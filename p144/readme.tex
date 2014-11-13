@@ -1,0 +1,69 @@
+\documentclass[english]{article}
+\usepackage[a4paper,top=15mm,bottom=25mm,textwidth=160mm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[dvips]{graphicx}
+\usepackage{amssymb}
+\usepackage[usenames]{color}
+\usepackage[utf8]{inputenc}
+%\usepackage{graphics}
+\usepackage{babel}
+\usepackage{charter}
+\input{epsf}
+
+\begin{document}
+\newcommand{\mc}{\multicolumn}
+\newcommand{\mr}{\multirow}
+\newcommand{\cw}{\columnwidth}
+\newcommand{\ig}[2]{\includegraphics[width=#1\cw]{#2}}
+
+\title{Problem 144\\Investigating multiple reflections of a laser beam}
+\author{I\~naki Silanes}
+\maketitle
+
+\section{Definition}
+
+In laser physics, a ``white cell'' is a mirror system that acts as a delay line for the laser beam. The beam enters the cell, bounces around on the mirrors, and eventually works its way back out.\\
+
+The specific white cell we will be considering is an ellipse with the equation $4x^2 + y^2 = 100$\\
+
+The section corresponding to $-0.01 \leq x \leq +0.01$ at the top is missing, allowing the light to enter and exit through the hole.\\
+
+The light beam in this problem starts at the point $(0.0,10.1)$ just outside the white cell, and the beam first impacts the mirror at $(1.4,-9.6)$.\\
+
+Each time the laser beam hits the surface of the ellipse, it follows the usual law of reflection ``angle of incidence equals angle of reflection''. That is, both the incident and reflected beams make the same angle with the normal line at the point of incidence.\\
+
+In the figure on the left, the red line shows the first two points of contact between the laser beam and the wall of the white cell; the blue line shows the line tangent to the ellipse at the point of incidence of the first bounce.\\
+
+The slope $m$ of the tangent line at any point $(x,y)$ of the given ellipse is: $m = -4x/y$\\
+
+The normal line is perpendicular to this tangent line at the point of incidence.\\
+
+The animation on the right shows the first 10 reflections of the beam.\\
+
+How many times does the beam hit the internal surface of the white cell before exiting?\\
+
+\section{Solution(s) and proof}
+
+\subsection{f0}
+
+We must first find the slope of the reflection of a beam with slope $m$ bouncing on the wall at a point $(x,y)$. Say the incoming beam has an angle $\alpha$ (all angles defined with respect to the X axis). So $\tan\alpha = m$. Also, the tangent to the wall at $(x,y)$ will have an angle of $\varphi$. As the problem definition gives us, the slope will be $\tan\varphi = -4x/y$. If we call $\gamma$ the angle between the tangent and the reflected beam, then the angle of the outgoing beam with respect to X will be $\psi = \varphi + \gamma$. With trigonometry we can solve that $\gamma = \varphi - \alpha$, so $\psi = 2\varphi - \alpha$. We know the values of the tangents of $\varphi$ and $\alpha$, and we seek the slope (tangent) of $\psi$. Using trigonometric relationships, and susbtituting the values for the tangents of $\varphi$ and $\alpha$, we obtain:
+
+\begin{eqnarray}
+\tan \psi &=& \frac{8xy - m(16x^2-y^2)}{16x^2-y^2+8xym} \label{eq:tany}
+\end{eqnarray}
+
+With that we can calculate the slope of the outgoing beam, with the slope of the incoming one, and the point of impact.\\
+
+Then, we need to be able to find out the next reflection point of the outgoing beam. This beam will hit the wall where its path crosses the ellipse. The beam is a straight line, with the formula $y = A +mx$, where $A = y_0 - m x_0$, where $(x_0, y_0)$ is the last point the beam hit the wall. This line will cross the ellipse at:\\
+
+\begin{eqnarray}
+4x^2 + y^2 &=& 100 \\
+4x^2 + (A+mx)^2 - 100 &=& 0\\
+x &=& \frac{-Am \pm \sqrt{100m^2 + 400 - 4A^2}}{4+m^2} \label{eq:x}
+\end{eqnarray}
+
+So, given a beam with a slope $m$ and an impact point $(x,y)$, we can find the slope of the outgoing beam with Eq.~\ref{eq:tany}. Then, with the new slope $m = \tan\varphi$ and the previous impact point $(x_0,y_0)$ we can get the new impact point from Eq.~\ref{eq:x}. This equation gives to $x$ values (with the plus-minus). One of them will be $x_0$, so the other one will be the new $x$. From the new $x$ we get the new $y$, from $y = A + mx$, for example.\\
+
+Repeating the procedure in the above paragraph we can find the successive impact points of the beam. Any time the impact point has $-0.01 \leq x \leq 0.01$ and $y$ is positive, the beam will escape the white cell and the computation will be over.
+
+\end{document}

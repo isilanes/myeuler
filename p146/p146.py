@@ -6,23 +6,29 @@ import timeit
 def f0(maxn):
     print("--- f0 ---")
 
-    def get_primes(nmax):
-        # Sieve to find all primes up to nmax:
-        composites = {}
-        primes = [2]
-        for mult in range(3,nmax,2):
-            if not mult in composites:
-                # Log mult as prime:
-                primes.append(mult)
+    def isprime(num):
+        '''Returns True if num is prime, False otherwise.'''
 
-                # Sieve its multiples away:
-                for i in range(mult*mult, nmax, 2*mult):
-                    composites[i] = True
+        if num == 1:
+            return False
 
-        return primes
+        if num in [2,3,5,7]:
+            return True
+
+        if num % 10 in [0,2,4,5,6,8]:
+            return False
+
+        i = 3
+        while i*i < num+1:
+            if not num % i:
+                return False
+            i += 2
+
+        return True
 
 
-    ps = get_primes(10**7)
+    for num in range(10,10**5):
+        isprime(num**2+1)
 
 
 #------------------------------------------------------------------------------#

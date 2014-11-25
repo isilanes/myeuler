@@ -213,13 +213,11 @@ def f4(maxn):
         if num % 10 in [0,2,4,5,6,8]:
             return False
 
-        '''
         i = 3
         while i*i < num+1:
             if not num % i:
                 return False
             i += 2
-        '''
 
         return True
 
@@ -253,7 +251,7 @@ def f4(maxn):
 
     #find_mult_i()
     tot = 10
-    for n in range(2310,maxn,10):
+    for n in range(2310,maxn,2):
         n2 = n**2
         r = (n2 + 1) % 2310
         if r in [101, 221, 431, 521, 851, 941, 1271, 1361, 1691, 2201]:
@@ -273,11 +271,91 @@ def f4(maxn):
 
     print(tot)
 
+def f5(maxn):
+    print("--- f5 ---")
+
+    def isprime(num):
+        '''Returns True if num is prime, False otherwise.'''
+
+        # Use Fermat primality (compositeness) test as a filter:
+        if pow(2, num-1, num) != 1:
+            return False
+
+        if num == 1:
+            return False
+
+        if num in [2,3,5,7]:
+            return True
+
+        if num % 10 in [0,2,4,5,6,8]:
+            return False
+
+        mx = int(math.sqrt(num))+1
+        for i in range(3, mx, 2):
+            if not num % i:
+                return False
+
+        return True
+
+    def find_mult_i():
+        '''Find "mult" and "i" such that p = mult*m + i is the only viable
+        structure for any first prime in requested sextet, for some integer m.'''
+
+        primes = [ 2, 3, 5, 7, 11 ]
+        mult = 1
+        for p in primes:
+            mult *= p
+
+        koshers = []
+        for i in range(1,mult,2):
+            kosher = True
+            for p in primes:
+                if not i % p:
+                    kosher = False
+                    break
+            if kosher:
+                koshers.append(i)
+
+        cutoffs = set([])
+        for e in koshers[:-4]:
+            if e + 2 in koshers:
+                if e + 6 in koshers:
+                    if e + 8 in koshers:
+                        if e + 12 in koshers:
+                            if e + 26 in koshers:
+                                cutoffs.add(e)
+
+        return mult, cutoffs
+
+
+    mult, cutoffs = find_mult_i()
+    tot = 0
+    if mult > 10:
+        tot += 10
+    if mult > 315410:
+        tot += 315410
+    if mult > 927070:
+        tot += 927070
+
+    for n in range(mult, maxn, 2):
+        n2 = n**2
+        r = (n2 + 1) % mult
+        if r in cutoffs:
+            if isprime(n2+1):
+                if isprime(n2+3):
+                    if isprime(n2+7):
+                        if isprime(n2+9):
+                            if isprime(n2+13):
+                                if isprime(n2+27):
+                                    tot += n
+
+    print(tot)
+
 
 #------------------------------------------------------------------------------#
 
 times = []
-for i in [4]:
+for i in [5]:
     t = timeit.Timer('f{0}(10**6)'.format(i), "from __main__ import f{0}".format(i))
     times.append(t.timeit(number=1))
 
@@ -299,10 +377,15 @@ for i in [4]:
 #      10**5    7136
 #      10**6   62794
 
-# f4:  maxn   t (ms) - v =
+# f4:  maxn   t (ms) - v = 30.7
 #      10**5     264
 #      10**6   11641
 #      10**7  966220
+
+# f5:  maxn   t (ms) - v =
+#      10**5   13836
+#      10**6   16803
+#      10**7  509797
 
 print("\nTimes:\n")
 for i in range(len(times)):

@@ -196,70 +196,83 @@ def f3(maxn):
 def f4(maxn):
     print("--- f4 ---")
 
+    def isprime(num):
+        '''Returns True if num is prime, False otherwise.'''
 
-    def isprime(n, primes=[]):
-        for p in primes:
-            if p == n:
-                return True
-            if not n % p:
+        if num == 1:
+            return False
+
+        if num in [2,3,5,7]:
+            return True
+
+        if num % 10 in [0,2,4,5,6,8]:
+            return False
+
+        i = 3
+        while i*i < num+1:
+            if not num % i:
                 return False
-        if not primes:
-            pfirst = 5
-        else:
-            pfirst = 5 * (primes[-1] // 5) - 1
-        for i in range(pfirst, int(n**0.5) + 1, 6):
-            for k in [0, 2]:
-                if not n % (i+k):
-                    return False
+            i += 2
+
         return True
 
-    def get_primes(nmax):
-        # Sieve to find all primes up to nmax:
-        composites = {}
-        primes = [2]
-        for mult in range(3,nmax,2):
-            if not mult in composites:
-                # Log mult as prime:
-                primes.append(mult)
+    def find_mult_i():
+        '''Find "mult" and "i" such that p = mult*m + i is the only viable
+        structure for any first prime in requested sextet, for some integer m.'''
 
-                # Sieve its multiples away:
-                for i in range(mult*mult, nmax, 2*mult):
-                    composites[i] = True
+        primes = [ 3, 5, 7, 11 ]
+        mult = 2
+        for p in primes:
+            mult *= p
 
-        return primes
+        koshers = []
+        for i in range(1,mult,2):
+            kosher = True
+            for p in primes:
+                if not i % p:
+                    kosher = False
+                    break
+            if kosher:
+                koshers.append(i)
 
-    def kosher(num, primes):
-        '''Return "num" if kosher, 0 if not.'''
+        for e in koshers[:-4]:
+            if e + 2 in koshers:
+                if e + 6 in koshers:
+                    if e + 8 in koshers:
+                        if e + 12 in koshers:
+                            if e + 26 in koshers:
+                                print(mult, e)
 
-        if not isprime(num**2+1, primes):
-            return 0
+    #find_mult_i()
+    tot = 10
+    for n in range(2310,maxn,2):
+        n2 = n**2
+        r = (n2 + 1) % 2310
+        #if r == 101 or r == 221 or r == 431 or r == 521 or r == 851 or r == 941 or r == 1271 or r == 1361 or r == 1691 or r == 2201:
+        if r in [101, 221, 431, 521, 851, 941,  1271, 1361, 1691, 2201]:
+            continue
+            # 19047, 43 ms
+            if isprime(n2+1):
+                # 3455, 15 s
+                if isprime(n2+3):
+                    # 628, 17.6 s
+                    if isprime(n2+7):
+                        # 112, 18 s
+                        if isprime(n2+9):
+                            # 23, 18.5 s
+                            if isprime(n2+13):
+                                # 4, 18.3 s
+                                if isprime(n2+27):
+                                    tot += n
 
-        if not isprime(num**2+3, primes):
-            return 0
-        
-        if not isprime(num**2+7, primes):
-            return 0
-        
-        if not isprime(num**2+9, primes):
-            return 0
-        
-        if not isprime(num**2+13, primes):
-            return 0
-
-        if not isprime(num**2+27, primes):
-            return 0
-
-        return num
-
-
-    primes = get_primes(10**6)
+    print(tot)
 
 
 #------------------------------------------------------------------------------#
 
 times = []
 for i in [4]:
-    t = timeit.Timer('f{0}(10**7)'.format(i), "from __main__ import f{0}".format(i))
+    t = timeit.Timer('f{0}(15*10**7)'.format(i), "from __main__ import f{0}".format(i))
     times.append(t.timeit(number=1))
 
 # pypy times
@@ -279,6 +292,11 @@ for i in [4]:
 # f3:  maxn   t (ms) - v = 5.7
 #      10**5    7136
 #      10**6   62794
+
+# f4:  maxn   t (ms) - v =
+#      10**5     264
+#      10**6   11641
+#      10**7  966220
 
 print("\nTimes:\n")
 for i in range(len(times)):

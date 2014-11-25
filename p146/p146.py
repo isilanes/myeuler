@@ -1,3 +1,4 @@
+import math
 import timeit
 
 #------------------------------------------------------------------------------#
@@ -199,6 +200,10 @@ def f4(maxn):
     def isprime(num):
         '''Returns True if num is prime, False otherwise.'''
 
+        # Use Fermat primality (compositeness) test as a filter:
+        if pow(2, num-1, num) != 1:
+            return False
+
         if num == 1:
             return False
 
@@ -208,11 +213,13 @@ def f4(maxn):
         if num % 10 in [0,2,4,5,6,8]:
             return False
 
+        '''
         i = 3
         while i*i < num+1:
             if not num % i:
                 return False
             i += 2
+        '''
 
         return True
 
@@ -248,9 +255,7 @@ def f4(maxn):
     for n in range(2310,maxn,2):
         n2 = n**2
         r = (n2 + 1) % 2310
-        #if r == 101 or r == 221 or r == 431 or r == 521 or r == 851 or r == 941 or r == 1271 or r == 1361 or r == 1691 or r == 2201:
-        if r in [101, 221, 431, 521, 851, 941,  1271, 1361, 1691, 2201]:
-            continue
+        if r in [101, 221, 431, 521, 851, 941, 1271, 1361, 1691, 2201]:
             # 19047, 43 ms
             if isprime(n2+1):
                 # 3455, 15 s
@@ -272,7 +277,7 @@ def f4(maxn):
 
 times = []
 for i in [4]:
-    t = timeit.Timer('f{0}(15*10**7)'.format(i), "from __main__ import f{0}".format(i))
+    t = timeit.Timer('f{0}(10**6)'.format(i), "from __main__ import f{0}".format(i))
     times.append(t.timeit(number=1))
 
 # pypy times

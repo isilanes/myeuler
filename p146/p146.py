@@ -250,9 +250,10 @@ def f4(maxn):
                             if e + 26 in koshers:
                                 print(mult, e)
 
+
     #find_mult_i()
     tot = 10
-    for n in range(2310,maxn,2):
+    for n in range(2310,maxn,10):
         n2 = n**2
         r = (n2 + 1) % 2310
         if r in [101, 221, 431, 521, 851, 941, 1271, 1361, 1691, 2201]:

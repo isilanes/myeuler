@@ -351,12 +351,97 @@ def f5(maxn):
 
     print(tot)
 
+def f6(maxn):
+    print("--- f6 ---")
+
+    def isprimeMR(n):
+        '''Use Miller-Rabin primality test.'''
+
+        # n = 2**s * d + 1
+        s = 0
+        rem = n - 1
+        while not rem % 2:
+            s += 1
+            rem = rem / 2
+
+        d = (n - 1)/(2**s)
+
+        for a in [2, 3, 5, 7, 11, 13, 17, 19, 23]:
+            test_passed = False # pass = be prime
+            m = pow(a, d, n)
+            if m == 1:
+                test_passed = True
+            else:
+                for r in range(s):
+                    m = pow(a, d*2**r, n)
+                    if m == (n - 1):
+                        test_passed = True
+                        break
+            if not test_passed:
+                return False
+        return True
+
+    def find_mult_i():
+        '''Find "mult" and "i" such that p = mult*m + i is the only viable
+        structure for any first prime in requested sextet, for some integer m.'''
+
+        primes = [ 2, 3, 5, 7, 11 ]
+        mult = 1
+        for p in primes:
+            mult *= p
+
+        koshers = []
+        for i in range(1,mult,2):
+            kosher = True
+            for p in primes:
+                if not i % p:
+                    kosher = False
+                    break
+            if kosher:
+                koshers.append(i)
+
+        cutoffs = set([])
+        for e in koshers[:-4]:
+            if e + 2 in koshers:
+                if e + 6 in koshers:
+                    if e + 8 in koshers:
+                        if e + 12 in koshers:
+                            if e + 26 in koshers:
+                                cutoffs.add(e)
+
+        return mult, cutoffs
+
+
+    mult, cutoffs = find_mult_i()
+    tot = 0
+    if mult > 10:
+        tot += 10
+    if mult > 315410:
+        tot += 315410
+    if mult > 927070:
+        tot += 927070
+
+    for n in range(mult, maxn, 10):
+        n2 = n**2
+        r = (n2 + 1) % mult
+        if r in cutoffs:
+            if isprimeMR(n2+1):
+                if isprimeMR(n2+3) and not isprimeMR(n2+5):
+                    if isprimeMR(n2+7):
+                        if isprimeMR(n2+9) and not isprimeMR(n2+11):
+                            if isprimeMR(n2+13) and not isprimeMR(n2+15) and not isprimeMR(n2+17):
+                                if not isprimeMR(n2+19) and not isprimeMR(n2+21) and not isprimeMR(n2+23):
+                                    if not isprimeMR(n2+25) and isprimeMR(n2+27):
+                                        tot += n
+
+    print(tot)
+
 
 #------------------------------------------------------------------------------#
 
 times = []
-for i in [5]:
-    t = timeit.Timer('f{0}(10**6)'.format(i), "from __main__ import f{0}".format(i))
+for i in [6]:
+    t = timeit.Timer('f{0}(15*10**7)'.format(i), "from __main__ import f{0}".format(i))
     times.append(t.timeit(number=1))
 
 # pypy times
@@ -383,9 +468,13 @@ for i in [5]:
 #      10**7  966220
 
 # f5:  maxn   t (ms) - v =
-#      10**5   13836
-#      10**6   16803
-#      10**7  509797
+#      10**6   119s!
+
+# f6:  maxn   t (ms) - v =
+#      10**5     176
+#      10**6    1065
+#      10**7   10105
+#   15*10**7  144584
 
 print("\nTimes:\n")
 for i in range(len(times)):

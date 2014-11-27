@@ -355,7 +355,7 @@ def f6(maxn):
     print("--- f6 ---")
 
     def isprimeMR(n):
-        '''Use Miller-Rabin primality test.'''
+        '''Use Miller-Rabin primality test. N must be odd and > 2.'''
 
         # n = 2**s * d + 1
         s = 0
@@ -425,12 +425,12 @@ def f6(maxn):
         n2 = n**2
         r = (n2 + 1) % mult
         if r in cutoffs:
-            if isprimeMR(n2+1):
-                if isprimeMR(n2+3) and not isprimeMR(n2+5):
-                    if isprimeMR(n2+7):
-                        if isprimeMR(n2+9) and not isprimeMR(n2+11):
-                            if isprimeMR(n2+13) and not isprimeMR(n2+15) and not isprimeMR(n2+17):
-                                if not isprimeMR(n2+19) and not isprimeMR(n2+21) and not isprimeMR(n2+23):
+            if isprimeMR(n2+1) and isprimeMR(n2+3):
+                if not isprimeMR(n2+5) and isprimeMR(n2+7):
+                    if isprimeMR(n2+9) and not isprimeMR(n2+11):
+                        if isprimeMR(n2+13) and not isprimeMR(n2+15):
+                            if not isprimeMR(n2+17) and not isprimeMR(n2+19):
+                                if not isprimeMR(n2+21) and not isprimeMR(n2+23):
                                     if not isprimeMR(n2+25) and isprimeMR(n2+27):
                                         tot += n
 

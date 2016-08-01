@@ -5,6 +5,38 @@ import timeit
 def f0(M,N):
     print("--- f0 ---")
 
+
+    class Rectangle(object):
+
+        def __init__(self, M, N):
+            self.M = M # horizonal size
+            self.N = N # vertical size
+
+
+    class Vertex(object):
+
+        def __init__(self, i, j):
+            self.i = i
+            self.j = j
+
+            # All (x,y) dimensions are doubled, i.e., a M*N rectangle is 
+            # assumed to begin at x=0, y=0, and end at x=2M, y=2N.
+            self.x = i + j
+            self.y = 2 + i - j
+
+        def is_within(self, R):
+            '''Determine whether vertex is within the bounds of
+            rectangle R.'''
+
+            if self.x > 2*R.M:
+                return False
+            
+            if self.y < 0 or self.y > 2*R.N:
+                return False
+
+            return True
+
+
     # Horizontal rectangles of size m*n, within rectangle of size M*N
     for m in range(1,M+1):
         for n in range(1,N+1):
@@ -19,8 +51,9 @@ def f0(M,N):
     # rectangle, and seeing if the resulting top right, bottom-left and bottom-right
     # vertices are within the MxN figure (that is, the (i,j) of all vertices are
     # within (0,0) and (imax, jmax), i.e. (2*M, 2*N).
-    for i in range(2*M):
-        for j in range()
+    R = Rectangle(M, N)
+    TL = Vertex(0,0)
+    print TL.is_within(R)
 
 
 #------------------------------------------------------------------------------#

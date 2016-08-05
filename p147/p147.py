@@ -2,6 +2,7 @@ import timeit
 
 def f0(M,N):
     print("--- f0 ---")
+    return 0 # wrong function
 
     def NCA1(T, A, B, i, j):
         nca = 0
@@ -92,12 +93,72 @@ def f0(M,N):
 
     print(N)
 
+def f1(M,N, do_print=True):
+    if do_print:
+        print("--- f1 ---")
+
+    def NHR(M,N):
+        """Amount of horizontal rectangles of all sizes, within rectangle of size M*N."""
+        
+        tot = 0
+        for i in range(1,M+1):
+            for j in range(1,N+1):
+                tot += (M - i + 1) * (N - j + 1)
+
+        return tot
+
+    def NOR(M,N):
+        """Amount of oblique rectangles of all sizes, within rectangle of size M*N."""
+
+        def jmin(A,i):
+            return  max(0, A-i, i-A-1)
+
+        def jmax(A,B,i):
+            return min(A+B+1, A+1+i, A+2*B+2-i)
+        
+        def wmax(A,B,i,j):
+            a = A + B + 2 -i
+            b = A + 2 - i + j
+            c = A + 2*B + 3 - i - j
+
+            return min(a, b, c)
+
+        def hmax(A,B,i,j,w):
+            hm0 = jmax(A,B,i) - j + 1
+            hm1 = jmax(A,B,i+w-1) - j + 1
+
+            return min(hm0, hm1)
+
+        
+        A = M - 2
+        B = N - 2
+        T = A + B + 2
+
+        tot = 0
+        for i in range(T):
+            for j in range(jmin(A,i), jmax(A,B,i)+1):
+                for w in range(1,wmax(A,B,i,j)+1):
+                    tot += hmax(A,B,i,j,w)
+
+        return tot
+
+
+    tot = 0
+    for m in range(1,M+1):
+        for n in range(1,N+1):
+            tot += NHR(m, n) + NOR(m, n)
+            
+    if do_print:
+        print(tot)
+
+    return tot
+
 
 #------------------------------------------------------------------------------#
 
 times = []
-for i in [0]:
-    t = timeit.Timer('f{0}(3,2)'.format(i), "from __main__ import f{0}".format(i))
+for i in [1]:
+    t = timeit.Timer('f{0}(47,43)'.format(i), "from __main__ import f{0}".format(i))
     times.append(t.timeit(number=1))
 
 # pypy times

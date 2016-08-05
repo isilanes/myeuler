@@ -1,6 +1,8 @@
 import timeit
 
 def f0(M,N):
+    """This function is wrong."""
+
     print("--- f0 ---")
     return 0 # wrong function
 
@@ -94,6 +96,8 @@ def f0(M,N):
     print(N)
 
 def f1(M,N, do_print=True):
+    """First valid solution."""
+
     if do_print:
         print("--- f1 ---")
 
@@ -162,8 +166,7 @@ for i in [1]:
     times.append(t.timeit(number=1))
 
 # pypy times
-
-# f0:  MxN   t (ms) - v = 1.0
+# f0: 47x43  2030 ms
 
 print("\nTimes:\n")
 for i in range(len(times)):

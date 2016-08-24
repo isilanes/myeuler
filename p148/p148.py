@@ -51,13 +51,46 @@ def f2(nlines):
 
     return ndiv
 
+def f3(nlines):
+
+    print("--- f3 ---")
+
+    ndiv = 1 # first line
+    line = np.zeros(nlines, dtype=np.int)
+    line[0] = 1
+    for i in range(2,nlines+1):
+        line[1:i] = (line[1:i] + line[:i-1]) % 7
+        ndiv += np.count_nonzero(line)
+
+    print(ndiv)
+
+    return ndiv
+
+def f4(nlines):
+
+    print("--- f4 ---")
+
+    ndiv = 1
+    old_line = [1]
+    for i in range(2,nlines+1):
+        line = np.zeros(i, dtype=np.int)
+        line[:-1] = old_line
+        line[1:] = (line[1:] + old_line) % 7
+        line[-1] = 1
+        ndiv += np.count_nonzero(line)
+        old_line = line
+
+    print(ndiv)
+
+    return ndiv
+
 
 #------------------------------------------------------------------------------#
 
 if __name__ == "__main__":
     times = []
-    for i in [0,1,2]:
-        t = timeit.Timer('f{0}(1*10**4)'.format(i), "from __main__ import f{0}".format(i))
+    for i in [4]:
+        t = timeit.Timer('f{0}(10**5)'.format(i), "from __main__ import f{0}".format(i))
         times.append([i, t.timeit(number=1)])
 
     # pypy times
@@ -65,8 +98,25 @@ if __name__ == "__main__":
     # function  nlines  ------- time (ms) -------
     #                   python2  python3     pypy
     # f0:          100      1.1      1.2     24.7
-    # f0:         1000    229.9    206.4    236.5
-    # f0:         2000   1383.4   1305.0   1319.5
+    # f0:         1000     ~270    294.2    236.5
+    # f0:         2000    ~1400   1305.0   1319.5
+
+    # f1:         1000     ~270     ~251
+    # f1:         2000    ~1510    ~1480 
+
+    # f2:         1000     ~275     ~275
+    # f2:         2000     ~995     ~910
+
+    # f3:         1000      ~13      ~14 
+    # f3:         2000      ~40      ~43 
+    # f3:        10000     ~900     ~955 
+    # f3:       100000   ~95000   ~98000 
+
+    # f4:         1000               ~25 
+    # f4:         2000               ~55 
+    # f4:        10000              ~910 
+    # f4:        50000            ~25000 
+    # f4:       100000           ~101000
 
     print("\nTimes:\n")
     for i,t in times:

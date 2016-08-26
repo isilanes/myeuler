@@ -1,5 +1,34 @@
+# -*- coding=utf-8 -*-
+
+import math
 import timeit
 import numpy as np
+
+def display(nlines):
+
+    s = {
+        1: ".",
+        2: ".",
+        3: ".",
+        4: ".",
+        5: ".",
+        6: ".",
+        7: ".",
+        8: ".",
+        9: ".",
+        0: "0",
+    }
+
+    ndiv = 1
+    old_line = [1]
+    for i in range(2,nlines+1):
+        line = np.zeros(i, dtype=np.int)
+        line[:-1] = old_line
+        line[1:] = (line[1:] + old_line) % 7
+        line[-1] = 1
+        old_line = line
+        string = "{i:3} ".format(i=i) + "".join([s[x] for x in line])
+        print(string)
 
 def f0(nlines):
 
@@ -84,13 +113,35 @@ def f4(nlines):
 
     return ndiv
 
+def f5(nlines):
+    """Muy rápida, pero sólo vale para nlines = 7**n."""
+
+    print("--- f5 ---")
+
+    def T(n):
+        return (7**(2*n) - 7**n)/2
+
+    def C(n):
+        if n == 0:
+            return 0
+        else:
+            return 7*C(n-1) + 21*(T(n) + C(n-1))
+
+
+    n = int(round(math.log(nlines, 7)))
+
+    ndiv = ((nlines+1)*nlines)/2 - C(n-1)
+    print(ndiv)
+
+    return ndiv
+
 
 #------------------------------------------------------------------------------#
 
 if __name__ == "__main__":
     times = []
-    for i in [4]:
-        t = timeit.Timer('f{0}(10**5)'.format(i), "from __main__ import f{0}".format(i))
+    for i in [4,5]:
+        t = timeit.Timer('f{0}(100)'.format(i), "from __main__ import f{0}".format(i))
         times.append([i, t.timeit(number=1)])
 
     # pypy times

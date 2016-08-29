@@ -76,7 +76,6 @@ def f1(n, disp=True):
     def max_sum(a):
         """Take list "a" and return largest sum of consecutive elements."""
 
-
         mx = -999999
 
         for i,ai in enumerate(a):
@@ -113,22 +112,96 @@ def f1(n, disp=True):
 
     return ret
 
+def f2(n, disp=True):
+    """Generates an n*n square. n=2000 for original problem."""
+
+    if disp:
+        print("--- f2 ---")
+
+    def max_sum(a):
+        """Take list "a" and return largest sum of consecutive elements."""
+
+        b = []
+        pos = True
+        if a[0] < 0:
+            pos = False
+
+        cum = 0
+        for e in a:
+            if (e > 0) == pos:
+                cum += e
+            else:
+                b.append(cum)
+                cum = e
+                pos = not pos
+
+        mx = -999999
+
+        a = b
+        for i,ai in enumerate(a):
+            if ai < 0:
+                continue
+            for j,aj in enumerate(a[i:]):
+                if aj < 0:
+                    continue
+                v = sum(a[i:j+i+1])
+                if v > mx:
+                    mx = v
+
+        return mx
+
+
+    # Check it works correctly:
+    assert s(10) == -393027
+    assert s(100) == 86613
+
+    # Generate board:
+    a = [ s(i) for i in range(1,n*n+1) ]
+    a = np.array(a).reshape((n,n))
+    ms = 0
+
+    # Check horizontal rows:
+    for row in a:
+        ret = max_sum(row)
+        if ret > ms:
+            ms = ret
+
+    # Check vertical columns:
+    for col in a.T:
+        ret = max_sum(col)
+        if ret > ms:
+            ms = ret
+
+    print(a)
+    # Check diagonals:
+    for i in range(n):
+        diag = [ a[k,i-k] for k in range(i+1) ]
+        print(diag)
+    for j in range(1,n):
+        diag = [ a[n-k,k] for k in range(j,n) ]
+        print(diag)
+    exit()
+
+    if disp:
+        print(ms)
+
+    return ms
+
 
 #------------------------------------------------------------------------------#
 
 if __name__ == "__main__":
     times = []
-    for i in [0,1]:
-        t = timeit.Timer('f{0}(100)'.format(i), "from __main__ import f{0}".format(i))
+    for i in [0,1,2]:
+        t = timeit.Timer('f{0}(8)'.format(i), "from __main__ import f{0}".format(i))
         times.append([i, t.timeit(number=1)])
 
-    # function     n  ------- time (ms) -------
-    #                   python2  python3     pypy
-    # f0:          2         ~3       ~9        -
-    # f0:         20        ~30      ~30        -
-    # f0:        200     ~32000   ~33000        -
-    #
-    # f1 ~ f0
+    # Python 3.x times #
+
+    #   n   res(n)  function  time (ms)
+    # 100  3552499        f0      ~1500
+    #                     f1      ~1400
+    #                     f2       ~150
 
     print("\nTimes:\n")
     for i,t in times:

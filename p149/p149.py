@@ -2,46 +2,48 @@
 
 import timeit
 
-def memoize(f):
-    cache = {}
-    def helper(x):
-        if x not in cache:
-            cache[x] = f(x)
-
-        return cache[x]
-
-
-    return helper
-
-@memoize
-def s(k):
-    if k < 56:
-        return (100003 - 200003*k + 300007*k**3) % 1000000 - 500000
-    else:
-        return (s(k-24) + s(k-55) + 1000000) % 1000000 - 500000
-
-    def max_sum(a):
-        """Take list "a" and return largest sum of consecutive elements."""
-
-        mx = -999999
-
-        for i in range(len(a)):
-            if a[i] < 0:
-                continue
-            for j in range(i, len(a)):
-                if a[j] < 0:
-                    continue
-                v = sum(a[i:j+1])
-                if v > mx:
-                    mx = v
-
-        return mx
-
 def f0(n, disp=True):
     """Generates an n*n square. n=2000 for original problem."""
 
+    import numpy as np
+
     if disp:
         print("--- f0 ---")
+
+    def memoize(f):
+        cache = {}
+        def helper(x):
+            if x not in cache:
+                cache[x] = f(x)
+
+            return cache[x]
+
+
+        return helper
+
+    @memoize
+    def s(k):
+        if k < 56:
+            return (100003 - 200003*k + 300007*k**3) % 1000000 - 500000
+        else:
+            return (s(k-24) + s(k-55) + 1000000) % 1000000 - 500000
+
+        def max_sum(a):
+            """Take list "a" and return largest sum of consecutive elements."""
+
+            mx = -999999
+
+            for i in range(len(a)):
+                if a[i] < 0:
+                    continue
+                for j in range(i, len(a)):
+                    if a[j] < 0:
+                        continue
+                    v = sum(a[i:j+1])
+                    if v > mx:
+                        mx = v
+
+            return mx
 
     def max_sum(arr):
         """Take list "a" and return largest sum of consecutive elements."""
@@ -154,8 +156,45 @@ def f0(n, disp=True):
 def f1(n, disp=True):
     """Generates an n*n square. n=2000 for original problem."""
 
+    import numpy as np
+
     if disp:
         print("--- f1 ---")
+
+    def memoize(f):
+        cache = {}
+        def helper(x):
+            if x not in cache:
+                cache[x] = f(x)
+
+            return cache[x]
+
+
+        return helper
+
+    @memoize
+    def s(k):
+        if k < 56:
+            return (100003 - 200003*k + 300007*k**3) % 1000000 - 500000
+        else:
+            return (s(k-24) + s(k-55) + 1000000) % 1000000 - 500000
+
+        def max_sum(a):
+            """Take list "a" and return largest sum of consecutive elements."""
+
+            mx = -999999
+
+            for i in range(len(a)):
+                if a[i] < 0:
+                    continue
+                for j in range(i, len(a)):
+                    if a[j] < 0:
+                        continue
+                    v = sum(a[i:j+1])
+                    if v > mx:
+                        mx = v
+
+            return mx
 
     def max_sum(a):
         """Take list "a" and return largest sum of consecutive elements."""
@@ -268,8 +307,45 @@ def f1(n, disp=True):
 def f2(n, disp=True):
     """Generates an n*n square. n=2000 for original problem."""
 
+    import numpy as np
+
     if disp:
         print("--- f2 ---")
+
+    def memoize(f):
+        cache = {}
+        def helper(x):
+            if x not in cache:
+                cache[x] = f(x)
+
+            return cache[x]
+
+
+        return helper
+
+    @memoize
+    def s(k):
+        if k < 56:
+            return (100003 - 200003*k + 300007*k**3) % 1000000 - 500000
+        else:
+            return (s(k-24) + s(k-55) + 1000000) % 1000000 - 500000
+
+        def max_sum(a):
+            """Take list "a" and return largest sum of consecutive elements."""
+
+            mx = -999999
+
+            for i in range(len(a)):
+                if a[i] < 0:
+                    continue
+                for j in range(i, len(a)):
+                    if a[j] < 0:
+                        continue
+                    v = sum(a[i:j+1])
+                    if v > mx:
+                        mx = v
+
+            return mx
 
     def max_sum(a):
         """Take list "a" and return largest sum of consecutive elements."""
@@ -390,8 +466,45 @@ def f2(n, disp=True):
 def f3(n, disp=True):
     """Generates an n*n square. n=2000 for original problem."""
 
+    import numpy as np
+
     if disp:
         print("--- f3 ---")
+
+    def memoize(f):
+        cache = {}
+        def helper(x):
+            if x not in cache:
+                cache[x] = f(x)
+
+            return cache[x]
+
+
+        return helper
+
+    @memoize
+    def s(k):
+        if k < 56:
+            return (100003 - 200003*k + 300007*k**3) % 1000000 - 500000
+        else:
+            return (s(k-24) + s(k-55) + 1000000) % 1000000 - 500000
+
+        def max_sum(a):
+            """Take list "a" and return largest sum of consecutive elements."""
+
+            mx = -999999
+
+            for i in range(len(a)):
+                if a[i] < 0:
+                    continue
+                for j in range(i, len(a)):
+                    if a[j] < 0:
+                        continue
+                    v = sum(a[i:j+1])
+                    if v > mx:
+                        mx = v
+
+            return mx
 
     def max_sum(arr):
         """Take list "a" and return largest sum of consecutive elements."""
@@ -517,6 +630,41 @@ def f4(n, disp=True):
 
     if disp:
         print("--- f4 ---")
+
+    def memoize(f):
+        cache = {}
+        def helper(x):
+            if x not in cache:
+                cache[x] = f(x)
+
+            return cache[x]
+
+
+        return helper
+
+    @memoize
+    def s(k):
+        if k < 56:
+            return (100003 - 200003*k + 300007*k**3) % 1000000 - 500000
+        else:
+            return (s(k-24) + s(k-55) + 1000000) % 1000000 - 500000
+
+        def max_sum(a):
+            """Take list "a" and return largest sum of consecutive elements."""
+
+            mx = -999999
+
+            for i in range(len(a)):
+                if a[i] < 0:
+                    continue
+                for j in range(i, len(a)):
+                    if a[j] < 0:
+                        continue
+                    v = sum(a[i:j+1])
+                    if v > mx:
+                        mx = v
+
+            return mx
 
     def max_sum(arr):
         """Take list "arr" and return largest sum of consecutive elements."""
@@ -646,10 +794,47 @@ def f4(n, disp=True):
     return ms
 
 def f5(n, disp=True):
-    """Generates an n*n square. n=2000 for original problem."""
+    """Generates an n*n square. n=2000 for original problem.
+    Susprisingly, this is faster than f4, avoiding numpy. Also, avoiding numpy
+    we can make use of pypy, which makes it even faster."""
 
     if disp:
-        print("--- f4 ---")
+        print("--- f5 ---")
+
+    def memoize(f):
+        cache = {}
+        def helper(x):
+            if x not in cache:
+                cache[x] = f(x)
+
+            return cache[x]
+
+
+        return helper
+
+    @memoize
+    def s(k):
+        if k < 56:
+            return (100003 - 200003*k + 300007*k**3) % 1000000 - 500000
+        else:
+            return (s(k-24) + s(k-55) + 1000000) % 1000000 - 500000
+
+        def max_sum(a):
+            """Take list "a" and return largest sum of consecutive elements."""
+
+            mx = -999999
+
+            for i in range(len(a)):
+                if a[i] < 0:
+                    continue
+                for j in range(i, len(a)):
+                    if a[j] < 0:
+                        continue
+                    v = sum(a[i:j+1])
+                    if v > mx:
+                        mx = v
+
+            return mx
 
     def max_sum(arr):
         """Take list "arr" and return largest sum of consecutive elements."""
@@ -699,13 +884,12 @@ def f5(n, disp=True):
 
         return ms
 
-    def max_vertical(a):
+    def max_vertical(a,n):
         """Generate all vertical columns, and return max sum of any."""
 
-        return 0
-
         ms = 0
-        for col in a.T:
+        for j in range(n):
+            col = [ a[i][j] for i in range(n) ]
             ret = max_sum(col)
             if ret > ms:
                 ms = ret
@@ -771,7 +955,7 @@ def f5(n, disp=True):
     ms = max_horizontal(a)
 
     # Check vertical columns:
-    ret = max_vertical(a)
+    ret = max_vertical(a,n)
     if ret > ms:
         ms = ret
 
@@ -795,36 +979,46 @@ def f5(n, disp=True):
 
 if __name__ == "__main__":
     times = []
-    for i in [4]:
+    for i in [5]:
         t = timeit.Timer('f{0}(2000)'.format(i), "from __main__ import f{0}".format(i))
         times.append([i, t.timeit(number=1)])
 
-    # Python 3.x times #
-
-    #    n    res(n)  function  time (ms)
-    #  100   8642499        f0      ~1600
-    #                       f1      ~1100
-    #                       f2       ~150
-    #                       f3       ~130
-    #                       f4        ~19
+    # Python 3.5.2 times
     #
-    #  200  11614980        f0     ~21000
-    #                       f1     ~14000
-    #                       f2      ~1600
-    #                       f3      ~1450
-    #                       f4        ~75
+    #    n    res(n)  function  time (ms)
+    #  100   8642499        f0      ~1200
+    #                       f1      ~1150
+    #                       f2       ~160
+    #                       f3       ~150
+    #                       f4        ~27
+    #                       f5        ~21
+    #
+    #  200  11614980        f0     ~16000
+    #                       f1     ~18000
+    #                       f2      ~1700
+    #                       f3      ~1500
+    #                       f4        ~85
     #
     #  400  19187069        f2     ~22000
     #                       f3     ~21000
-    #                       f4       ~315
+    #                       f4       ~390
+    #                       f5       ~350
     #
-    #  800  29743196        f2    ~305000
-    #                       f3    ~290000
-    #                       f4      ~1700
+    #  800  29743196        f2    ~345000
+    #                       f3    ~355000
+    #                       f4      ~1600
+    #                       f5      ~1350
     #
-    # 1200  39294806        f4      ~3900
+    # 1200  39294806        f4      ~3600
+    #                       f5      ~3100
     #
-    # 2000  52852124        f4     ~10500
+    # 2000  52852124        f4     ~10100
+    #                       f5      ~9100
+
+
+    # PyPy 5.1.1 @ Python 2.7.10 times
+    #
+    # 2000  52852124        f5       ~950
 
     print("\nTimes:\n")
     for i,t in times:

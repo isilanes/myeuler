@@ -28,23 +28,6 @@ def f0(n, disp=True):
         else:
             return (s(k-24) + s(k-55) + 1000000) % 1000000 - 500000
 
-        def max_sum(a):
-            """Take list "a" and return largest sum of consecutive elements."""
-
-            mx = -999999
-
-            for i in range(len(a)):
-                if a[i] < 0:
-                    continue
-                for j in range(i, len(a)):
-                    if a[j] < 0:
-                        continue
-                    v = sum(a[i:j+1])
-                    if v > mx:
-                        mx = v
-
-            return mx
-
     def max_sum(arr):
         """Take list "a" and return largest sum of consecutive elements."""
 
@@ -179,23 +162,6 @@ def f1(n, disp=True):
         else:
             return (s(k-24) + s(k-55) + 1000000) % 1000000 - 500000
 
-        def max_sum(a):
-            """Take list "a" and return largest sum of consecutive elements."""
-
-            mx = -999999
-
-            for i in range(len(a)):
-                if a[i] < 0:
-                    continue
-                for j in range(i, len(a)):
-                    if a[j] < 0:
-                        continue
-                    v = sum(a[i:j+1])
-                    if v > mx:
-                        mx = v
-
-            return mx
-
     def max_sum(a):
         """Take list "a" and return largest sum of consecutive elements."""
 
@@ -329,23 +295,6 @@ def f2(n, disp=True):
             return (100003 - 200003*k + 300007*k**3) % 1000000 - 500000
         else:
             return (s(k-24) + s(k-55) + 1000000) % 1000000 - 500000
-
-        def max_sum(a):
-            """Take list "a" and return largest sum of consecutive elements."""
-
-            mx = -999999
-
-            for i in range(len(a)):
-                if a[i] < 0:
-                    continue
-                for j in range(i, len(a)):
-                    if a[j] < 0:
-                        continue
-                    v = sum(a[i:j+1])
-                    if v > mx:
-                        mx = v
-
-            return mx
 
     def max_sum(a):
         """Take list "a" and return largest sum of consecutive elements."""
@@ -489,23 +438,6 @@ def f3(n, disp=True):
         else:
             return (s(k-24) + s(k-55) + 1000000) % 1000000 - 500000
 
-        def max_sum(a):
-            """Take list "a" and return largest sum of consecutive elements."""
-
-            mx = -999999
-
-            for i in range(len(a)):
-                if a[i] < 0:
-                    continue
-                for j in range(i, len(a)):
-                    if a[j] < 0:
-                        continue
-                    v = sum(a[i:j+1])
-                    if v > mx:
-                        mx = v
-
-            return mx
-
     def max_sum(arr):
         """Take list "a" and return largest sum of consecutive elements."""
 
@@ -648,23 +580,6 @@ def f4(n, disp=True):
             return (100003 - 200003*k + 300007*k**3) % 1000000 - 500000
         else:
             return (s(k-24) + s(k-55) + 1000000) % 1000000 - 500000
-
-        def max_sum(a):
-            """Take list "a" and return largest sum of consecutive elements."""
-
-            mx = -999999
-
-            for i in range(len(a)):
-                if a[i] < 0:
-                    continue
-                for j in range(i, len(a)):
-                    if a[j] < 0:
-                        continue
-                    v = sum(a[i:j+1])
-                    if v > mx:
-                        mx = v
-
-            return mx
 
     def max_sum(arr):
         """Take list "arr" and return largest sum of consecutive elements."""
@@ -818,23 +733,6 @@ def f5(n, disp=True):
             return (100003 - 200003*k + 300007*k**3) % 1000000 - 500000
         else:
             return (s(k-24) + s(k-55) + 1000000) % 1000000 - 500000
-
-        def max_sum(a):
-            """Take list "a" and return largest sum of consecutive elements."""
-
-            mx = -999999
-
-            for i in range(len(a)):
-                if a[i] < 0:
-                    continue
-                for j in range(i, len(a)):
-                    if a[j] < 0:
-                        continue
-                    v = sum(a[i:j+1])
-                    if v > mx:
-                        mx = v
-
-            return mx
 
     def max_sum(arr):
         """Take list "arr" and return largest sum of consecutive elements."""
@@ -998,6 +896,7 @@ if __name__ == "__main__":
     #                       f2      ~1700
     #                       f3      ~1500
     #                       f4        ~85
+    #                       f5        ~60
     #
     #  400  19187069        f2     ~22000
     #                       f3     ~21000

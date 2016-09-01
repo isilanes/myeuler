@@ -8,7 +8,6 @@ from libeuler import core
 class p002(core.FunctionSet):
 
     def f0(self, n):
-
         last1, last2 = 1, 2
         sum = 2
         while True:

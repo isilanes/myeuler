@@ -4,7 +4,6 @@ import timeit
 import random
 import inspect
 import argparse
-from datetime import datetime
 
 def parse_args():
     """Read and parse arguments"""
@@ -78,10 +77,97 @@ def f0(n, disp=True):
                 single += 1
             E.extract()
         tot += single
-        frac = float(tot)/(i+1)
-        #print("i=", i, "tot=", tot, "frac=", frac)
 
     ret = float(tot)/n
+    if disp:
+        print(ret)
+
+    return ret
+
+def f1(n, disp=True, debug=False):
+    """Very fast and simple solution."""
+
+    if disp:
+        print("--- {f}({n}) ---".format(f=inspect.stack()[0][3], n=n)) # print function name
+
+    class Envelope(object):
+
+        def __init__(self, sheets):
+            self.sheets = sheets
+
+        def extract(self, i):
+            """Extract i-th sheet from Envelope.
+            Return resulting Envelope."""
+
+            s = self.sheets[i]
+            sheets = self.sheets[:i] + self.sheets[i+1:]
+            sheets.extend(s.cut())
+
+            return Envelope(sheets)
+
+        def extract_all(self):
+            """Perform all possible extractions from Envelope, and return all outcomes,
+            in the form of a list of resulting Envelopes."""
+
+            ret = []
+            for i in range(len(self.sheets)):
+                ret.append(self.extract(i))
+
+            return ret
+
+        def __str__(self):
+            return "-".join(sorted([str(x) for x in self.sheets]))
+
+    class Sheet(object):
+
+        subs = {
+            2: [3,4,5],
+            3: [4,5],
+            4: [5],
+            5: [],
+        }
+
+        def __init__(self, size):
+            self.size = size
+
+        def cut(self):
+            """Return list of Sheet objects resulting from cutting self."""
+
+            return [Sheet(i) for i in self.subs[self.size]]
+
+        def __str__(self):
+            return "A{s.size}".format(s=self)
+
+
+    if debug:
+        space = ""
+
+    tot = 0
+    S = [ (1.0, Envelope([Sheet(2), Sheet(3), Sheet(4), Sheet(5)])) ]
+    for i in range(14):
+        ensemble = {}
+        for frac,E in S:
+            if len(E.sheets) == 1:
+                tot += frac
+
+            if debug:
+                string = "{sp}{f:9.6f}: {e}".format(sp=space, f=frac, e=E)
+                print(string)
+
+            ret = E.extract_all()
+            frac2 = frac/len(E.sheets)
+            for E2 in ret:
+                k = str(E2)
+                new = frac2
+                if k in ensemble:
+                    new += ensemble[k][0]
+                ensemble[k] = (new, E2)
+
+        S = [ x for x in ensemble.values() ]
+        if debug:
+            space += "  "
+
+    ret = "{t:.6f}".format(t=tot)
     if disp:
         print(ret)
 
@@ -115,10 +201,9 @@ if __name__ == "__main__":
         else:
             print('f{i}({n}): {t:.1f} s'.format(i=i, t=t, n=n))
 
-    # Python 3.4.3 times (Burns)
+    # Python 3.5.2 times (Skinner)
     #
-    #    n     res(n)  function  time (ms)
+    #    n      res(n)  function  time (ms)
     #
-    #    2    -153582        f0        0.2
-    #                        f1        0.1
+    #    -    0.464399        f1        4.5
 

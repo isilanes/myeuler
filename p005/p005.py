@@ -1,27 +1,45 @@
-#!/usr/bin/python
+# -*- coding=utf-8 -*-
 
-#------------------------------------------------------------------------------#
+import sys
+import random
+sys.path.append("..")
 
-def f1(num):
-    factors = [2,3]
-    for i in range(4,num):
-        j = i
+from libeuler import core
+
+class problem(core.FunctionSet):
+
+    def f0(self, num):
+        factors = [2,3]
+        for i in range(4,num+1):
+            j = i
+            for factor in factors:
+                if not j % factor:
+                    j = j // factor
+
+            if j > 1:
+                factors.append(j)
+
+        res = 1
         for factor in factors:
-            if not j % factor:
-                j = int(j/factor)
+            res = res * factor
 
-        if j > 1:
-            factors.append(j)
+        return res
 
-    res = 1
-    for factor in factors:
-        res = res * factor
+    def f1(self, num):
+        """Naïve version from Bordonau, verbatim."""
 
-    return res
+        i = 2
+        while True:
+            for divisor in range(2, num+1):
+                isDivisor = True
+                if i % divisor != 0:
+                    isDivisor = False
+                    break
+            if isDivisor == True:
+                return i
 
-#------------------------------------------------------------------------------#
+            i += 1
 
-for i in range(1):
-    res = f1(20)
 
-print(res)
+P = problem(df="0", dn="20")
+P.run()

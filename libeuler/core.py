@@ -58,7 +58,6 @@ class FunctionSet(object):
                 if self.disp:
                     print(ret)
 
-
                 dt = (datetime.now() - now).total_seconds()
                 times.append([[i,n], dt])
 

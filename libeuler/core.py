@@ -66,9 +66,9 @@ def lcm(n, m):
 
     # Use divide-first, and divide by largest first, to avoid potential overflows:
     if n > m:
-        return n/gcd(n, m) * m
+        return n // gcd(n, m) * m
     else:
-        return m/gcd(n, m) * n
+        return m // gcd(n, m) * n
 
 def lcm_of_many(number_list):
     """Least common multiple of all the integers in 'number_list'."""

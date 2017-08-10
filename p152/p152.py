@@ -12,7 +12,14 @@ class p152(core.FunctionSet):
 
     # Solutions:
     def f0(self, n):
-        return core.lcm_of_many(range(2, n))
+        lcm = core.lcm_of_many(range(2, n))
+        elements = [(lcm // e)**2 for e in range(2, n)]
+        DEST = lcm // 2
+
+        for e in elements:
+            print(e)
+
+
 
 
 # Main code:

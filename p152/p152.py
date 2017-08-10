@@ -12,7 +12,7 @@ class p152(core.FunctionSet):
 
     # Solutions:
     def f0(self, n):
-        pass
+        return core.lcm_of_many(range(2, n))
 
 
 # Main code:

@@ -26,6 +26,65 @@ def parse_args(args=sys.argv[1:]):
 
     return parser.parse_args(args)
 
+def factors_of(n):
+    """Return list of prime factors of n.
+    Factors appear repeated if appropriate.
+    """
+    factors = []
+
+    factor = 2
+    while n > 1:
+        if not n % factor:
+            factors.append(factor)
+            n /= factor
+        else:
+            factor += 1 # recall N will always be prime (think about it)
+            if factor*factor > n: # if so, the remainder N is prime already
+                factors.append(int(n))
+                break
+
+    return factors
+
+def gcd(n, m):
+    """Greatest common divisor of integers n and m.
+    Uses Euclid's algorithm.
+    """
+    # For convenience, order such that n > m:
+    if n < m:
+        n, m = m, n
+
+    rem = n % m
+    if rem:
+        return gcd(m, rem)
+    else:
+        return m
+
+def lcm(n, m):
+    """Least common multiple of integers n and m.
+    Uses reduction by the GCD.
+    """
+
+    # Use divide-first, and divide by largest first, to avoid potential overflows:
+    if n > m:
+        return n/gcd(n, m) * m
+    else:
+        return m/gcd(n, m) * n
+
+def lcm_of_many(number_list):
+    """Least common multiple of all the integers in 'number_list'."""
+
+    if not number_list:
+        return None
+    
+    if len(number_list) == 1:
+        return number_list[0]
+
+    _lcm = 1
+    for number in number_list:
+        _lcm = lcm(_lcm, number)
+
+    return _lcm
+
 
 # Classes:
 class FunctionSet(object):

@@ -52,7 +52,7 @@ class p151(core.FunctionSet):
                 return "A{s.size}".format(s=self)
 
 
-        n = int(self.opt.nvals)
+        n = int(self.opts.nvals)
 
         tot = 0
         for i in range(n): # run simulation n times
@@ -151,7 +151,7 @@ class p151(core.FunctionSet):
         return "{t:.6f}".format(t=tot)
 
 
-P = p151(df="1", dn="0")
+P = p151()
 P.run()
 
 # Python 3.5.2 times (Skinner)

@@ -1,5 +1,3 @@
-#--------------------------------------------------------------------#
-
 def f0():
     print("--- f0 ---")
 
@@ -27,9 +25,7 @@ def f0():
             self.edges[src].append(edge)
 
         def DFS(self, node=(0,0)):
-            '''
-            Return cheapest path from node to self.final.
-            '''
+            """Return cheapest path from node to self.final."""
 
             if node == self.final:
                 return 0, []
@@ -49,7 +45,9 @@ def f0():
                     min_path = [e.dest] + p
 
             self.cache[node] = min_value, min_path
+
             return min_value, min_path
+
 
     # Read vertex values from file:
     vertices = []

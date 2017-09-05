@@ -1,14 +1,11 @@
-#--------------------------------------------------------------------#
-
+# Functions:
 def f0():
     print("--- f0 ---")
 
     import itertools as it
 
     def factors(N):
-        '''
-        Return factors of N.
-        '''
+        """Return factors of N."""
 
         facs = []
         for i in range(2,N+1):
@@ -22,12 +19,10 @@ def f0():
         return facs
 
     def ways(N):
-        '''
-        Return a list of arrays, each containing M integers, such that
+        """Return a list of arrays, each containing M integers, such that
         the product of all integers within each array gives N. The arrays
         represent *ALL* possible ways of getting N through products of integers.
-        '''
-
+        """
         facs = factors(N)
         nf = len(facs)
         if nf == 1:
@@ -47,6 +42,7 @@ def f0():
                     
         w = [ tuple(sorted(x)) for x in w ]
         return set(w)
+
     
     # We will go up to this k:
     k_lim = 12*1000
@@ -77,17 +73,13 @@ def f0():
     
     print(sum(inver.keys()))
 
-#--------------------------------------------------------------------#
-
 def f1():
     print("--- f1 ---")
 
     import itertools as it
 
     def factors(N):
-        '''
-        Return factors of N.
-        '''
+        """Return factors of N."""
 
         facs = []
         for i in range(2,N+1):
@@ -101,12 +93,10 @@ def f1():
         return facs
 
     def ways(N):
-        '''
-        Return a list of arrays, each containing M integers, such that
+        """Return a list of arrays, each containing M integers, such that
         the product of all integers within each array gives N. The arrays
         represent *ALL* possible ways of getting N through products of integers.
-        '''
-
+        """
         facs = factors(N)
         nf = len(facs)
         if nf == 1:
@@ -127,6 +117,8 @@ def f1():
         w = [ tuple(sorted(x)) for x in w ]
         return set(w)
     
+
+    # Classes:
     class Memoize(object):
 
         def __init__(self, fun):
@@ -137,6 +129,7 @@ def f1():
             if not args in self.cache:
                 self.cache[args] = self.fun(*args)
             return self.cache[args]
+
     
     ways = Memoize(ways)
 
@@ -169,8 +162,8 @@ def f1():
     
     print(sum(inver.keys()))
 
-#--------------------------------------------------------------------#
 
+# Main:
 import timeit
 
 times = []

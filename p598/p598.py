@@ -1,6 +1,7 @@
 # Standard libs:
 import sys
 import math
+import itertools
 sys.path.append("..")
 
 # Out libs:
@@ -44,13 +45,53 @@ class p598(core.FunctionSet):
         """Generalization of f0.
         Assumes argument "n" means C(n!).
         """
-        # Factorize n!:
-        powers = (8, 4, 2, 1)
+        def combo2ndivs(combo, pvals):
+            """Given a combo, return (divA, divB),
+            meaning amount of divisors for combo and
+            for complementary of combo (according to pvals).
+            """
+            divA, divB = 1, 1
+            for i, c in enumerate(combo):
+                divA *= c + 1
+                divB *= pvals[i] - c + 1
 
-        # proceed:
+            return divA, divB
+        
+        def combo2nums(combo, pkeys, pvals):
+            """Return number given by combo exponents, and complementary."""
+            A, B = 1, 1
+            for i, c in enumerate(combo):
+                A *= pkeys[i]**c
+                B *= pkeys[i]**(pvals[i] - c)
+
+            return A, B
+
+
+        # Factorize n!:
+        powers = {
+            2: 8,
+            3: 4,
+            5: 2,
+            7: 1,
+        }
+
+        pkeys = sorted(powers.keys())
+        pvals = [powers[k] for k in pkeys]
+
+        lists = [tuple(range(p+1)) for p in pvals]
+        
+        # Proceed:
         res = 0
-        divA_parts = []
-        divB_parts = []
+        for combo in itertools.product(*lists):
+            divA, divB = combo2ndivs(combo, pvals)
+            if divA == divB:
+                A, B = combo2nums(combo, pkeys, pvals)
+                if A < B:
+                    #print(combo, A, B)
+                    res += 1
+
+        return res
+
 
 
 # Main code:

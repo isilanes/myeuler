@@ -87,7 +87,7 @@ class p598(core.FunctionSet):
             if divA == divB:
                 A, B = combo2nums(combo, pkeys, pvals)
                 if A <= B:
-                    #print(combo, A, B)
+                    #print(combo, A, B, divA, divB)
                     res += 1
 
         return res
@@ -249,6 +249,49 @@ class p598(core.FunctionSet):
         print(count)
         return res
 
+    def f5(self, n):
+        """Another approach.
+        Much faster... yet not fast enough!
+        It also uses a lot of memory.
+        """
+        # Initial factorization of n!:
+        powers = {}
+        for i in range(2, n+1):
+            factors = core.factors_of(i)
+            for factor in factors:
+                powers[factor] = powers.get(factor, 0) + 1
+
+        powers = [v for v in powers.values()]
+
+        # Initialize with first:
+        divisors = {}
+        for i in range(powers[0]+1):
+            f1 = i + 1
+            f2 = powers[0] - i + 1
+            k = (f1, f2)
+            divisors[k] = 1
+
+        # Populate with all the rest:
+        for p in powers[1:]:
+            new = {}
+            for d, v in divisors.items():
+                f1_pre, f2_pre = d
+                for i in range(p+1):
+                    f1 = f1_pre*(i + 1)
+                    f2 = f2_pre*(p - i + 1)
+                    k = (f1, f2)
+                    new[k] = new.get(k, 0) + v
+
+            divisors = new
+
+        tot = 0
+        for k, v in divisors.items():
+            f1, f2 = k
+            if f1 == f2:
+                tot += v
+
+        return tot // 2
+
 
 # Main code:
 if __name__ == "__main__":
@@ -268,3 +311,11 @@ if __name__ == "__main__":
 #   20         136        f2         37.0
 #
 #   30        1656        f3       2700
+#
+#   10           3        f5          0.5
+#   20         136        f5         22.9
+#   30        1656        f5        788
+#   35        6674        f5       3000
+#   40       38901        f5       9200
+#   45       88592        f5      52100
+#   50      662019        f5     159600

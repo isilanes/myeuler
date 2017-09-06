@@ -292,6 +292,63 @@ class p598(core.FunctionSet):
 
         return tot // 2
 
+    def f6(self, n):
+        """Minor optimization of f5. Not good enough."""
+
+        def ndiv(exp_list):
+            """Return number of divisors from list of exponents."""
+
+            n = 1
+            for e in exp_list:
+                n *= e + 1
+
+            return n
+
+
+        # Initial factorization of n!:
+        powers = {}
+        for i in range(2, n+1):
+            factors = core.factors_of(i)
+            for factor in factors:
+                powers[factor] = powers.get(factor, 0) + 1
+
+        powers = [v for v in powers.values()]
+        ndivs = [ndiv(powers[i:]) for i in range(len(powers))]
+
+        # Initialize with first:
+        divisors = {}
+        for i in range(powers[0]+1):
+            f1 = i + 1
+            f2 = powers[0] - i + 1
+            ratio = max(f1, f2) / min(f1, f2)
+            if ratio < ndivs[1]: # keep only the f1/f2 disparities "fixable" by remaining exponents
+                k = (f1, f2)
+                divisors[k] = 1
+
+        # Populate with all the rest:
+        for j, p in enumerate(powers[1:]):
+            new = {}
+            for d, v in divisors.items():
+                f1_pre, f2_pre = d
+                for i in range(p+1):
+                    f1 = f1_pre*(i + 1)
+                    f2 = f2_pre*(p - i + 1)
+                    ratio = max(f1, f2) / min(f1, f2)
+                    if ratio < ndivs[j+1]: # keep only the f1/f2 disparities "fixable" by remaining exponents
+                        k = (f1, f2)
+                        new[k] = new.get(k, 0) + v
+
+            divisors = new
+
+        # Extract the result (tot) we want:
+        tot = 0
+        for k, v in divisors.items():
+            f1, f2 = k
+            if f1 == f2:
+                tot += v
+
+        return tot // 2 # each result is duplicated
+
 
 # Main code:
 if __name__ == "__main__":
@@ -319,3 +376,11 @@ if __name__ == "__main__":
 #   40       38901        f5       9200
 #   45       88592        f5      52100
 #   50      662019        f5     159600
+#
+#   10           3        f6          0.5
+#   20         136        f6         23.6
+#   30        1656        f6        698
+#   35        6674        f6       2500
+#   40       38901        f6       7700
+#   45       88592        f6      46500
+#   50      662019        f6     128800

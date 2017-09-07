@@ -349,6 +349,89 @@ class p598(core.FunctionSet):
 
         return tot // 2 # each result is duplicated
 
+    def f7(self, n=30):
+        """Optimization of f3 to account for n=A*B, A <= B, so A <= sqrt(n).
+        Not much of an improvement, or at all.
+        """
+        TWO = 26
+        THREE = 14
+        FIVE = 7
+        SEVEN = 4
+        ELEVEN = 2
+        THIRTEEN = 2
+        SEVENTEEN = 1
+        NINETEEN = 1
+        TTHREE = 1
+        TNINE = 1
+
+        log2 = math.log(2)
+        log3 = math.log(3)
+        log5 = math.log(5)
+        log7 = math.log(7)
+        log11 = math.log(11)
+        log13 = math.log(13)
+        log17 = math.log(17)
+        log19 = math.log(19)
+        log23 = math.log(23)
+        log29 = math.log(29)
+
+        LOGSQRT = (TWO//2+1)*log2 + (THREE//2+1)*log3 + (FIVE//2+1)*log5 + (SEVEN//2+1)*log7 + (ELEVEN//2+1)*log11 + (THIRTEEN//2+1)*log13 + (SEVENTEEN//2+1)*log17 + (NINETEEN//2+1)*log19 + (TTHREE//2+1)*log23 + (TNINE//2+1)*log29
+
+        res = 0
+        for two in range(TWO+1):
+            lognum2 = two * log2
+            if lognum2 > LOGSQRT:
+                break
+            for three in range(THREE+1):
+                lognum3 = lognum2 + three * log3
+                if lognum3 > LOGSQRT:
+                    break
+                for five in range(FIVE+1):
+                    lognum5 = lognum3 + five * log5
+                    if lognum5 > LOGSQRT:
+                        break
+                    for seven in range(SEVEN+1):
+                        lognum7 = lognum5 + seven*log7
+                        if lognum7 > LOGSQRT:
+                            break
+                        for eleven in range(ELEVEN+1):
+                            lognum11 = lognum7 + eleven*log11
+                            if lognum11 > LOGSQRT:
+                                break
+                            for thirteen in range(THIRTEEN+1):
+                                lognum13 = lognum11 + thirteen*log13
+                                if lognum13 > LOGSQRT:
+                                    break
+                                for seventeen in range(SEVENTEEN+1):
+                                    lognum17 = lognum13 + seventeen*log17
+                                    if lognum17 > LOGSQRT:
+                                        break
+                                    for nineteen in range(NINETEEN+1):
+                                        lognum19 = lognum17 + nineteen*log19
+                                        if lognum19 > LOGSQRT:
+                                            break
+                                        for tthree in range(TTHREE+1):
+                                            lognum23 = lognum19 + tthree*log23
+                                            if lognum23 > LOGSQRT:
+                                                break
+                                            for tnine in range(TNINE+1):
+                                                lognum29 = lognum23 + tnine*log29
+                                                if lognum29 > LOGSQRT:
+                                                    break
+                                                divA = (two+1)*(three+1)*(five+1)*(seven+1)*(eleven+1)*(thirteen+1)*(seventeen+1)*(nineteen+1)*(tthree+1)*(tnine+1)
+                                                divB = (TWO+1-two)*(THREE+1-three)*(FIVE+1-five)*(SEVEN+1-seven)*(ELEVEN+1-eleven)*(THIRTEEN+1-thirteen)*(SEVENTEEN+1-seventeen)*(NINETEEN+1-nineteen)*(TTHREE+1-tthree)*(TNINE+1-tnine)
+                                                if divB < divA:
+                                                    break
+
+                                                if divA == divB:
+                                                    A = 2**two * 3**three * 5**five * 7**seven * 11**eleven * 13**thirteen * 17**seventeen * 19**nineteen * 23**tthree * 29**tnine
+                                                    B = 2**(TWO-two) * 3**(THREE-three) * 5**(FIVE-five) * 7**(SEVEN-seven) * 11**(ELEVEN-eleven) * 13**(THIRTEEN-thirteen) * 17**(SEVENTEEN-seventeen) * 19**(NINETEEN-nineteen) * 23**(TTHREE-tthree) * 29**(TNINE-tnine)
+                                                    if A < B:
+                                                        res += 1
+
+
+        return res
+
 
 # Main code:
 if __name__ == "__main__":

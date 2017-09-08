@@ -523,8 +523,6 @@ class p598(core.FunctionSet):
                                                         res += 1
 
 
-        print(hits, ncombos, hits/ncombos)
-
         return res
 
 

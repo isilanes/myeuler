@@ -79,7 +79,7 @@ class p598(core.FunctionSet):
         pkeys = sorted(powers.keys())
         pvals = [powers[k] for k in pkeys]
         lists = [tuple(range(p+1)) for p in pvals]
-        
+
         # Proceed:
         res = 0
         for combo in itertools.product(*lists):
@@ -525,6 +525,146 @@ class p598(core.FunctionSet):
 
         return res
 
+    def f9(self, n=30):
+        """(Crappy) generalization of f8.
+        Yes, it's an optimization of method in f1.. but slower and scales worse than f5 and f6.
+        """
+
+        if n == 30:
+            E2 = 26
+            E3 = 14
+            E5 = 7
+            E7 = 4
+            E11 = 2
+            E13 = 2
+            E17 = 1
+            E19 = 1
+            E23 = 1
+            E29 = 1
+            E31 = 0
+            E37 = 0
+        if n == 35:
+            E2 = 32
+            E3 = 15
+            E5 = 8
+            E7 = 5
+            E11 = 3
+            E13 = 2
+            E17 = 2
+            E19 = 1
+            E23 = 1
+            E29 = 1
+            E31 = 1
+            E37 = 0
+        elif n == 40:
+            E2 = 38
+            E3 = 18
+            E5 = 9
+            E7 = 5
+            E11 = 3
+            E13 = 3
+            E17 = 2
+            E19 = 2
+            E23 = 1
+            E29 = 1
+            E31 = 1
+            E37 = 1
+        else:
+            # Collect factors of n!:
+            powers = {}
+            for i in range(2, n+1):
+                factors = core.factors_of(i)
+                for factor in factors:
+                    powers[factor] = powers.get(factor, 0) + 1
+
+            return powers
+
+        ncombos = (E2+1)*(E3+1)*(E5+1)*(E7+1)*(E11+1)*(E13+1)*(E17+1)*(E19+1)*(E23+1)*(E29+1)*(E31+1)*(E37+1)
+
+        log2 = math.log(2)
+        log3 = math.log(3)
+        log5 = math.log(5)
+        log7 = math.log(7)
+        log11 = math.log(11)
+        log13 = math.log(13)
+        log17 = math.log(17)
+        log19 = math.log(19)
+        log23 = math.log(23)
+        log29 = math.log(29)
+        log31 = math.log(31)
+        log37 = math.log(37)
+
+        LOGSQRT = E2/2.*log2 + E3/2.*log3 + E5/2.*log5 + E7/2.*log7 + E11/2.*log11 + E13/2.*log13 + E17/2.*log17 + E19/2.*log19 + E23/2.*log23 + E29/2.*log29 + E31*log31/2 + E37*log37/2
+
+        res = 0
+        hits = 0
+        for e37 in range(E37+1):
+            lognum37 = e37 * log37
+            if lognum37 > LOGSQRT:
+                break
+            for e31 in range(E31+1):
+                lognum31 = lognum37 + e31 * log31
+                if lognum31 > LOGSQRT:
+                    break
+                for e29 in range(E29+1):
+                    lognum29 = lognum31 + e29 * log29
+                    if lognum29 > LOGSQRT:
+                        break
+                    for e23 in range(E23+1):
+                        lognum23 = lognum29 + e23 * log23
+                        if lognum23 > LOGSQRT:
+                            break
+                        for e19 in range(E19+1):
+                            lognum19 = lognum23 + e19 * log19
+                            if lognum19 > LOGSQRT:
+                                break
+                            for e17 in range(E17+1):
+                                lognum17 = lognum19 + e17*log17
+                                if lognum17 > LOGSQRT:
+                                    break
+                                for e13 in range(E13+1):
+                                    lognum13 = lognum17 + e13*log13
+                                    if lognum13 > LOGSQRT:
+                                        break
+                                    for e11 in range(E11+1):
+                                        lognum11 = lognum13 + e11*log11
+                                        if lognum11 > LOGSQRT:
+                                            break
+                                        for e7 in range(E7+1):
+                                            lognum7 = lognum11 + e7*log7
+                                            if lognum7 > LOGSQRT:
+                                                break
+                                            for e5 in range(E5+1):
+                                                lognum5 = lognum7 + e5*log5
+                                                if lognum5 > LOGSQRT:
+                                                    break
+                                                for e3 in range(E3+1):
+                                                    lognum3 = lognum7 + e3*log3
+                                                    if lognum3 > LOGSQRT:
+                                                        break
+                                                    for e2 in range(E2+1):
+                                                        lognum2 = lognum3 + e2*log2
+                                                        if lognum2 > LOGSQRT:
+                                                            break
+
+                                                        divA = (e2+1)*(e3+1)*(e5+1)*(e7+1)*(e11+1)*(e13+1)*(e17+1)*(e19+1)*(e23+1)*(e29+1)*(e31+1)*(e37+1)
+                                                        divB = (E2+1-e2)*(E3+1-e3)*(E5+1-e5)*(E7+1-e7)*(E11+1-e11)*(E13+1-e13)*(E17+1-e17)*(E19+1-e19)*(E23+1-e23)*(E29+1-e29)
+                                                        divB *= (E31-e31+1)*(E37-e37+1)
+
+                                                        if divB < divA:
+                                                            break
+
+                                                        hits += 1
+                                                        if divA == divB:
+                                                            A  = 2**e2 * 3**e3 * 5**e5 * 7**e7 * 11**e11 * 13**e13 * 17**e17 * 19**e19 * 23**e23 * 29**e29 * 31**e31 * 37**e37
+                                                            B  = 2**(E2-e2) * 3**(E3-e3) * 5**(E5-e5) * 7**(E7-e7) * 11**(E11-e11) * 13**(E13-e13) * 17**(E17-e17)
+                                                            B *= 19**(E19-e19) * 23**(E23-e23) * 29**(E29-e29) * 31**(E31-e31) * 37**(E37-e37)
+                                                            if A < B:
+                                                                res += 1
+
+
+        return res
+
 
 # Main code:
 if __name__ == "__main__":
@@ -564,3 +704,7 @@ if __name__ == "__main__":
 #   30        1656        f7       1975
 #
 #   30        1656        f8       1524
+#
+#   30        1656        f9       1773
+#   35        6674        f9      12400
+#   40       38901        f9      78100

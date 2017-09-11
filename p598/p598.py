@@ -728,7 +728,7 @@ class p598(core.FunctionSet):
             f2 = powers[0] - i + 1
             g = core.gcd(f1, f2)
             k = (f1/g, f2/g)
-            divisors[k] = 1
+            divisors[k] = divisors.get(k, 0) + 1
 
         # Populate with all the rest:
         for p in powers[1:]:
@@ -738,6 +738,54 @@ class p598(core.FunctionSet):
                 for i in range(p+1):
                     f1 = f1_pre*(i + 1)
                     f2 = f2_pre*(p - i + 1)
+                    g = core.gcd(f1, f2)
+                    k = (f1/g, f2/g)
+                    new[k] = new.get(k, 0) + v
+
+            divisors = new
+
+        tot = 0
+        for k, v in divisors.items():
+            f1, f2 = k
+            if f1 == f2:
+                tot += v
+
+        return tot // 2
+
+    def f12(self, n):
+        """Tweak f11.
+        """
+        # Initial factorization of n!:
+        powers = {}
+        for i in range(2, n+1):
+            factors = core.factors_of(i)
+            for factor in factors:
+                powers[factor] = powers.get(factor, 0) + 1
+
+        powers = [v for v in powers.values()]
+        powers.reverse()
+
+        # Initialize with first:
+        divisors = {}
+        for i in range(powers[0]+1):
+            f1 = i + 1
+            f2 = powers[0] - i + 1
+            if f1 > f2:
+                f1, f2 = f2, f1
+            g = core.gcd(f1, f2)
+            k = (f1/g, f2/g)
+            divisors[k] = divisors.get(k, 0) + 1
+
+        # Populate with all the rest:
+        for p in powers[1:]:
+            new = {}
+            for d, v in divisors.items():
+                f1_pre, f2_pre = d
+                for i in range(p+1):
+                    f1 = f1_pre*(i + 1)
+                    f2 = f2_pre*(p - i + 1)
+                    if f1 > f2:
+                        f1, f2 = f2, f1
                     g = core.gcd(f1, f2)
                     k = (f1/g, f2/g)
                     new[k] = new.get(k, 0) + v
@@ -810,3 +858,15 @@ if __name__ == "__main__":
 #   50      662019       f11      12500
 #   60     9628044       f11      54000
 #   70   136179767       f11     406000
+#
+# Python 3.5.2 times (Skinner)
+#
+#    n      res(n)  function  time (ms)
+#   10           3       f12          0.2
+#   20         136       f12          9.9
+#   30        1655       f12        152
+#   40       38901       f12        665
+#   50      662019       f12       5000
+#   60     9628044       f12      27400
+#   70   136179767       f12     206400
+#   75   467379664       f12     430900

@@ -665,6 +665,93 @@ class p598(core.FunctionSet):
 
         return res
 
+    def f10(self, n):
+        """Good, but worse than f5."""
+
+        def all_combos(num_list, f1f2):
+            """."""
+            f1, f2 = f1f2
+            current = num_list[0]
+            
+            if len(num_list) == 1:
+                for i in range(current+1):
+                    if (f1 * (i+1)) == (f2 * (current-i+1)):
+                        return [[i]]
+
+                return []
+            
+            results = []
+            for i in range(num_list[0]+1):
+                f1new = f1*(i + 1)
+                f2new = f2*(current - i + 1)
+                ret = all_combos(num_list[1:], (f1new, f2new))
+                #print(i, f1new, f2new, ret)
+                for combo in ret:
+                    results.append([i] + combo)
+
+            return results
+
+
+        # Initial factorization of n!:
+        powers = {}
+        for i in range(2, n+1):
+            factors = core.factors_of(i)
+            for factor in factors:
+                powers[factor] = powers.get(factor, 0) + 1
+
+        powers = [v for v in powers.values()]
+        powers.reverse()
+
+        # Calculate:
+        res = all_combos(powers, (1,1))
+
+        return len(res) // 2
+
+    def f11(self, n):
+        """Tweak f5.
+        Faster than f5. Fastest to date. Not fast enough.
+        """
+        # Initial factorization of n!:
+        powers = {}
+        for i in range(2, n+1):
+            factors = core.factors_of(i)
+            for factor in factors:
+                powers[factor] = powers.get(factor, 0) + 1
+
+        powers = [v for v in powers.values()]
+        powers.reverse()
+
+        # Initialize with first:
+        divisors = {}
+        for i in range(powers[0]+1):
+            f1 = i + 1
+            f2 = powers[0] - i + 1
+            g = core.gcd(f1, f2)
+            k = (f1/g, f2/g)
+            divisors[k] = 1
+
+        # Populate with all the rest:
+        for p in powers[1:]:
+            new = {}
+            for d, v in divisors.items():
+                f1_pre, f2_pre = d
+                for i in range(p+1):
+                    f1 = f1_pre*(i + 1)
+                    f2 = f2_pre*(p - i + 1)
+                    g = core.gcd(f1, f2)
+                    k = (f1/g, f2/g)
+                    new[k] = new.get(k, 0) + v
+
+            divisors = new
+
+        tot = 0
+        for k, v in divisors.items():
+            f1, f2 = k
+            if f1 == f2:
+                tot += v
+
+        return tot // 2
+
 
 # Main code:
 if __name__ == "__main__":
@@ -708,3 +795,18 @@ if __name__ == "__main__":
 #   30        1656        f9       1773
 #   35        6674        f9      12400
 #   40       38901        f9      78100
+#
+#   10           3       f10          0.2
+#   20         136       f10         11.7
+#   30        1655       f10        447.5
+#   35        6674       f10       2900
+#   40       38901       f10      17900
+#   45       88592       f10     142200
+#
+#   10           3       f11          0.6
+#   20         136       f11         16.8
+#   30        1655       f11        224
+#   40       38901       f11       1784
+#   50      662019       f11      12500
+#   60     9628044       f11      54000
+#   70   136179767       f11     406000

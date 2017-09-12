@@ -753,8 +753,8 @@ class p598(core.FunctionSet):
         return tot // 2
 
     def f12(self, n):
-        """Tweak f11.
-        """
+        """Tweak f11."""
+
         # Initial factorization of n!:
         powers = {}
         for i in range(2, n+1):
@@ -792,6 +792,70 @@ class p598(core.FunctionSet):
 
             divisors = new
 
+        # Extract desired elements:
+        tot = 0
+        for k, v in divisors.items():
+            f1, f2 = k
+            if f1 == f2:
+                tot += v
+
+        return tot // 2
+
+    def f13(self, n):
+        """Tweak f12."""
+
+        # Initial factorization of n!:
+        powers = {}
+        for i in range(2, n+1):
+            factors = core.factors_of(i)
+            for factor in factors:
+                powers[factor] = powers.get(factor, 0) + 1
+
+        powers = [v for v in powers.values()]
+        powers.reverse()
+
+        maxp = []
+        for i, _ in enumerate(powers):
+            fac = 1
+            for p in powers[i+1:]:
+                fac *= p + 1
+            maxp.append(fac)
+
+        # Initialize with first:
+        divisors = {}
+        for i in range(powers[0]+1):
+            f1 = i + 1
+            f2 = powers[0] - i + 1
+            if f1 > f2:
+                f1, f2 = f2, f1
+
+            if f2 / f1 > maxp[0]:
+                break
+            g = core.gcd(f1, f2)
+            k = (f1/g, f2/g)
+            divisors[k] = divisors.get(k, 0) + 1
+
+        # Populate with all the rest:
+        for j, p in enumerate(powers[1:]):
+            new = {}
+            for d, v in divisors.items():
+                f1_pre, f2_pre = d
+                for i in range(p+1):
+                    f1 = f1_pre*(i + 1)
+                    f2 = f2_pre*(p - i + 1)
+                    if f1 > f2:
+                        f1, f2 = f2, f1
+
+                    if f2 / f1 > maxp[j+1]:
+                        continue
+
+                    g = core.gcd(f1, f2)
+                    k = (f1/g, f2/g)
+                    new[k] = new.get(k, 0) + v
+
+            divisors = new
+
+        # Extract desired elements:
         tot = 0
         for k, v in divisors.items():
             f1, f2 = k
@@ -846,7 +910,7 @@ if __name__ == "__main__":
 #
 #   10           3       f10          0.2
 #   20         136       f10         11.7
-#   30        1655       f10        447.5
+#   30        1656       f10        447.5
 #   35        6674       f10       2900
 #   40       38901       f10      17900
 #   45       88592       f10     142200
@@ -859,14 +923,44 @@ if __name__ == "__main__":
 #   60     9628044       f11      54000
 #   70   136179767       f11     406000
 #
+#   10           3       f12          0.4
+#   20         136       f12          8.5
+#   30        1655       f12        110.9
+#   40       38901       f12        797
+#   50      662019       f12       6100
+#   60     9628044       f12      27500
+#   70   136179767       f12     195300
+#
+#   10           3       f13          0.2
+#   20         136       f13          1.1
+#   30        1655       f13         14.0
+#   40       38901       f13         81.7
+#   50      662019       f13        490
+#   60     9628044       f13       1718
+#   70   136179767       f13      10100
+#   80  3638351196       f13      32200
+#   90 53072836121       f13      68300
+#
 # Python 3.5.2 times (Skinner)
 #
 #    n      res(n)  function  time (ms)
 #   10           3       f12          0.2
 #   20         136       f12          9.9
-#   30        1655       f12        152
+#   30        1656       f12        152
 #   40       38901       f12        665
 #   50      662019       f12       5000
 #   60     9628044       f12      27400
 #   70   136179767       f12     206400
 #   75   467379664       f12     430900
+#
+# Python 3.6.1 times (Neptuno)
+#
+#    n      res(n)  function  time (ms)
+#   20         136       f12          9.6
+#   30        1656       f12        139
+#   40       38901       f12       1230
+#   50      662019       f12       9300
+#   60     9628044       f12      43100
+#   70   136179767       f12     248500
+#   80  3638351196       f12    1211600
+#   85  6009063679       f12    2405700

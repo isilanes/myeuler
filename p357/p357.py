@@ -12,11 +12,18 @@ class p357(core.FunctionSet):
 
     # Solutions:
     def f0(self, n):
-        
-        for d in [1, 2, 3, 5, 6, 10, 15, 30]:
-            print(d, d+30//d)
 
-        return
+        # Produce all primes up to 10**8:
+        nmax = 5*10**7
+        composites = {}
+        primes = [2]
+        for mult in range(3, nmax, 2):
+            if not mult in composites:
+                primes.append(mult)
+                for i in range(mult*mult, nmax, 2*mult):
+                    composites[i] = True
+        
+        return len(primes), primes[-1]
 
 
 # Main code:

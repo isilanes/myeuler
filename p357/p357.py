@@ -1,6 +1,7 @@
 # Standard libs:
 import sys
 import itertools
+from datetime import datetime
 sys.path.append("..")
 
 # Out libs:
@@ -57,7 +58,7 @@ class p357(core.FunctionSet):
         return tot
 
     def f1(self, n=10**8):
-        """Optimize and fix f0."""
+        """[WRONG] Optimize and fix f0."""
 
         def divisors(pdivisors):
             """Given single prime divisors, return list of all divisors."""
@@ -134,6 +135,126 @@ class p357(core.FunctionSet):
 
         return tot
 
+    def f2(self, n=10**8):
+        """[WRONG] Ultra-naïve solution, trying to be robust and correct.
+        We'll optimize later.
+        """
+
+        def divisors(pdivisors):
+            """Given single prime divisors, return list of all divisors."""
+
+            divisors = [1]
+            bdivisors = pdivisors[1:]
+            for r in range(1, len(bdivisors)+1):
+                for subset in itertools.combinations(bdivisors, r):
+                    divisor = 1
+                    for e in subset:
+                        divisor *= e
+                    divisors.append(divisor)
+
+            return divisors
+
+        def is_valid(N, pdivisors, primes):
+            """Returns True if all divisors d in 'divisors' are such 
+            that d+N/d is prime (i.e., is in 'primes'. False otherwise.
+            """
+            # Check "1":
+            if 1 + N not in primes:
+                return False
+
+            # Check upwards of "1":
+            for d in divisors(pdivisors):
+                if d + N/d not in primes:
+                    return False
+
+            return True
+
+
+        t0 = datetime.now()
+        # Produce all primes up to nmax:
+        nmax = n // 2
+        composites = {}
+        primes = [2]
+        pdict = {2: True}
+        for mult in range(3, nmax, 2):
+            if not mult in composites:
+                primes.append(mult)
+                pdict[mult] = True
+                for i in range(mult*mult, nmax, 2*mult):
+                    composites[i] = True
+
+        # Process:
+        all = [1, 2]
+        for mult in range(3, nmax, 2):
+            if not mult % 10**6:
+                t = datetime.now()
+                dt = (t-t0).total_seconds()
+                t0 = t
+                print(mult, t, dt)
+            target = 2*mult
+            factors = core.factors_of(target)
+            if is_valid(2*mult, factors, pdict):
+                all.append(target)
+
+        return sum(all)
+
+    def f3(self, n=10**8):
+        """."""
+
+        def divisors(pdivisors):
+            """Given single prime divisors, return list of all divisors."""
+
+            divisors = [1]
+            bdivisors = pdivisors[1:]
+            for r in range(1, len(bdivisors)+1):
+                for subset in itertools.combinations(bdivisors, r):
+                    divisor = 1
+                    for e in subset:
+                        divisor *= e
+                    divisors.append(divisor)
+
+            return divisors
+
+        def is_valid(N, pdivisors, primes):
+            """Returns True if all divisors d in 'divisors' are such 
+            that d+N/d is prime (i.e., is in 'primes'. False otherwise.
+            """
+            # Check "1":
+            if 1 + N not in primes:
+                return False
+
+            # Check upwards of "1":
+            for d in divisors(pdivisors):
+                if d + N/d not in primes:
+                    return False
+
+            return True
+
+
+        t0 = datetime.now()
+        # Produce all primes up to nmax:
+        #nmax = n // 2
+        nmax = n
+        composites = {}
+        primes = [2]
+        pdict = {2: True}
+        for mult in range(3, nmax, 2):
+            if not mult in composites:
+                primes.append(mult)
+                pdict[mult] = True
+                for i in range(mult*mult, nmax, 2*mult):
+                    composites[i] = True
+
+        # Process:
+        all = [1, 2]
+        for mult in range(3, nmax//2, 2):
+            factors = [1, 2] + core.factors_of(mult)
+            if is_valid(2*mult, factors, pdict):
+                print(2*mult, factors)
+                all.append(2*mult)
+
+        return sum(all)
+
 
 # Main code:
 if __name__ == "__main__":
@@ -141,10 +262,40 @@ if __name__ == "__main__":
     P.run()
 
 # Python 3.6.2 times (Burns)
-#
-#       n        res(n)  function  time (ms)
-#   10**1             3        f0        0.1
-#   10**2           113        f0        0.1
-#   10**3          3353        f0        1.3
-#   10**4         70327        f0       50.2
-#   10**5       2309309        f0     2100
+benchmarks = {
+    "Python 3.6.2 times (Burns)": {
+        "f0": [ # n, result, time (ms)
+            [ 10**1,         3,      0.1 ],
+            [ 10**2,       113,      0.1 ],
+            [ 10**3,      3353,      1.3 ],
+            [ 10**4,     70327,     50.2 ],
+            [ 10**5,   2309309,   2100   ],
+            [ 10**6, 117350739, 142800   ],
+        ],
+        "f1": [ # n, result, time (ms)
+            [ 10**1,            3,      0.1 ],
+            [ 10**2,          113,      0.1 ],
+            [ 10**3,         3353,      0.6 ],
+            [ 10**4,        57759,      3.8 ],
+            [ 10**5,      2086107,     23.5 ],
+            [ 10**6,    112178977,    230   ],
+            [ 10**7,   6621161053,   2700   ],
+            [ 10**8, 412170985225,  30800   ],
+        ],
+        "f2": [ # n, result, time (ms)
+            [ 10**1,            3,       0.1 ],
+            [ 10**2,          113,       0.2 ],
+            [ 10**3,         3791,       1.8 ],
+            [ 10**4,        79601,      24.4 ],
+            [ 10**5,      3205375,     429.4 ],
+            [ 10**6,    152832417,   10700   ],
+            [ 10**7,   8373051221,  285800   ],
+            [ 10**8, 501311966519, 7690000   ],
+        ],
+        "f3": [ # n, result, time (ms)
+            [ 10**2,          401,       0.3 ],
+            [ 10**4,       262615,      53.0 ],
+            [ 10**6,    524402305,   20800   ],
+        ],
+    }
+}

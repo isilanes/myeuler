@@ -231,23 +231,20 @@ class p357(core.FunctionSet):
             return True
 
 
-        t0 = datetime.now()
-        # Produce all primes up to nmax:
-        #nmax = n // 2
-        nmax = n
+        # Produce all primes up to n:
         composites = {}
         primes = [2]
         pdict = {2: True}
-        for mult in range(3, nmax, 2):
+        for mult in range(3, n, 2):
             if not mult in composites:
                 primes.append(mult)
                 pdict[mult] = True
-                for i in range(mult*mult, nmax, 2*mult):
+                for i in range(mult*mult, n, 2*mult):
                     composites[i] = True
 
         # Process:
         all = [1, 2]
-        for mult in range(3, nmax//2, 2):
+        for mult in range(3, n//2, 2):
             factors = [1, 2] + core.factors_of(mult)
             if is_valid(2*mult, factors, pdict):
                 print(2*mult, factors)

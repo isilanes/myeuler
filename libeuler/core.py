@@ -32,13 +32,19 @@ def factors_of(n):
     """
     factors = []
 
-    factor = 2
+    # Check factor 2:
+    while not n % 2:
+        factors.append(2)
+        n /= 2
+
+    # All the rest (odd):
+    factor = 3
     while n > 1:
         if not n % factor:
             factors.append(factor)
             n /= factor
         else:
-            factor += 1 # recall N will always be prime (think about it)
+            factor += 2 # recall N will always be prime (think about it)
             if factor*factor > n: # if so, the remainder N is prime already
                 factors.append(int(n))
                 break

@@ -51,6 +51,34 @@ def factors_of(n):
 
     return factors
 
+def factors_of_with_primes(n, primes):
+    """Return list of prime factors of n.
+    Factors appear repeated if appropriate, and are taken from
+    given list of primes.
+    """
+    factors = []
+
+    # Check factor 2:
+    while not n % 2:
+        factors.append(2)
+        n /= 2
+
+    # All the rest (odd):
+    ifactor = 1 # ifactor-th prime in list (0 -> 2, 1 -> 3, etc)
+    while n > 1:
+        prime = primes[ifactor]
+        if not n % prime:
+            factors.append(prime)
+            n /= prime
+        else:
+            ifactor += 1
+            prime = primes[ifactor]
+            if prime*prime > n: # if so, the remainder N is prime already
+                factors.append(int(n))
+                break
+
+    return factors
+
 def gcd(n, m):
     """Greatest common divisor of integers n and m.
     Uses Euclid's algorithm.

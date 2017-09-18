@@ -199,7 +199,7 @@ class p357(core.FunctionSet):
         return sum(all)
 
     def f3(self, n=10**8):
-        """."""
+        """First valid function (slow)."""
 
         def divisors(pdivisors):
             """Given single prime divisors, return list of all divisors."""
@@ -233,11 +233,9 @@ class p357(core.FunctionSet):
 
         # Produce all primes up to n:
         composites = {}
-        primes = [2]
         pdict = {2: True}
         for mult in range(3, n, 2):
             if not mult in composites:
-                primes.append(mult)
                 pdict[mult] = True
                 for i in range(mult*mult, n, 2*mult):
                     composites[i] = True
@@ -247,7 +245,58 @@ class p357(core.FunctionSet):
         for mult in range(3, n//2, 2):
             factors = [1, 2] + core.factors_of(mult)
             if is_valid(2*mult, factors, pdict):
-                print(2*mult, factors)
+                all.append(2*mult)
+
+        return sum(all)
+
+    def f4(self, n=10**8):
+        """Optimize f3 by using better factorization function (in core)."""
+
+        def divisors(pdivisors):
+            """Given single prime divisors, return list of all divisors."""
+
+            divisors = [1]
+            bdivisors = pdivisors[1:]
+            for r in range(1, len(bdivisors)+1):
+                for subset in itertools.combinations(bdivisors, r):
+                    divisor = 1
+                    for e in subset:
+                        divisor *= e
+                    divisors.append(divisor)
+
+            return divisors
+
+        def is_valid(N, pdivisors, primes):
+            """Returns True if all divisors d in 'divisors' are such 
+            that d+N/d is prime (i.e., is in 'primes'. False otherwise.
+            """
+            # Check "1":
+            if 1 + N not in primes:
+                return False
+
+            # Check upwards of "1":
+            for d in divisors(pdivisors):
+                if d + N/d not in primes:
+                    return False
+
+            return True
+
+
+        # Produce all primes up to n:
+        composites = {}
+        pdict = {2: True}
+        for mult in range(3, n, 2):
+            if not mult in composites:
+                pdict[mult] = True
+                for i in range(mult*mult, n, 2*mult):
+                    composites[i] = True
+
+        # Process:
+        all = [1, 2]
+        pkeys = sorted(pdict.keys())
+        for mult in range(3, n//2, 2):
+            factors = [1, 2] + core.factors_of_with_primes(mult, pkeys)
+            if is_valid(2*mult, factors, pdict):
                 all.append(2*mult)
 
         return sum(all)
@@ -294,5 +343,19 @@ benchmarks = {
             [ 10**4,       262615,      53.0 ],
             [ 10**6,    524402305,   20800   ],
         ],
-    }
+    },
+    "Python 3.5.2 times (Skinner)": {
+        "f3": [ # n, result, time (ms)
+            [ 10**2,           401,       0.1 ],
+            [ 10**4,        262615,      13.9 ],
+            [ 10**6,     524402305,    5600   ],
+            [ 10**8, 1739023853137, 3944600   ],
+        ],
+        "f4": [ # n, result, time (ms)
+            [ 10**2,           401,       0.1 ],
+            [ 10**4,        262615,      10.5 ],
+            [ 10**6,     524402305,    2700   ],
+            [ 10**8, 1739023853137, 1479100   ],
+        ],
+    },
 }

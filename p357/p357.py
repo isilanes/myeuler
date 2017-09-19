@@ -301,6 +301,79 @@ class p357(core.FunctionSet):
 
         return sum(all)
 
+    def f5(self, n=10**8):
+        """Optimize f4 by using better generation, and avoid factorization altogether."""
+
+        def divisors(pdivisors):
+            """Given single prime divisors, return list of all divisors."""
+
+            divisors = [1]
+            bdivisors = pdivisors[1:]
+            for r in range(1, len(bdivisors)+1):
+                for subset in itertools.combinations(bdivisors, r):
+                    divisor = 1
+                    for e in subset:
+                        divisor *= e
+                    divisors.append(divisor)
+
+            return divisors
+
+        def is_valid(N, pdivisors, primes):
+            """Returns True if all divisors d in 'divisors' are such 
+            that d+N/d is prime (i.e., is in 'primes'. False otherwise.
+            """
+            # Check "1":
+            if 1 + N not in primes:
+                return False
+
+            # Check upwards of "1":
+            for d in divisors(pdivisors):
+                if d + N/d not in primes:
+                    return False
+
+            return True
+
+
+        # Produce all primes up to n:
+        composites = {}
+        pdict = {2: True}
+        for mult in range(3, n, 2):
+            if not mult in composites:
+                pdict[mult] = True
+                for i in range(mult*mult, n, 2*mult):
+                    composites[i] = True
+
+        primes = sorted(pdict.keys())
+
+        # Produce all composites up to nmax:
+        bunch = {
+            2: [1, 2],
+        }
+        blist = [0] * n
+        blist[2] = 2
+        for prime in primes[1:]: # avoid number "2", i.e. the first prime
+            new = {}
+            #for pre, factors in bunch.items(): # <--- need to sort here :(
+            #for pre, factors in sorted(bunch.items()): # <--- need to sort here :(
+            for pre in blist:
+                if pre:
+                    prod = pre * prime
+                    if prod > n:
+                        break
+
+                    new[prod] = bunch[pre] + [prime]
+
+            bunch.update(new)
+            for k in new:
+                blist[k] = k
+        
+        tot = 1
+        for k,v in bunch.items():
+            if is_valid(k, v, pdict):
+                tot += k
+
+        return tot
+
 
 # Main code:
 if __name__ == "__main__":

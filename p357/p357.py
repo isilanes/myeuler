@@ -349,14 +349,10 @@ class p357(core.FunctionSet):
         bunch = {
             2: [1, 2],
         }
-        blist = [0] * n
-        blist[2] = 2
         for prime in primes[1:]: # avoid number "2", i.e. the first prime
             new = {}
-            #for pre, factors in bunch.items(): # <--- need to sort here :(
-            #for pre, factors in sorted(bunch.items()): # <--- need to sort here :(
-            for pre in blist:
-                if pre:
+            for pre in range(n+1):
+                if pre in bunch:
                     prod = pre * prime
                     if prod > n:
                         break
@@ -364,8 +360,6 @@ class p357(core.FunctionSet):
                     new[prod] = bunch[pre] + [prime]
 
             bunch.update(new)
-            for k in new:
-                blist[k] = k
         
         tot = 1
         for k,v in bunch.items():
@@ -416,6 +410,18 @@ benchmarks = {
             [ 10**4,       262615,      53.0 ],
             [ 10**6,    524402305,   20800   ],
         ],
+        "f4": [ # n, result, time (ms)
+            [ 10**2,           401,       0.3 ],
+            [ 10**4,        262615,      21.5 ],
+            [ 10**6,     524402305,    3300   ],
+            [ 10**8, 1739023853137, 1333700   ],
+        ],
+        "f5": [ # n, result, time (ms)
+            [ 10**2,           401,       0.2 ],
+            [ 10**4,        262615,       8.6 ],
+            [ 10**6,     524402305,    1002   ],
+            [ 10**8, 1739023853137,  134600   ],
+        ],
     },
     "Python 3.5.2 times (Skinner)": {
         "f3": [ # n, result, time (ms)
@@ -423,12 +429,6 @@ benchmarks = {
             [ 10**4,        262615,      13.9 ],
             [ 10**6,     524402305,    5600   ],
             [ 10**8, 1739023853137, 3944600   ],
-        ],
-        "f4": [ # n, result, time (ms)
-            [ 10**2,           401,       0.1 ],
-            [ 10**4,        262615,      10.5 ],
-            [ 10**6,     524402305,    2700   ],
-            [ 10**8, 1739023853137, 1479100   ],
         ],
     },
 }

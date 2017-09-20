@@ -1,5 +1,6 @@
 # Standard libs:
 import sys
+import bisect
 import itertools
 from datetime import datetime
 sys.path.append("..")
@@ -368,6 +369,141 @@ class p357(core.FunctionSet):
 
         return tot
 
+    def f6(self, n=10**8):
+        """De-optimize f5 by not sorting sorting."""
+
+        def divisors(pdivisors):
+            """Given single prime divisors, return list of all divisors."""
+
+            divisors = [1]
+            bdivisors = pdivisors[1:]
+            for r in range(1, len(bdivisors)+1):
+                for subset in itertools.combinations(bdivisors, r):
+                    divisor = 1
+                    for e in subset:
+                        divisor *= e
+                    divisors.append(divisor)
+
+            return divisors
+
+        def is_valid(N, pdivisors, primes):
+            """Returns True if all divisors d in 'divisors' are such 
+            that d+N/d is prime (i.e., is in 'primes'. False otherwise.
+            """
+            # Check "1":
+            if 1 + N not in primes:
+                return False
+
+            # Check upwards of "1":
+            for d in divisors(pdivisors):
+                if d + N/d not in primes:
+                    return False
+
+            return True
+
+
+        # Produce all primes up to n:
+        composites = {}
+        pdict = {2: True}
+        for mult in range(3, n, 2):
+            if not mult in composites:
+                pdict[mult] = True
+                for i in range(mult*mult, n, 2*mult):
+                    composites[i] = True
+
+        primes = sorted(pdict.keys())
+
+        # Produce all composites up to nmax:
+        bunch = {
+            2: [1, 2],
+        }
+        for prime in primes[1:]: # avoid number "2", i.e. the first prime
+            new = {}
+            for pre in bunch.keys():
+                prod = pre * prime
+                if prod > n:
+                    continue
+
+                new[prod] = bunch[pre] + [prime]
+
+            bunch.update(new)
+        
+        tot = 1
+        for k,v in bunch.items():
+            if is_valid(k, v, pdict):
+                tot += k
+
+        return tot
+
+    def f7(self, n=10**8):
+        """Optimize f5 by using bisect module."""
+
+        def divisors(pdivisors):
+            """Given single prime divisors, return list of all divisors."""
+
+            divisors = [1]
+            bdivisors = pdivisors[1:]
+            for r in range(1, len(bdivisors)+1):
+                for subset in itertools.combinations(bdivisors, r):
+                    divisor = 1
+                    for e in subset:
+                        divisor *= e
+                    divisors.append(divisor)
+
+            return divisors
+
+        def is_valid(N, pdivisors, primes):
+            """Returns True if all divisors d in 'divisors' are such 
+            that d+N/d is prime (i.e., is in 'primes'. False otherwise.
+            """
+            # Check "1":
+            if 1 + N not in primes:
+                return False
+
+            # Check upwards of "1":
+            for d in divisors(pdivisors):
+                if d + N/d not in primes:
+                    return False
+
+            return True
+
+
+        # Produce all primes up to n:
+        composites = {}
+        pdict = {2: True}
+        for mult in range(3, n, 2):
+            if not mult in composites:
+                pdict[mult] = True
+                for i in range(mult*mult, n, 2*mult):
+                    composites[i] = True
+
+        primes = sorted(pdict.keys())
+
+        # Produce all composites up to nmax:
+        bunch = {
+            2: [1, 2],
+        }
+        blist = [2]
+        for prime in primes[1:]: # avoid number "2", i.e. the first prime
+            new = {}
+            for pre in blist:
+                prod = pre * prime
+                if prod > n:
+                    break
+
+                new[prod] = bunch[pre] + [prime]
+
+            bunch.update(new)
+            for k in new:
+                bisect.insort(blist, k)
+        
+        tot = 1
+        for k,v in bunch.items():
+            if is_valid(k, v, pdict):
+                tot += k
+
+        return tot
+
 
 # Main code:
 if __name__ == "__main__":
@@ -413,14 +549,24 @@ benchmarks = {
         "f4": [ # n, result, time (ms)
             [ 10**2,           401,       0.3 ],
             [ 10**4,        262615,      21.5 ],
-            [ 10**6,     524402305,    3300   ],
+            [ 10**6,     524402305,    3400   ],
             [ 10**8, 1739023853137, 1333700   ],
         ],
         "f5": [ # n, result, time (ms)
             [ 10**2,           401,       0.2 ],
-            [ 10**4,        262615,       8.6 ],
-            [ 10**6,     524402305,    1002   ],
+            [ 10**4,        262615,      11.8 ],
+            [ 10**6,     524402305,    1004   ],
             [ 10**8, 1739023853137,  134600   ],
+        ],
+        "f6": [ # n, result, time (ms)
+            [ 10**2,           401,       0.2 ],
+            [ 10**4,        262615,     161.7 ],
+            [ 10**6,     524402305, 1023000   ],
+        ],
+        "f7": [ # n, result, time (ms)
+            [ 10**2,           401,       0.2 ],
+            [ 10**4,        262615,       6.7 ],
+            [ 10**6,     524402305,    6400   ],
         ],
     },
     "Python 3.5.2 times (Skinner)": {

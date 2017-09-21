@@ -11,15 +11,18 @@ plt.figure(0, (12,7))
 
 # Add data:
 for where, results in benchmarks.items():
-    for fun, data in results.items():
+    for fun, fundata in results.items():
         X, Y = [], []
-        for line in data:
+        if fundata.get("skip", False):
+            continue
+
+        for line in fundata.get("data", []):
             x, _, y = line
             X.append(x)
             Y.append(y)
         
         label = "{f} @ {w}".format(f=fun, w=where)
-        plt.plot(X, Y, label=label)
+        plt.loglog(X, Y, label=label)
 
 # Configure and show plot:
 legend = plt.legend(loc='upper left', shadow=True)

@@ -1,29 +1,59 @@
 # Standard libs:
 import sys
+import importlib
 import matplotlib.pyplot as plt
-sys.path.append("..")
+import argparse
 
-# Read data:
-from p357.p357 import benchmarks
+# Functions:
+def main():
+    # Parse command-line arguments:
+    opts = parse_args()
 
-# Create plot::
-plt.figure(0, (12,7))
+    # Read data:
+    module_name = "{p}.{p}".format(p=opts.problem)
+    try:
+        problem = importlib.import_module(module_name)
+    except ModuleNotFoundError:
+        print("Sorry, could not load problem {p}".format(p=opts.problem))
+        exit()
 
-# Add data:
-for where, results in benchmarks.items():
-    for fun, fundata in results.items():
-        X, Y = [], []
-        if fundata.get("skip", False):
-            continue
+    # Create plot::
+    plt.figure(0, (12,7))
 
-        for line in fundata.get("data", []):
-            x, _, y = line
-            X.append(x)
-            Y.append(y)
-        
-        label = "{f} @ {w}".format(f=fun, w=where)
-        plt.loglog(X, Y, label=label)
+    # Add data:
+    for where, results in problem.benchmarks.items():
+        for fun, fundata in results.items():
+            X, Y = [], []
+            if fundata.get("skip", False):
+                continue
 
-# Configure and show plot:
-legend = plt.legend(loc='upper left', shadow=True)
-plt.show()
+            for line in fundata.get("data", []):
+                x, _, y = line
+                X.append(x)
+                Y.append(y)
+            
+            label = "{f} @ {w}".format(f=fun, w=where)
+            plt.loglog(X, Y, label=label)
+
+    # Configure and show plot:
+    legend = plt.legend(loc='upper left', shadow=True)
+    plt.show()
+
+def parse_args(args=sys.argv[1:]):
+    """Read and parse arguments"""
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("-p", "--problem",
+            help="Which problem to plot. Default: p357.",
+            default="p357")
+
+
+    return parser.parse_args(args)
+
+
+
+# Main:
+if __name__ == "__main__":
+    main()
+

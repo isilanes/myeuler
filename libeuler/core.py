@@ -1,5 +1,6 @@
 # Standard libs:
 import sys
+import math
 import random
 import bisect
 import argparse
@@ -120,6 +121,18 @@ def lcm_of_many(number_list):
         _lcm = lcm(_lcm, number)
 
     return _lcm
+
+def is_prime(n):
+    """Returns True if n is prime. False otherwise."""
+
+    if not n % 2:
+        return False
+
+    for d in range(3, int(math.sqrt(n))+1, 2):
+        if not n % d:
+            return False
+
+    return True
 
 
 # Classes:

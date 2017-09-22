@@ -1,5 +1,6 @@
 # Standard libs:
 import sys
+import math
 import bisect
 import itertools
 from datetime import datetime
@@ -504,6 +505,34 @@ class p357(core.FunctionSet):
 
         return tot
 
+    def f8(self, n=10**8):
+        """Go back to semi brute force, with some optimizations."""
+
+        def is_valid(N, pdict):
+            for d in range(1, int(math.sqrt(N))+1):
+                if not N % d and (d + N/d) not in pdict:
+                    return False
+
+            return True
+
+
+        # Produce all primes up to n:
+        composites = {}
+        pdict = {2: True}
+        for mult in range(3, n, 2):
+            if not mult in composites:
+                pdict[mult] = True
+                for i in range(mult*mult, n, 2*mult):
+                    composites[i] = True
+
+        # Check all numbers:
+        tot = 3 # n = 1 and 2
+        for num in range(4, n+1, 2):
+            if is_valid(num, pdict):
+                tot += num
+
+        return tot
+
 
 # Main code:
 if __name__ == "__main__":
@@ -585,6 +614,26 @@ benchmarks = {
                 [ 10**2,           401,       0.2 ],
                 [ 10**4,        262615,       6.7 ],
                 [ 10**6,     524402305,    6400   ],
+            ],
+        },
+        "f8": {
+            "data": [ # n, result, time (ms)
+                [ 10**2,           401,       0.1 ],
+                [ 10**4,        262615,       9.3 ],
+                [ 10**6,     524402305,     796   ],
+                [ 10**8, 1739023853137,  102500   ],
+            ],
+        },
+    },
+    "PyPy 5.1.2 times (Burns)": {
+        "f8": {
+            "data": [ # n, result, time (ms)
+                [ 10**2,           401,       0.4 ],
+                [ 10**4,        262615,      35.7 ],
+                [ 10**5,       9157937,      55.1 ],
+                [ 10**6,     524402305,     189.8 ],
+                [ 10**7,   27814470277,    2300   ],
+                [ 10**8, 1739023853137,   30700   ],
             ],
         },
     },

@@ -125,6 +125,9 @@ def lcm_of_many(number_list):
 def is_prime(n):
     """Returns True if n is prime. False otherwise."""
 
+    if n == 2:
+        return True
+
     if not n % 2:
         return False
 

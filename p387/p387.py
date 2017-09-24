@@ -33,13 +33,15 @@ class p387(core.FunctionSet):
     """Group of solutions."""
 
     # Solutions:
-    def f0(self, n=10**8):
+    def f0(self, n=14):
+        """Only slightly clever solution, fast enough."""
 
         # Generate length-n Harshads from lenght-n-1s:
         harshads = {
             1: [1, 2, 3, 4, 5, 6, 7, 8, 9],
         }
-        for ndigits in range(2, 14):
+        strong_harshads = []
+        for ndigits in range(2, n):
             curr = []
             for pre_har in harshads[ndigits-1]:
                 digit_sum_pre_har = sum([int(d) for d in str(pre_har)])
@@ -48,12 +50,22 @@ class p387(core.FunctionSet):
                     digit_sum = digit_sum_pre_har + i
                     if not har % digit_sum:
                         curr.append(har)
+                        ratio = har // digit_sum
+                        if core.is_prime(har//digit_sum):
+                            strong_harshads.append(har)
+
             harshads[ndigits] = curr
 
-        # From all Harshads, pick strong ones:
-        pass
+        # From all strong, right-truncatable Harshads, pick the ones that give rise to a prime 
+        # when single digit is attached to its right side:
+        total = 0
+        for strong_harshad in strong_harshads:
+            for digit in range(10):
+                candidate = strong_harshad * 10 + digit
+                if core.is_prime(candidate):
+                    total += candidate
 
-        return
+        return total
 
 
 # Main code:
@@ -63,11 +75,31 @@ if __name__ == "__main__":
 
 # Benchmarks:
 benchmarks = {
-    "Python 3.6.2 times (Burns)": {
+    "Python 3.5.2 (Skinner)": {
         "f0": {
             "skip": False,
             "data": [ # n, result, time (ms)
-                [ 10**1,         3,      0.1 ],
+                [ 10**2,                0,     0.01 ],
+                [ 10**4,            90619,     0.3 ],
+                [ 10**6,          1188721,     1.1 ],
+                [ 10**8,        130459097,     7.4 ],
+                [ 10**10,     36498117748,    36.5 ],
+                [ 10**12,   2897368636255,   337.2 ],
+                [ 10**14, 696067597313468,  5300 ],
+            ],
+        },
+    },
+    "PyPy 5.2.1 (Skinner)": {
+        "f0": {
+            "skip": False,
+            "data": [ # n, result, time (ms)
+                [ 10**2,                0,     0.1 ],
+                [ 10**4,            90619,     0.6 ],
+                [ 10**6,          1188721,     3.9 ],
+                [ 10**8,        130459097,    11.2 ],
+                [ 10**10,     36498117748,    28.8 ],
+                [ 10**12,   2897368636255,    72.1 ],
+                [ 10**14, 696067597313468,   759.9 ],
             ],
         },
     },

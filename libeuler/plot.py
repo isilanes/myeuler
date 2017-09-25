@@ -6,6 +6,8 @@ import argparse
 
 # Functions:
 def main():
+    """Main plotting."""
+
     # Parse command-line arguments:
     opts = parse_args()
 
@@ -37,6 +39,8 @@ def main():
 
     # Configure and show plot:
     legend = plt.legend(loc='upper left', shadow=True)
+    plt.xlabel("Problem size")
+    plt.ylabel("Time (ms)")
     plt.show()
 
 def parse_args(args=sys.argv[1:]):

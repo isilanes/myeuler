@@ -533,6 +533,37 @@ class p357(core.FunctionSet):
 
         return tot
 
+    def f9(self, n=10**8):
+        """Jorge's algorithm."""
+
+        # Produce all primes up to n:
+        composites = {}
+        pdict = {2: True}
+        for mult in range(3, n, 2):
+            if not mult in composites:
+                pdict[mult] = True
+                for i in range(mult*mult, n, 2*mult):
+                    composites[i] = True
+
+        list_test = {}
+        for i in range(4, n+1, 2):
+            list_test[i] = True
+
+        # Check all divisors:
+        tot = 3 # 1 and 2
+        div = 1
+        while list_test:
+            for divisible in [x for x in list_test if not x % div]:
+                if not div + divisible/div in pdict:
+                    del list_test[divisible]
+                else:
+                    if div**2 > divisible:
+                        tot += divisible
+                        del list_test[divisible]
+            div += 1
+
+        return tot
+
 
 # Main code:
 if __name__ == "__main__":
@@ -541,7 +572,7 @@ if __name__ == "__main__":
 
 # Python 3.6.2 times (Burns)
 benchmarks = {
-    "Python 3.6.2 times (Burns)": {
+    "Python 3.6.2 (Burns)": {
         "f0": {
             "skip": True,
             "data": [ # n, result, time (ms)
@@ -624,8 +655,16 @@ benchmarks = {
                 [ 10**8, 1739023853137,  102500   ],
             ],
         },
+        "f9": {
+            "data": [ # n, result, time (ms)
+                [ 10**2,           401,       0.1 ],
+                [ 10**4,        262615,      34.0 ],
+                [ 10**5,       9157937,    2500   ],
+                [ 10**6,     524402305,  415200   ],
+            ],
+        },
     },
-    "PyPy 5.1.2 times (Burns)": {
+    "PyPy 5.1.2 (Burns)": {
         "f8": {
             "data": [ # n, result, time (ms)
                 [ 10**2,           401,       0.4 ],
@@ -637,13 +676,23 @@ benchmarks = {
             ],
         },
     },
-    "Python 3.5.2 times (Skinner)": {
+    "Python 3.5.2 (Skinner)": {
         "f3": {
             "data": [ # n, result, time (ms)
                 [ 10**2,           401,       0.1 ],
                 [ 10**4,        262615,      13.9 ],
                 [ 10**6,     524402305,    5600   ],
                 [ 10**8, 1739023853137, 3944600   ],
+            ],
+        },
+    },
+    "Matlab R2012b (Burns)": {
+        "m0": {
+            "data": [ # n, result, time (ms)
+                [ 10**2,           401,     160   ],
+                [ 10**4,        262615,     179.6 ],
+                [ 10**6,     524402305,     684.7 ],
+                [ 10**8, 1739023853137,   86700   ],
             ],
         },
     },

@@ -55,7 +55,7 @@ class p493(core.FunctionSet):
         return ave, diff
 
     def f1(self, n=None):
-        """Makes no sense why it doesn't work. Maybe precission thing."""
+        """Makes no sense why it doesn't work. Maybe precision thing."""
 
         # Probability to pick 6 colors OR LESS:
         # p6less = c1 * p(not A)

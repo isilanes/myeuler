@@ -171,6 +171,69 @@ class p493(core.FunctionSet):
 
         return "{e:.9f}".format(e=expected)
 
+    def f3(self, n=None):
+        """Assume each time we pick a ball, we drop it in the urn again before picking again."""
+
+        # Probability to pick 6 colors OR LESS:
+        # p6less = c1 * p(not A)
+        # where:
+        # c1 = amount of combinations of 1 color (7)
+        # p(not A) = probability of not picking color A
+        p6less = 7
+        for i in range(20):
+            p6less *= 60./70
+
+        # Probability to pick 5 colors OR LESS:
+        # p5less = c2 * p(not A, not B)
+        # c2 = 6+5+4+3+2+1 = 21
+        p5less = 21
+        for i in range(20):
+            p5less *= 50./70
+
+        # Probability to pick 4 colors OR LESS:
+        # p4less = c3 * p(not A, not B, not C)
+        # c3 = 35
+        p4less = 35
+        for i in range(20):
+            p4less *= 40./70
+
+        # Probability to pick 3 colors OR LESS:
+        # p3less = c4 * p(not A, not B, not C, not D)
+        # c3 = c4 = 35
+        p3less = 35
+        for i in range(20):
+            p3less *= 30./70
+
+        # Probability to pick 2 colors OR LESS:
+        # p2less = c5 * p(not A, not B, not C, not D, not E)
+        # c5 = c2 = 21
+        p2less = 21
+        for i in range(20):
+            p2less *= 20./70
+
+        # Probability to pick 1 color:
+        # p1 = c6 * p(not A, not B, not C, not D, not E, not F)
+        # c6 = c1 = 7
+        p1 = 7
+        for i in range(20):
+            p1 *= 10./70
+
+        # Probability to pick just 2 colors equal to 2 colors or less minus 1 color:
+        p2 = p2less - p1
+
+        # Probability to pick just N colors is N or less minus (N-1) or less:
+        p3 = p3less - p2less
+        p4 = p4less - p3less
+        p5 = p5less - p4less
+        p6 = p6less - p5less
+
+        # Probability to pick 7 colors:
+        p7 = 1 - p6less
+
+        # Expected value:
+        expected = 7*p7 + 6*p6 + 5*p5 + 4*p4 + 3*p3 + 2*p2 + 1*p1
+
+        return "{e:.9f}".format(e=expected)
 
 
 # Main code:

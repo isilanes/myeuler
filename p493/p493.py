@@ -20,39 +20,39 @@ class p493(core.FunctionSet):
 
     # Solutions:
     def f0(self, n=1000):
-        """Rubbish."""
+        """Brute force. Makes little sense, but serves to make checks."""
 
-        def ncolors(urn):
+        # Constants:
+        COLORS = ["A", "B", "C", "D", "E", "F", "G"]
+        URN = COLORS*10
+
+        def ncolors(pick):
             n = 0
-            for letter in ["A", "B", "C", "D", "E", "F", "G"]:
-                if letter in urn:
+            for color in COLORS:
+                if color in pick:
                     n += 1
 
             return n
 
 
         # Set up:
-        URN = ["A", "B", "C", "D", "E", "F", "G"]*10
+        frequencies = {}
 
-        tot = 0.0001
+        tot = 0.0
         old_ave = 0
-        min_diff = 10
-        for i in range(1, n):
+        for i in range(1, n+1):
             sample = random.sample(URN, 20)
-            n = ncolors(sample)
-            tot += n
+            nc = ncolors(sample)
+            frequencies[nc] = frequencies.get(nc, 0) + 1
+            tot += nc
             ave = tot/i
-            diff = abs(ave - old_ave)
-            if diff * 10 < min_diff:
-                string = "{i:8d} {n:2d} {a:13.10f} {d:13.10f}".format(i=i, n=n, a=ave, d=diff)
-                print(string)
-                min_diff = diff
-
             old_ave = ave
-            if diff < 10**-9:
-                return "{a:.9f}".format(a=ave)
 
-        return ave, diff
+        for i in range(2, 8):
+            freq = frequencies.get(i, 0) / n
+            print(i, freq)
+
+        return ave, frequencies
 
     def f1(self, n=None):
         """Makes no sense why it doesn't work. Maybe precision thing."""
@@ -82,7 +82,7 @@ class p493(core.FunctionSet):
 
         # Probability to pick 3 colors OR LESS:
         # p3less = c4 * p(not A, not B, not C, not D)
-        # c3 = c4 = 35
+        # c4 = c3 = 35
         p3less = 35
         for i in range(20):
             p3less *= (30.-i)/(70-i)
@@ -105,6 +105,13 @@ class p493(core.FunctionSet):
 
         # Probability to pick 7 colors:
         p7 = 1 - p6less
+
+        print(2, "{:.10f}".format(p2))
+        print(3, "{:.10f}".format(p3))
+        print(4, "{:.10f}".format(p4))
+        print(5, "{:.10f}".format(p5))
+        print(6, "{:.10f}".format(p6))
+        print(7, "{:.10f}".format(p7))
 
         # Expected value:
         expected = 7*p7 + 6*p6 + 5*p5 + 4*p4 + 3*p3 + 2*p2

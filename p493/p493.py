@@ -55,7 +55,7 @@ class p493(core.FunctionSet):
         return ave, frequencies
 
     def f1(self, n=None):
-        """Makes no sense why it doesn't work. Maybe precision thing."""
+        """[WRONG] Makes no sense why it doesn't work. Maybe precision thing."""
 
         # Probability to pick 6 colors OR LESS:
         # p6less = c1 * p(not A)
@@ -106,20 +106,13 @@ class p493(core.FunctionSet):
         # Probability to pick 7 colors:
         p7 = 1 - p6less
 
-        print(2, "{:.10f}".format(p2))
-        print(3, "{:.10f}".format(p3))
-        print(4, "{:.10f}".format(p4))
-        print(5, "{:.10f}".format(p5))
-        print(6, "{:.10f}".format(p6))
-        print(7, "{:.10f}".format(p7))
-
         # Expected value:
         expected = 7*p7 + 6*p6 + 5*p5 + 4*p4 + 3*p3 + 2*p2
 
         return "{e:.9f}".format(e=expected)
 
     def f2(self, n=None):
-        """Exactly as f1, but more accurate (lose less decimals).
+        """[WRONG] Exactly as f1, but more accurate (lose less decimals).
         Preserving decimals above and beyond duty, exact same (wrong) result.
         """
         # Probability to pick 6 colors OR LESS:
@@ -179,7 +172,7 @@ class p493(core.FunctionSet):
         return "{e:.9f}".format(e=expected)
 
     def f3(self, n=None):
-        """Assume each time we pick a ball, we drop it in the urn again before picking again."""
+        """[WRONG] Assume each time we pick a ball, we drop it in the urn again before picking again."""
 
         # Probability to pick 6 colors OR LESS:
         # p6less = c1 * p(not A)

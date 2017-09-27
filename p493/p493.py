@@ -9,6 +9,7 @@ Give your answer with nine digits after the decimal point (a.bcdefghij)
 # Standard libs:
 import sys
 import random
+sys.path.append(".")
 sys.path.append("..")
 
 # Out libs:
@@ -235,8 +236,47 @@ class p493(core.FunctionSet):
 
         return "{e:.9f}".format(e=expected)
 
+    def f4(self, n=20):
+        """Follow Jorge's idea, but reversed."""
 
-# Main code:
+        # Starting states:
+        # states = {state: weight}
+        # state is tuple with state[i] = c meaning 'c' colors have 'i' balls
+        states = {
+            tuple([0]*10 + [7]): 1.0,
+        }
+
+        # Produce all (unique) states after a succession of n extractions,
+        # along with the weight of each one:
+        balls = 70
+        for ex in range(1, n+1):
+            new_states = {}
+            for state, weight in states.items():
+                for i, amount in enumerate(state[1:]):
+                    j = i + 1 # we are skipping state[0], remember
+                    if amount:
+                        new_amounts = list(state)
+                        new_amounts[j] -= 1
+                        new_amounts[j-1] += 1
+
+                        new_state = tuple(new_amounts)
+                        new_weight = weight * j*amount/balls
+
+                        new_states[new_state] = new_states.get(new_state, 0) + new_weight
+
+            states = new_states
+
+            balls -= 1
+
+        # Recap results:
+        ave = 0
+        for state, weight in states.items():
+            ncolors = 7 - state[10]
+            ave += ncolors * weight
+
+        return "{a:.9f}".format(a=ave)
+
+
 if __name__ == "__main__":
     P = p493()
     P.run()

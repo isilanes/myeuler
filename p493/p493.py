@@ -276,6 +276,28 @@ class p493(core.FunctionSet):
 
         return "{a:.9f}".format(a=ave)
 
+    def f5(self, n=20):
+        """Simplification of f4."""
+
+        # Starting state:
+        balls = 70
+
+        # states[i] = fraction of states with i colors intact (10 balls each)
+        states = [0.0]*7 + [1.0]
+
+        # Proceed with n extractions:
+        for istep in range(n):
+            new_states = [0.0]*8
+            for ncolors, weight in enumerate(states):
+                weight_in = ncolors*10 / balls # prob to pick one of those
+                new_states[ncolors] += weight * (1.0 - weight_in)
+                new_states[ncolors-1] += weight * weight_in
+
+            states = new_states
+            balls -= 1
+
+        return "{r:.9f}".format(r=sum([p*(7-c) for p, c in zip(states, range(8))]))
+
 
 if __name__ == "__main__":
     P = p493()

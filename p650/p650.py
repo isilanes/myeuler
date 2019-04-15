@@ -19,38 +19,17 @@ def f0(n):
         for i in subtractive_factorials(j):
             remove_prime_factors_of_factorial(prime_factors, i)
 
-        ret += sum_of_divisors(prime_factors)
+        ret += sum_of_divisors(prime_factors) % 1000000007
 
     return ret
 
 
 def prime_divisors_of(n):
-    if n == 2:
-        return {2: 1}
-    
-    if n == 3:
-        return {3: 1}
-    
-    if n == 4:
-        return {2: 2}
-    
-    if n == 5:
-        return {5: 1}
-    
-    if n == 6:
-        return {2: 1, 3: 1}
+    divisors = {}
+    for factor in core.factors_of(n):
+        divisors[factor] = divisors.get(factor, 0) + 1
 
-    if n == 7:
-        return {7: 1}
-    
-    if n == 8:
-        return {2: 3}
-    
-    if n == 9:
-        return {3: 2}
-    
-    if n == 10:
-        return {2: 1, 5: 1}
+    return divisors
 
 
 def divisor_list_of_factors(factors):
@@ -100,8 +79,12 @@ def sum_of_divisors(prime_factors):
 if __name__ == "__main__":
     core.run_functions([f0])
 
-# Python 3.7.3 times (Fry)
+# Python 3.7.3 times (Manjaro)
 #
-#    n      res(n)  function  time (ms)
-#    0           0        f0        0.0
+#    n       res(n)  function  time (ms)
+#    5         5736        f0        0.1
+#   10   1721034274        f0        1.6
+#   15   5198581147        f0       37.6
+#   20   7131742875        f0     7100
+#   22  MemoryError
 

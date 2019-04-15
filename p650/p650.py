@@ -7,7 +7,7 @@ from libeuler import core
 
 
 # Functions:
-def f0(n):
+def p650(n):
     ret = 0
 
     for j in range(1, n+1):
@@ -77,7 +77,7 @@ def sum_of_divisors(prime_factors):
 
 # Main code:
 if __name__ == "__main__":
-    core.run_functions([f0])
+    core.run_functions([p650])
 
 # Python 3.7.3 times (Manjaro)
 #

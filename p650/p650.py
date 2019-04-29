@@ -8,8 +8,28 @@ from libeuler import core
 
 # Functions:
 def p650(n):
-    ret = 0
+    ret = 1
 
+    for J in range(2, n+1):
+        integer_factors = {2: 1}  # 2**1 = 2, only factor of B(2) = 2
+        for i in range(3, J+1):
+            integer_factors[i] = integer_factors.get(i, 0) + i - 1
+            for j in range(2, i):
+                integer_factors[j] = integer_factors.get(j, 0) - 1
+        
+        prime_factors = {}
+        for k, v in integer_factors.items():
+            for divisor, power in prime_divisors_of(k).items():
+                prime_factors[divisor] = prime_factors.get(divisor, 0) + v*power
+                
+        ret += sum_of_divisors(prime_factors) % 1000000007
+        
+    return ret
+    
+    
+def old(n):
+    ret = 0
+    
     for j in range(1, n+1):
         prime_factors = {}
 

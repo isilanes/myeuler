@@ -18,7 +18,7 @@ def p650(n):
     for J in range(3, n+1):
         integer_factors = get_integer_factors(J)
         prime_factors = get_prime_factors(integer_factors)
-        ret += sum_of_divisors(prime_factors) % MOD_NUMBER
+        ret += moded_sum_of_divisors(prime_factors)
         
     return ret % MOD_NUMBER
 
@@ -54,10 +54,11 @@ def prime_divisors_of(n):
     return divisors
 
 
-def sum_of_divisors(prime_factors):
+def moded_sum_of_divisors(prime_factors):
     result = 1
     for k, v in prime_factors.items():
         result *= (k**(v+1) - 1) // (k - 1)
+        result = result % MOD_NUMBER  # truncating early speeds up previously long multiplications
     
     return result
 
@@ -99,3 +100,13 @@ if __name__ == "__main__":
 #  500    899393748        f2     1429
 # 1000    361160563        f2    33000
 # 1500    762946177        f2   212000
+#
+#    n       res(n)  function  time (ms)
+#    5         5736        f3        0.1
+#  100    332792866        f3       18.8
+#  200    271664942        f3       45.3
+#  500    899393748        f3      256.5
+# 1000    361160563        f3     1255
+# 2000    939425731        f3     8300
+# 3000    665284696        f3    27800
+# 4000    809670819        f3    69600

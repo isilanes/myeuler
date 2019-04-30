@@ -27,10 +27,8 @@ def get_integer_factors(n):
     integer_factors = {}
     
     for i in range(2, n+1):
-        integer_factors[i] = i - 1
-        for j in range(2, i):
-            integer_factors[j] -= 1
-    
+        integer_factors[i] = 2*i - 1 - n
+        
     return integer_factors
 
 
@@ -90,3 +88,14 @@ if __name__ == "__main__":
 #  500    899393748        f1     7600
 #  750     75285818        f1    31500
 # 1000    361160563        f1    87900
+#
+#    n       res(n)  function  time (ms)
+#    5         5736        f2        0.1
+#   10    721034267        f2        0.2
+#   20    131742826        f2        0.6
+#   50    217147306        f2        2.4
+#  100    332792866        f2       19.6
+#  200    271664942        f2       48.2
+#  500    899393748        f2     1429
+# 1000    361160563        f2    33000
+# 1500    762946177        f2   212000

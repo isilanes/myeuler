@@ -1,8 +1,9 @@
 # Standard libs:
 import sys
-sys.path.append("..")
+from functools import lru_cache
 
-# Out libs:
+# Our libs:
+sys.path.append("..")
 from libeuler import core
 
 
@@ -12,25 +13,35 @@ MOD_NUMBER = 1_000_000_007
 
 # Functions:
 def p650(n):
-    ret = 1
+    ret = 4  # B(0) + B(1) + B(2)
 
-    for J in range(2, n+1):
+    for J in range(3, n+1):
         integer_factors = {2: 1}  # 2**1 = 2, only factor of B(2) = 2
         for i in range(3, J+1):
-            integer_factors[i] = integer_factors.get(i, 0) + i - 1
+            try:
+                integer_factors[i] += i - 1
+            except KeyError:
+                integer_factors[i] = i - 1
             for j in range(2, i):
-                integer_factors[j] = integer_factors.get(j, 0) - 1
+                try:
+                    integer_factors[j] -= 1
+                except KeyError:
+                    integer_factors[j] = -1
         
         prime_factors = {}
         for k, v in integer_factors.items():
             for divisor, power in prime_divisors_of(k).items():
-                prime_factors[divisor] = prime_factors.get(divisor, 0) + v*power
+                try:
+                    prime_factors[divisor] += v*power
+                except KeyError:
+                    prime_factors[divisor] = v*power
                 
         ret += sum_of_divisors(prime_factors) % MOD_NUMBER
         
     return ret % MOD_NUMBER
     
     
+@lru_cache(maxsize=20000)
 def prime_divisors_of(n):
     divisors = {}
     for factor in core.factors_of(n):
@@ -59,6 +70,8 @@ if __name__ == "__main__":
 #   15   5198581147        f0       37.6 <-- wrong (bug)
 #   20   7131742875        f0     7100   <-- wrong (bug)
 #   22  MemoryError
+#
+# Python 3.7.3 times (Fry)
 #
 #    n       res(n)  function  time (ms)
 #    5         5736        f1        0.1

@@ -1,5 +1,6 @@
 # Standard libs:
 import sys
+import numpy as np
 from functools import lru_cache
 
 # Our libs:
@@ -24,7 +25,7 @@ def p650(n):
 
 
 def get_integer_factors(n):
-    integer_factors = {}
+    integer_factors = np.zeros(n+1, dtype=np.int16)
     
     for i in range(2, n+1):
         integer_factors[i] = 2*i - 1 - n
@@ -33,15 +34,14 @@ def get_integer_factors(n):
 
 
 def get_prime_factors(i_factors):
-    prime_factors = {}
+    n = len(i_factors)
+    prime_factors = np.zeros(n+1, dtype=np.int16)
     
-    for k, v in i_factors.items():
-        for divisor, power in prime_divisors_of(k).items():
-            try:
+    for k, v in enumerate(i_factors):
+        if v:
+            for divisor, power in prime_divisors_of(k).items():
                 prime_factors[divisor] += v*power
-            except KeyError:
-                prime_factors[divisor] = v*power
-    
+
     return prime_factors
     
     
@@ -56,9 +56,13 @@ def prime_divisors_of(n):
 
 def moded_sum_of_divisors(prime_factors):
     result = 1
-    for k, v in prime_factors.items():
-        result *= (k**(v+1) - 1) // (k - 1)
-        result = result % MOD_NUMBER  # truncating early speeds up previously long multiplications
+    for k, v in enumerate(prime_factors):
+        if v:
+            k = int(k)
+            v = int(v)
+            r = (k**(v+1) - 1) // (k - 1)
+            result *= r
+            result = result % MOD_NUMBER  # truncating early speeds up previously long multiplications
     
     return result
 

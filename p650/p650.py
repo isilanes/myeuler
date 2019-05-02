@@ -27,9 +27,8 @@ def p650(n):
 def get_integer_factors(n):
     integer_factors = np.zeros(n+1, dtype=np.int16)
     
-    for i in range(2, n+1):
-        integer_factors[i] = 2*i - 1 - n
-        
+    integer_factors[2:n+1] = [2*i - 1 - n for i in range(2, n+1)]
+    
     return integer_factors
 
 
@@ -58,9 +57,9 @@ def moded_sum_of_divisors(prime_factors):
     result = 1
     for k, v in enumerate(prime_factors):
         if v:
-            k = int(k)
-            v = int(v)
-            r = (k**(v+1) - 1) // (k - 1)
+            # For some reason, "v" must be "int", or the following error happens:
+            # RuntimeWarning: overflow encountered in long_scalars
+            r = (k**(int(v)+1) - 1) // (k - 1)
             result *= r
             result = result % MOD_NUMBER  # truncating early speeds up previously long multiplications
     

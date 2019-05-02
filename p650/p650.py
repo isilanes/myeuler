@@ -1,7 +1,5 @@
 # Standard libs:
 import sys
-import numpy as np
-from functools import lru_cache
 
 # Our libs:
 sys.path.append("..")
@@ -9,19 +7,32 @@ from libeuler import core
 
 
 # Globals:
-MOD_NUMBER = 1_000_000_007
+MOD_NUMBER = 10**9 + 7
+PRIME_DIVISORS_OF = {}
 
 
 # Functions:
 def p650(n):
-    ret = 4  # B(0) + B(1) + B(2)
+    global MOD_NUMBER
+    global PRIME_DIVISORS_OF
 
+    PRIME_DIVISORS_OF = get_all_prime_divisors(n)
+
+    ret = 4  # B(0) + B(1) + B(2)
     for J in range(3, n+1):
         integer_factors = get_integer_factors(J)
         prime_factors = get_prime_factors(integer_factors)
         ret += moded_sum_of_divisors(prime_factors)
         
     return ret % MOD_NUMBER
+
+
+def get_all_prime_divisors(n):
+    all_pd = {}
+    for i in range(2, n+1):
+        all_pd[i] = prime_divisors_of(i)
+    
+    return all_pd
 
 
 def get_integer_factors(n):
@@ -34,14 +45,23 @@ def get_prime_factors(i_factors):
     
     for k, v in enumerate(i_factors):
         if v:
-            for divisor, power in prime_divisors_of(k).items():
+            for divisor, power in PRIME_DIVISORS_OF[k].items():
                 prime_factors[divisor] += v*power
 
     return prime_factors
-    
-    
-@lru_cache(maxsize=20000)
+
+
 def prime_divisors_of(n):
+    if n == 2:
+        return {2: 1}
+    
+    if not n % 2:
+        m = n//2
+        divisors = prime_divisors_of(m)
+        divisors[2] = divisors.get(2, 0) + 1
+        
+        return divisors
+        
     divisors = {}
     for factor in core.factors_of(n):
         divisors[factor] = divisors.get(factor, 0) + 1
@@ -121,3 +141,12 @@ if __name__ == "__main__":
 #  5000   141450898        f4    31800
 # 10000   734570777        f4   125000
 # 20000   538319652        f4   486000
+#
+# pypy 5.10 times (Manjaro)
+#
+#     n      res(n)  function  time (ms)
+#     5        5736        f5        0.2
+#   100   332792866        f5       23.7
+#  1000   361160563        f5      124.9
+# 10000   734570777        f5     7500
+# 20000   538319652        f5    30500

@@ -53,7 +53,9 @@ def moded_sum_of_divisors(prime_factors):
     result = 1
     for k, v in enumerate(prime_factors):
         if v:
-            result *= (k**(v+1) - 1) // (k - 1)
+            # Use inverse modulo:
+            # b^-1 mod p = b^(p-2) mod p
+            result *= (pow(k, v+1, MOD_NUMBER) - 1) * pow(k - 1, MOD_NUMBER-2, MOD_NUMBER) % MOD_NUMBER
             result = result % MOD_NUMBER  # truncating early speeds up previously long multiplications
     
     return result
@@ -106,3 +108,16 @@ if __name__ == "__main__":
 # 2000    939425731        f3     8300
 # 3000    665284696        f3    27800
 # 4000    809670819        f3    69600
+#
+# Python 3.7.3 times (Manjaro)
+#
+#     n      res(n)  function  time (ms)
+#     5        5736        f4        0.1
+#   100   332792866        f4       16.4
+#   200   271664942        f4       52.8
+#   500   899393748        f4      325.1
+#  1000   361160563        f4     1298
+#  2000   939425731        f4     5100
+#  5000   141450898        f4    31800
+# 10000   734570777        f4   125000
+# 20000   538319652        f4   486000

@@ -20,6 +20,10 @@ def p301(n=None):
 def nim_sum_of(n):
     # Copied from:
     # https://en.wikipedia.org/wiki/Nim#Example_implementation
+    # Very nice one-liner, as it makes use of:
+    #  - reduce()
+    #  - lambda functions
+    #  - bitwise operations (bitwise xor, ^)
     return functools.reduce(lambda x, y: x ^ y, (n, 2*n, 3*n))
 
 

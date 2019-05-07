@@ -2,6 +2,7 @@
 import sys
 import math
 import numpy as np
+from functools import lru_cache
 
 # Our libs:
 sys.path.append("..")
@@ -48,17 +49,18 @@ INPUT = {
            815 559 813 459 522 788 168 586 966 232 308 833 251 631 107
            813 883 451 509 615  77 281 613 459 205 380 274 302  35 805""",
 }
-
+MATRIX = None
 
 # Functions:
 def p345(n=None):
+    global MATRIX
     
     if n not in INPUT:
         raise Exception("Wrong N.")
     
-    matrix = input2matrix(INPUT[n])
+    MATRIX = input2matrix(INPUT[n])
     
-    return matrix_sum_of(matrix)
+    return matrix_sum_of("")
     
 
 def input2matrix(input_string):
@@ -68,20 +70,31 @@ def input2matrix(input_string):
     return np.array(array).reshape((d, d))
 
 
-def matrix_sum_of(matrix):
-    if len(matrix) == 1:
-        return matrix[0, 0]
+@lru_cache(maxsize=40000)
+def matrix_sum_of(index_string):
+    global MATRIX
+    
+    indices = ()
+    if index_string:
+        indices = [int(x) for x in index_string.split(",")]
+    
+    N = len(indices)
+    
+    # Delete first N columns, and rows corresponding to indices:
+    submatrix = np.delete(MATRIX[:, N:], indices, 0)
+    
+    if len(submatrix) == 1:
+        return submatrix[0, 0]
     
     max_value = 0
-    
-    for i, val in enumerate(matrix[:, 0]):
-        submatrix = np.delete(matrix, 0, 1)  # delete first column
-        submatrix = np.delete(submatrix, i, 0)  # delete i-th row
+    for i in range(len(MATRIX)):
+        if i not in indices:
+            new_indices = sorted([x for x in indices] + [i])  # sort, to allow cache-ing
+            new_indices = ",".join([str(x) for x in new_indices])
+            total = MATRIX[i, N] + matrix_sum_of(new_indices)
         
-        total = val + matrix_sum_of(submatrix)
-        
-        if total > max_value:
-            max_value = total
+            if total > max_value:
+                max_value = total
     
     return max_value
 
@@ -96,5 +109,10 @@ if __name__ == "__main__":
 #    5         3315        f0        4.8
 #    7         5712        f0      198.7
 #   10         8779        f0    13900
-#   15                     f0
+#
+#    n       res(n)  function  time (ms)
+#    5         3315        f1        1.5
+#    7         5712        f1        6.2
+#   10         8779        f1       58.6
+#   15        13938        f1     2700
 

@@ -174,7 +174,7 @@ def run_functions(all_functions):
 
     # Print out times:
     print("\nTimes:\n")
-    for (i,n),t in times:
+    for (i, n), t in times:
         if t < 2:
             print('f{i}({n}): {t:.1f} ms'.format(i=i, t=t*1000, n=n))
         else:

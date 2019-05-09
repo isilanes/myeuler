@@ -41,9 +41,47 @@ def f0(n=None):
     return len(valids)
 
 
+def f1(n=None):
+    
+    def children_of(parent):
+        children = []
+        for i, char in enumerate(parent[:-1]):  # ignore last value (already 2^0)
+            if parent[i+1] == "0":
+                if char == "1":  # xxx10xxx -> xxx02xxx
+                    new = parent[:i] + "02" + parent[i+2:]
+                    children.append(new)
+                elif char == "2":  # xxx20xxx -> xxx12xxx
+                    new = parent[:i] + "12" + parent[i+2:]
+                    children.append(new)
+        
+        return children
+    
+    # Initialize:
+    initial = bin(n)
+    valids = {
+        initial: True,
+    }
+    potential = children_of(initial)
+    for case in potential:
+        valids[case] = True
+    
+    # Loop:
+    while potential:
+        new_potential = []
+        for case in potential:
+            for child in children_of(case):
+                if child not in valids:
+                    new_potential.append(child)
+                    valids[child] = True
+        
+        potential = new_potential
+    
+    return len(valids)
+
+
 # Main code:
 if __name__ == "__main__":
-    core.run_functions([f0])
+    core.run_functions([f0, f1])
 
 # PyPy 5.10.0 times (Manjaro)
 #
@@ -55,4 +93,16 @@ if __name__ == "__main__":
 #     10**6                1287        f0       41.1
 #     10**8                7901        f0      611.2
 #    10**10               77695        f0    66200
+#
+#         n              res(n)  function  time (ms)
+#        10                   5        f1        0.2
+#       100                  19        f1        0.4
+#      1000                  39        f1        0.6
+#     10000                 205        f1        6.2
+#     10**6                1287        f1       24.8
+#     10**8                7901        f1       32.7
+#    10**10               77695        f1      123.1
+#    10**12             2077157        f1     5600
+#    10**14             5946265        f1    18500
+#    10**16            17165857        f1    62400
 

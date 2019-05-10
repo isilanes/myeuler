@@ -79,9 +79,29 @@ def f1(n=None):
     return len(valids)
 
 
+def f2(n):
+    def combi(code):
+        code = code[1:]  # chop off first char, which should always be a 1
+        for i, c in enumerate(code):
+            if c == "1":
+                nzeros = i
+                ncombos = nzeros + 1
+                C = combi(code[i:])
+                return ncombos*C + ncombos*(C-1)
+        
+        nzeros = len(code) - 1
+        
+        return nzeros + 1
+        
+    initial = bin(n)[2:]  # remove 'b0' from beginning
+    print(n, initial)
+    
+    return combi(initial)
+    
+    
 # Main code:
 if __name__ == "__main__":
-    core.run_functions([f0, f1])
+    core.run_functions([f0, f1, f2])
 
 # PyPy 5.10.0 times (Manjaro)
 #

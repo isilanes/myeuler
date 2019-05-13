@@ -80,21 +80,26 @@ def f1(n=None):
 
 
 def f2(n):
-    def combi(code):
-        code = code[1:]  # chop off first char, which should always be a 1
-        for i, c in enumerate(code):
-            if c == "1":
-                nzeros = i
-                ncombos = nzeros + 1
-                C = combi(code[i:])
-                return ncombos*C + ncombos*(C-1)
+    def combi(code, pre_combis=None):
+        i = code.rfind("1")
+        chopped = code[:i]
+        n_zeros = len(code) - i - 1
         
-        nzeros = len(code) - 1
+        if pre_combis is None:
+            if not chopped:
+                return n_zeros + 1
+            
+            return combi(chopped, (n_zeros, 1))
         
-        return nzeros + 1
+        k_zero = n_zeros * sum(pre_combis) + pre_combis[0]
+        k_one = sum(pre_combis)
+        
+        if not chopped:
+            return k_zero + k_one
+        
+        return combi(chopped, (k_zero, k_one))
         
     initial = bin(n)[2:]  # remove 'b0' from beginning
-    print(n, initial)
     
     return combi(initial)
     
@@ -125,4 +130,19 @@ if __name__ == "__main__":
 #    10**12             2077157        f1     5600
 #    10**14             5946265        f1    18500
 #    10**16            17165857        f1    62400
+#
+#         n              res(n)  function  time (ms)
+#        10                   5        f2        0.1
+#       100                  19        f2        0.1
+#      1000                  39        f2        0.1
+#     10000                 205        f2        0.1
+#     10**6                1287        f2        0.2
+#     10**8                7901        f2        0.2
+#    10**10               77695        f2        0.2
+#    10**12             2077157        f2        0.2
+#    10**14             5946265        f2        0.7
+#    10**16            17165857        f2        0.2
+#    10**18           554817437        f2        0.3
+#    10**20          5483345119        f2        0.3
+#    10**25        178653872807        f2        0.4
 

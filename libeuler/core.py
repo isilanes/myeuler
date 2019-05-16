@@ -6,8 +6,8 @@ from datetime import datetime
 
 
 # Constants:
-DEFAULT_F = "0" # which function to run, default first (zero)
-DEFAULT_N = "1" # what argument to pass to function(s), default 1
+DEFAULT_F = "0"  # which function to run, default first (zero)
+DEFAULT_N = "1"  # what argument to pass to function(s), default 1
 
 
 # Functions:
@@ -180,6 +180,22 @@ def run_functions(all_functions):
         else:
             print('f{i}({n}): {t:.1f} s'.format(i=i, t=t, n=n))
 
+
+def primes_up_to(nmax):
+    """Sieve to find all primes up to nmax."""
+    
+    composites = {}
+    primes = [2]
+    for mult in range(3, nmax, 2):
+        if not mult in composites:
+            # Log mult as prime:
+            primes.append(mult)
+        
+            # Sieve its multiples away:
+            for i in range(mult * mult, nmax, 2 * mult):
+                composites[i] = True
+
+    return primes
 
 # Classes:
 class FunctionSet(object):

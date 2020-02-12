@@ -1,4 +1,13 @@
 myeuler
 =======
 
-Solutions to Project Euler problems
+Solutions to Project Euler problems.
+
+To run scripts, create virtualenv, and in it execute (from root dir):
+
+```bash
+$ pip install -r conf/requirements.txt
+$ pip install -e .
+```
+
+The second lines makes scripts at `libeuler/` dir available (see setup.py).

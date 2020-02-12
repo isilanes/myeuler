@@ -1,17 +1,10 @@
-# Standard libs:
-import sys
-
-# Our libs:
-sys.path.append("..")
 from libeuler import core
 
 
-# Globals:
 MOD_NUMBER = 10**9 + 7
 PRIME_DIVISORS_OF = {}
 
 
-# Functions:
 def p650(n):
     global MOD_NUMBER
     global PRIME_DIVISORS_OF

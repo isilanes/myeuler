@@ -1,12 +1,8 @@
-# Standard libs:
-import sys
 import math
-sys.path.append("..")
 
-# Out libs:
 from libeuler import core
 
-# Classes:
+
 class p152(core.FunctionSet):
     """Group of solutions."""
 
@@ -133,10 +129,6 @@ class p152(core.FunctionSet):
             if key in CACHE:
                 return CACHE[key]
 
-            #if leading > target:
-            #    CACHE[key] = []
-            #    return []
-
             if sum(number_list) == target:
                 CACHE[key] = [number_list]
                 return [number_list]
@@ -165,7 +157,6 @@ class p152(core.FunctionSet):
 
 
         lcm = core.lcm_of_many(range(2, n))
-        #elements = [(lcm // e)**2 for e in range(n, 1, -1)]
         elements = [(lcm // e)**2 for e in range(2, n+1)]
         TARGET = lcm**2 // 2
 
@@ -176,8 +167,6 @@ class p152(core.FunctionSet):
             print(group)
 
 
-
-# Main code:
 if __name__ == "__main__":
     P = p152()
     P.run()

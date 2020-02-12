@@ -1,15 +1,6 @@
-# Standard libs:
-import sys
-
-# Our libs:
-sys.path.append("..")
 from libeuler import core
 
 
-# Globals:
-
-
-# Functions:
 def p205(n=None):
     # 6x 6-sided dice:
     count_six = get_count_six()
@@ -84,7 +75,6 @@ def get_count_four():
     return count_four
 
 
-# Main code:
 if __name__ == "__main__":
     core.run_functions([p205])
 

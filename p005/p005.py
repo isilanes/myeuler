@@ -1,12 +1,7 @@
-# -*- coding=utf-8 -*-
-
-import sys
-import random
-sys.path.append("..")
-
 from libeuler import core
 
-class problem(core.FunctionSet):
+
+class Problem(core.FunctionSet):
 
     def f0(self, num):
         factors = [2,3]
@@ -41,5 +36,5 @@ class problem(core.FunctionSet):
             i += 1
 
 
-P = problem(df="0", dn="20")
+P = Problem()
 P.run()

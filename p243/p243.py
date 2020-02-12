@@ -1,18 +1,12 @@
-# Standard libs:
-import sys
 import numpy as np
 
-# Our libs:
-sys.path.append("..")
 from libeuler import core
 
 
-# Globals:
 NUMERATOR = 15499
 DENOMINATOR = 94744
 
 
-# Functions:
 def f0(n=None):
     d = 0
     while d < n:
@@ -125,7 +119,6 @@ def f2(n=None):
     return d*factor
     
     
-# Main code:
 if __name__ == "__main__":
     core.run_functions([f0, f1, f2])
 

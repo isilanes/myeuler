@@ -5,17 +5,11 @@ What is the expected number of distinct colors in 20 randomly picked balls?
 
 Give your answer with nine digits after the decimal point (a.bcdefghij)
 """
-
-# Standard libs:
-import sys
 import random
-sys.path.append(".")
-sys.path.append("..")
 
-# Out libs:
 from libeuler import core
 
-# Classes:
+
 class p493(core.FunctionSet):
     """Group of solutions."""
 

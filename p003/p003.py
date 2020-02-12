@@ -1,16 +1,12 @@
-# -*- coding=utf-8 -*-
-
 """
 The prime factors of 13195 are 5, 7, 13 and 29.
 
 What is the largest prime factor of the number 600851475143?
 """
-
-import sys
 import math
-sys.path.append("..")
 
 from libeuler import core
+
 
 class CurrentSet(core.FunctionSet):
 
@@ -87,5 +83,5 @@ class CurrentSet(core.FunctionSet):
         return mf
 
 
-P = CurrentSet(df="1", dn="600851475143")
+P = CurrentSet()
 P.run()

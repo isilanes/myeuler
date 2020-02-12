@@ -1,9 +1,5 @@
-# -*- coding=utf-8 -*-
-
-import sys
-sys.path.append("..")
-
 from libeuler import core
+
 
 class p002(core.FunctionSet):
 
@@ -24,5 +20,5 @@ class p002(core.FunctionSet):
         return sum
 
 
-P = p002(df="0", dn="4000000")
+P = p002()
 P.run()

@@ -1,12 +1,6 @@
-# Standard libs:
-import sys
-
-# Our libs:
-sys.path.append("..")
 from libeuler import core
 
 
-# Functions:
 def f0(n=None):
     
     def children_of(parent):

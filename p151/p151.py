@@ -1,10 +1,7 @@
-# -*- coding=utf-8 -*-
-
-import sys
 import random
-sys.path.append("..")
 
 from libeuler import core
+
 
 class p151(core.FunctionSet):
 

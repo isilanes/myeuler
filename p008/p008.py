@@ -1,6 +1,5 @@
-# -*- coding=utf-8 -*-
-
-"""Find the greatest product of thirteen consecutive digits in the 1000-digit number:
+"""
+Find the greatest product of thirteen consecutive digits in the 1000-digit number:
 
 73167176531330624919225119674426574742355349194934
 96983520312774506326239578318016984801869478851843
@@ -21,14 +20,12 @@
 07198403850962455444362981230987879927244284909188
 84580156166097919133875499200524063689912560717606
 05886116467109405077541002256983155200055935729725
-71636269561882670428252483600823257530420752963450"""
-
-import sys
-sys.path.append("..")
-
+71636269561882670428252483600823257530420752963450
+"""
 from libeuler import core
 
-class problem(core.FunctionSet):
+
+class Problem(core.FunctionSet):
 
     num_string  = "73167176531330624919225119674426574742355349194934"
     num_string += "96983520312774506326239578318016984801869478851843"
@@ -65,8 +62,5 @@ class problem(core.FunctionSet):
         return max
 
 
-P = problem(df="0", dn="13")
+P = Problem()
 P.run()
-
-#------------------------------------------------------------------------------#
-

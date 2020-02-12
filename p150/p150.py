@@ -1,9 +1,5 @@
-# -*- coding=utf-8 -*-
-
-import sys
-sys.path.append("..")
-
 from libeuler import core
+
 
 class p152(core.FunctionSet):
 
@@ -20,7 +16,7 @@ class p152(core.FunctionSet):
             t = 0
             for k in range(n*(n+1)//2):
                 t = (615949*t + 797807) % 1048576 # 2**20 = 1048576
-                s.append(t - 524288) # 2**19 = 524288
+                s.append(t - 524288)  # 2**19 = 524288
 
             return s
 
@@ -29,7 +25,6 @@ class p152(core.FunctionSet):
                 return triang[i][j]
             else:
                 return subt(triang,i,j,k-1) + sum(triang[i+k][j:j+k+1])
-
 
         # Build triangle:
         s = build_s(n)
@@ -65,7 +60,6 @@ class p152(core.FunctionSet):
 
                 return cache[(i,j,k)]
 
-
             return helper
 
         def build_s(n):
@@ -89,7 +83,6 @@ class p152(core.FunctionSet):
                 return triang[i][j]
             else:
                 return subt(triang,i,j,k-1) + sum(triang[i+k][j:j+k+1])
-
 
         # Build triangle:
         s = build_s(n)
@@ -130,7 +123,6 @@ class p152(core.FunctionSet):
                 s.append(t - 524288) # 2**19 = 524288
 
             return s
-
 
         # Build triangle:
         s = build_s(n)
@@ -174,7 +166,6 @@ class p152(core.FunctionSet):
 
             return s
 
-
         # Build triangle:
         s = build_s(n)
 
@@ -209,10 +200,8 @@ class p152(core.FunctionSet):
         return ms
 
 
-P = p152(df="3", dn="1000")
+P = p152()
 P.run()
-
-#------------------------------------------------------------------------------#
 
 # Python 3.4.3 times (Burns)
 #

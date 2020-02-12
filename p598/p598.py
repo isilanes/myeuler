@@ -1,13 +1,9 @@
-# Standard libs:
-import sys
 import math
 import itertools
-sys.path.append("..")
 
-# Out libs:
 from libeuler import core
 
-# Classes:
+
 class p598(core.FunctionSet):
     """Group of solutions."""
 
@@ -865,7 +861,6 @@ class p598(core.FunctionSet):
         return tot // 2
 
 
-# Main code:
 if __name__ == "__main__":
     P = p598()
     P.run()

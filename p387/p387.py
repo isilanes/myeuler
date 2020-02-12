@@ -16,19 +16,9 @@ Let's call such primes strong, right truncatable Harshad primes.
 You are given that the sum of the strong, right truncatable Harshad primes less than 10000 is 90619.
 Find the sum of the strong, right truncatable Harshad primes less than 10**14.
 """
-
-# Standard libs:
-import sys
-import math
-import bisect
-import itertools
-from datetime import datetime
-sys.path.append("..")
-
-# Out libs:
 from libeuler import core
 
-# Classes:
+
 class p387(core.FunctionSet):
     """Group of solutions."""
 

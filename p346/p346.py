@@ -1,13 +1,8 @@
-# Standard libs:
-import sys
 import math
 
-# Our libs:
-sys.path.append("..")
 from libeuler import core
 
 
-# Functions:
 def f0(n=None):
     
     def repunit(base, r):
@@ -61,7 +56,6 @@ def f1(n=None):
     return sum([x for x, y in repunit_count.items()]) + 1
 
 
-# Main code:
 if __name__ == "__main__":
     core.run_functions([f0, f1])
 

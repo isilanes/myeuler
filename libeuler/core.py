@@ -197,6 +197,7 @@ def primes_up_to(nmax):
 
     return primes
 
+
 # Classes:
 class FunctionSet(object):
     """Parent class for all solution sets."""

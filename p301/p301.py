@@ -1,13 +1,8 @@
-# Standard libs:
-import sys
 import functools
 
-# Our libs:
-sys.path.append("..")
 from libeuler import core
 
 
-# Functions:
 def p301(n=None):
     res = 0
     for i in range(1, 2**n+1):
@@ -27,7 +22,6 @@ def nim_sum_of(n):
     return functools.reduce(lambda x, y: x ^ y, (n, 2*n, 3*n))
 
 
-# Main code:
 if __name__ == "__main__":
     core.run_functions([p301])
 

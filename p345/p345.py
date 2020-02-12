@@ -1,15 +1,10 @@
-# Standard libs:
-import sys
 import math
 import numpy as np
 from functools import lru_cache
 
-# Our libs:
-sys.path.append("..")
 from libeuler import core
 
 
-# Globals:
 INPUT = {
     5: """  7  53 183 439 863
           497 383 563  79 973
@@ -51,7 +46,7 @@ INPUT = {
 }
 MATRIX = None
 
-# Functions:
+
 def p345(n=None):
     global MATRIX
     
@@ -99,7 +94,6 @@ def matrix_sum_of(index_string):
     return max_value
 
 
-# Main code:
 if __name__ == "__main__":
     core.run_functions([p345])
 
